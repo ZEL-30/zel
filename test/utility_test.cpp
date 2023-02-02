@@ -1,10 +1,12 @@
 #include "inifile/ini_file.h"
 #include "logger/logger.h"
+#include "xml/xml.h"
 
 #include <doctest/doctest.h>
 #include <iostream>
 
 using namespace zel::utility;
+using namespace std;
 
 TEST_CASE("testing Class CLogger") {
 
@@ -38,4 +40,20 @@ TEST_CASE("testing Class CIniFile") {
 
     if (!IniFile.Save("../config/temp.ini"))
         printf("Save Failed!\n");
+}
+
+TEST_CASE("testing Class CXml") {
+
+    CXml s1;
+
+    s1.SetName("student");
+    s1.SetAttr("name", "curry");
+    s1.SetText("勇士总冠军");
+
+    CXml root;
+    root.SetName("students");
+    root[0] = s1;
+
+    cout << root.AsString() << endl;
+
 }
