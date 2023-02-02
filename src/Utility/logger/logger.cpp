@@ -10,10 +10,12 @@
 #include <cstddef>
 #include <iostream>
 #include <stdexcept>
-#include <sys/_types/_time_t.h>
+#include <string.h>
 #include <time.h>
 
+
 namespace zel {
+
 namespace utility {
 
 const char* CLogger::level_[LEVEL_COUNT] = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
@@ -68,10 +70,10 @@ void CLogger::Log(Level level, const char* file, int line, const char* format, .
         std::cout << buffer << std::endl;
         fout_ << buffer;
 
-    fout_.flush();
         delete[] buffer;
     }
 
+    fout_.flush();
 }
 
 } // namespace utility

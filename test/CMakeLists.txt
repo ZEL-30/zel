@@ -11,4 +11,11 @@ PUBLIC
     Utility
 )
 
+add_executable(test_inifile test_inifile.cpp)
+target_link_libraries(test_inifile
+PUBLIC
+    Utility
+)
+
+
 

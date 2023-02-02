@@ -5,6 +5,8 @@
 #include <iostream>
 #include <unistd.h>
 
+using namespace zel::utility;
+
 std::mutex g_mutex; // 全局互斥锁
 
 
@@ -38,7 +40,7 @@ void Run(A* a) {
 int main() {
 
     // 主线程
-    A* a = zel::utility::CSingleton<A>::Instance();
+    A* a = CSingleton<A>::Instance();
 
     // 子线程
     for (int i = 0; i < 10; i++) {
