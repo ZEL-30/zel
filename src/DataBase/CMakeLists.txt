@@ -5,9 +5,9 @@ file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_LIST_DIR}/*.h)
 
 #  编译静态库
-add_library(Utility "")
+add_library(DataBase "")
 
-target_sources(Utility
+target_sources(DataBase
 PRIVATE
     ${SOURCES}
 PUBLIC
@@ -15,12 +15,12 @@ PUBLIC
 )
 
 # 添加头文件
-target_include_directories(Utility
+target_include_directories(DataBase
 PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # 为target添加需要链接的共享库
-TARGET_LINK_LIBRARIES(Utility
+TARGET_LINK_LIBRARIES(DataBase
 
 )

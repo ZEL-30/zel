@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <string.h>
 #include <time.h>
+#include <errno.h>
 
 namespace zel {
 
