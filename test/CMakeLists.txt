@@ -5,16 +5,11 @@ PUBLIC
 )
 
 
-add_executable(test_logger test_logger.cpp)
-target_link_libraries(test_logger
+add_executable(utility_test utility_test.cpp)
+target_link_libraries(utility_test
 PUBLIC
     Utility
-)
-
-add_executable(test_inifile test_inifile.cpp)
-target_link_libraries(test_inifile
-PUBLIC
-    Utility
+    doctest_with_main
 )
 
 

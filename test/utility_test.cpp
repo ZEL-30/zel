@@ -1,11 +1,23 @@
 #include "inifile/ini_file.h"
+#include "logger/logger.h"
 
+#include <doctest/doctest.h>
 #include <iostream>
 
 using namespace zel::utility;
 
-int main() {
+TEST_CASE("testing Class CLogger") {
 
+    CLogger::Instance()->Open("../log/test.log");
+    CLogger::Instance()->SetMax(200);
+
+    debug("勇士总冠军");
+    warn("warn message");
+    info("info message");
+    fatal("fatal message");
+}
+
+TEST_CASE("testing Class CIniFile") {
     CIniFile IniFile;
     IniFile.Load("../config/main.ini");
 
@@ -26,6 +38,4 @@ int main() {
 
     if (!IniFile.Save("../config/temp.ini"))
         printf("Save Failed!\n");
-
-    return 0;
 }
