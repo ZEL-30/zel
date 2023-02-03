@@ -6,11 +6,9 @@
 #include <string>
 
 namespace zel {
-
 namespace utility {
 
 class Xml {
-
   public:
     Xml();
     Xml(const char* name);
@@ -81,5 +79,4 @@ class Xml {
 };
 
 } // namespace utility
-
 } // namespace zel

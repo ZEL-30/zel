@@ -2,6 +2,7 @@
 #include "logger/logger.h"
 #include "xml/xml.h"
 
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 #include <iostream>
 
@@ -79,7 +80,5 @@ TEST_CASE("testing Class Xml") {
     int id = root1[0].attr("name");
     cout << root1[0].name() << id << endl;
 
-
     root1.Save("../config/temp.xml");
-
 }

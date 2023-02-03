@@ -8,9 +8,7 @@
 #include <list>
 #include <sstream>
 
-
 namespace zel {
-
 namespace utility {
 
 Xml::Xml() : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {}
@@ -231,7 +229,6 @@ void Xml::Remove(const std::string& name) {
 }
 
 bool Xml::Load(const std::string& filename) {
-
     Parser parser;
     if (!parser.LoadFile(filename))
         return false;
@@ -241,7 +238,6 @@ bool Xml::Load(const std::string& filename) {
 }
 
 bool Xml::Save(const std::string& filename) {
-
     std::ofstream fout(filename);
 
     if (fout.fail())
@@ -255,7 +251,6 @@ bool Xml::Save(const std::string& filename) {
 }
 
 bool Xml::Parse(const std::string& str) {
-
     Parser parser;
     if (!parser.LoadString(str))
         return false;
@@ -277,5 +272,4 @@ std::list<Xml>::iterator Xml::erase(std::list<Xml>::iterator it) {
 int Xml::size() const { return child_->size(); }
 
 } // namespace utility
-
 } // namespace zel
