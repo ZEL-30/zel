@@ -10,6 +10,8 @@ namespace utility {
 class Value {
 
   public:
+    enum Type { V_NULL = 0, V_BOOL, V_INT, V_DOUBLE, V_STRING };
+
     /// @brief 构造函数
     Value();
     Value(bool value);
@@ -25,13 +27,28 @@ class Value {
     Value& operator=(const char* value);
     Value& operator=(const std::string& value);
 
+    /// @brief 重载判断操作符
+    bool operator==(const Value& other);
+    bool operator!=(const Value& other);
+
     /// @brief 类型转换
     operator bool();
     operator int();
     operator double();
     operator std::string();
+    operator std::string() const;
+
+
+    Type type() const;
+    void type(Type type);
+    bool IsNull() const;
+    bool IsInt() const;
+    bool IsDouble() const;
+    bool IsString() const;
+
 
   private:
+    Type type_;
     std::string value_;
 };
 
