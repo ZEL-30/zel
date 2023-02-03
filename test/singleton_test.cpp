@@ -1,4 +1,4 @@
-#include "singleton/singleton.h"
+#include "utility/singleton.h"
 
 #include <mutex>
 #include <thread>

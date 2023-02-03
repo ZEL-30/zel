@@ -1,12 +1,12 @@
 #pragma once
-#include "value/value.h"
+#include "utility/value.h"
 
 #include <list>
 #include <map>
 #include <string>
 
 namespace zel {
-namespace utility {
+namespace xml {
 
 class Xml {
   public:
@@ -37,12 +37,12 @@ class Xml {
     /// @brief 获取节点属性
     /// @param key 属性名
     /// @return std::string 属性值
-    Value& attr(const std::string& key);
+    zel::utility::Value& attr(const std::string& key);
 
     /// @brief 设置节点属性
     /// @param key 属性名
     /// @param value 属性值
-    void attr(const std::string& key, const Value& value);
+    void attr(const std::string& key, const zel::utility::Value& value);
 
     /// @brief 节点序列化
     /// @return std::string
@@ -74,7 +74,7 @@ class Xml {
   private:
     std::string* name_;                   // 节点名称
     std::string* text_;                   // 节点内容
-    std::map<std::string, Value>* attrs_; // 节点属性
+    std::map<std::string, zel::utility::Value>* attrs_; // 节点属性
     std::list<Xml>* child_;               // 子节点
 };
 

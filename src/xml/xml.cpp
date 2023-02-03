@@ -9,7 +9,7 @@
 #include <sstream>
 
 namespace zel {
-namespace utility {
+namespace xml {
 
 Xml::Xml() : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {}
 
@@ -79,15 +79,15 @@ void Xml::text(const std::string& text) {
     text_ = new std::string(text);
 }
 
-Value& Xml::attr(const std::string& key) {
+zel::utility::Value& Xml::attr(const std::string& key) {
     if (attrs_ == nullptr)
-        attrs_ = new std::map<std::string, Value>();
+        attrs_ = new std::map<std::string, zel::utility::Value>();
 
     return (*attrs_)[key];
 }
-void Xml::attr(const std::string& key, const Value& value) {
+void Xml::attr(const std::string& key, const zel::utility::Value& value) {
     if (attrs_ == nullptr)
-        attrs_ = new std::map<std::string, Value>();
+        attrs_ = new std::map<std::string, zel::utility::Value>();
 
     (*attrs_)[key] = value;
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "xml.h"
+#include "xml/xml.h"
 
 #include <iostream>
 
 namespace zel {
 
-namespace utility {
+namespace xml {
 
 class Parser {
 

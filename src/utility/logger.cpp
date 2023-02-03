@@ -5,7 +5,7 @@
 /// @date 2023-02-01
 /// @copyright Copyright (c) 2023 ZEL
 
-#include "logger.h"
+#include "utility/logger.h"
 
 #include <cstddef>
 #include <iostream>

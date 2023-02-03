@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "xml/parser.h"
 
 #include <cctype>
 #include <ctype.h>
@@ -8,7 +8,7 @@
 
 namespace zel {
 
-namespace utility {
+namespace xml {
 
 Parser::Parser() : str_(""), index_(0) {}
 
