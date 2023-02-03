@@ -6,26 +6,26 @@
 namespace zel {
 namespace utility {
 
-#define debug(format, ...)                                                                         \
-    Logger::Instance()->Log(Logger::DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
+#define log_debug(format, ...)                                                                         \
+    Logger::Instance()->Log(Logger::LOG_DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
-#define info(format, ...)                                                                          \
-    Logger::Instance()->Log(Logger::INFO, __FILE__, __LINE__, format, ##__VA_ARGS__)
+#define log_info(format, ...)                                                                          \
+    Logger::Instance()->Log(Logger::LOG_INFO, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
-#define warn(format, ...)                                                                          \
-    Logger::Instance()->Log(Logger::WARN, __FILE__, __LINE__, format, ##__VA_ARGS__)
+#define log_warn(format, ...)                                                                          \
+    Logger::Instance()->Log(Logger::LOG_WARN, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
-#define error(format, ...)                                                                         \
-    Logger::Instance()->Log(Logger::ERROR, __FILE__, __LINE__, format, ##__VA_ARGS__)
+#define log_error(format, ...)                                                                         \
+    Logger::Instance()->Log(Logger::LOG_ERROR, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
-#define fatal(format, ...)                                                                         \
-    Logger::Instance()->Log(Logger::FATAL, __FILE__, __LINE__, format, ##__VA_ARGS__)
+#define log_fatal(format, ...)                                                                         \
+    Logger::Instance()->Log(Logger::LOG_FATAL, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 class Logger {
 
   public:
     // 定义日志级别
-    enum Level { DEBUG = 0, INFO, WARN, ERROR, FATAL, LEVEL_COUNT };
+    enum Level { LOG_DEBUG = 0, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL, LOG_COUNT };
 
     static Logger* Instance();
 
@@ -66,7 +66,7 @@ class Logger {
     int max_;              // 日志文件的最大长度
     int len_;              // 当前文件长度
     Level level_;          // 日志文件级别
-    static const char* s_level_[LEVEL_COUNT];
+    static const char* s_level_[LOG_COUNT];
     static Logger* instance_;
 };
 

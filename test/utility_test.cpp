@@ -13,10 +13,10 @@ TEST_CASE("testing Class Logger") {
     Logger::Instance()->Open("../log/test.log");
     Logger::Instance()->SetMax(200);
 
-    debug("勇士总冠军");
-    warn("warn message");
-    info("info message");
-    fatal("fatal message");
+    log_debug("勇士总冠军");
+    log_warn("warn message");
+    log_info("info message");
+    log_fatal("fatal message");
 }
 
 TEST_CASE("testing Class IniFile") {

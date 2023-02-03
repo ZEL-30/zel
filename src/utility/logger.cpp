@@ -19,11 +19,11 @@ namespace zel {
 
 namespace utility {
 
-const char* Logger::s_level_[LEVEL_COUNT] = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
+const char* Logger::s_level_[LOG_COUNT] = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
 
 Logger* Logger::instance_ = nullptr;
 
-Logger::Logger() : level_(DEBUG), max_(0), len_(0) {}
+Logger::Logger() : level_(LOG_DEBUG), max_(0), len_(0) {}
 
 Logger::Logger(const Logger&) {}
 

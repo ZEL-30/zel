@@ -1,5 +1,4 @@
 add_executable(singleton_test singleton_test.cpp)
-target_include_directories(singleton_test PUBLIC ${CMAKE_SOURCE_DIR}/vendor)
 target_link_libraries(singleton_test
 PUBLIC
     zel
@@ -19,3 +18,10 @@ target_link_libraries(xml_test
 PUBLIC
     zel
 )
+
+add_executable(json_test json_test.cpp)
+target_link_libraries(json_test
+PUBLIC
+    zel
+)
+
