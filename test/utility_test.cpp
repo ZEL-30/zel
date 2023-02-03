@@ -44,16 +44,10 @@ TEST_CASE("testing Class IniFile") {
 
 TEST_CASE("testing Class Xml") {
 
-    Xml s1;
+    Xml root1;
+    root1.Load("../config/workflow.xml");
 
-    s1.SetName("student");
-    s1.SetAttr("name", "curry");
-    s1.SetText("勇士总冠军");
-
-    Xml root;
-    root.SetName("students");
-    root[0] = s1;
-
-    cout << root.AsString() << endl;
+    int id  = root1[0].attr("name");
+    cout << root1[0].name() << id << endl;
 
 }

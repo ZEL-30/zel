@@ -40,16 +40,18 @@ int main() {
     Xml root1;
     root1.Load("../config/workflow.xml");
 
-    Xml s1;
-    s1.name("studen");
-    s1.attr("team", "warriors");
-    s1.text("勇士总冠军");
-
-    root1.Append(s1);
-
     cout << root1.AsString() << endl;
 
-    root1.Save("../config/temp.xml");
+    // Xml s1;
+    // s1.name("studen");
+    // s1.attr("team", "warriors");
+    // s1.text("勇士总冠军");
+
+    // root1.Append(s1);
+
+    // cout << root1.AsString() << endl;
+
+    // root1.Save("../config/temp.xml");
 
     return 0;
 }

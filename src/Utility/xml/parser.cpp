@@ -126,6 +126,7 @@ Xml Parser::ParseElement() {
         if (str_[index_] == '/') {
             if (str_[index_ + 1] == '>') {
                 index_ += 2;
+                break;
             } else {
                 throw std::logic_error("xml empty element is error");
             }
@@ -171,8 +172,6 @@ Xml Parser::ParseElement() {
 
             std::string value = ParseElementAttrValue();
             element.attr(key, value);
-
-            break;
         }
     }
 

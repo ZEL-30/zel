@@ -12,7 +12,7 @@ std::mutex g_mutex; // 全局互斥锁
 
 class A {
 
-    friend class zel::utility::CSingleton<A>;
+    friend class zel::utility::Singleton<A>;
 
   public:
     void show() { std::cout << name_ << std::endl; }

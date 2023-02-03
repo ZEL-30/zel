@@ -62,11 +62,9 @@ class Xml {
     void Remove(const char* name);
     void Remove(const std::string& name);
 
-
     bool Load(const std::string& filename);
     bool Save(const std::string& filename);
     bool Parse(const std::string& str);
-
 
     // 定义迭代器
     std::list<Xml>::iterator begin();
@@ -76,8 +74,8 @@ class Xml {
     int size() const;
 
   private:
-    std::string* name_;                    // 节点名称
-    std::string* text_;                    // 节点内容
+    std::string* name_;                   // 节点名称
+    std::string* text_;                   // 节点内容
     std::map<std::string, Value>* attrs_; // 节点属性
     std::list<Xml>* child_;               // 子节点
 };
