@@ -8,13 +8,13 @@ namespace zel {
 
 namespace utility {
 
-CXml::CXml() : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {}
+Xml::Xml() : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {}
 
-CXml::CXml(const char* name) : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {
+Xml::Xml(const char* name) : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {
     name_ = new std::string(name);
 }
 
-CXml::CXml(const std::string& name)
+Xml::Xml(const std::string& name)
     : name_(nullptr),
       text_(nullptr),
       attrs_(nullptr),
@@ -22,14 +22,14 @@ CXml::CXml(const std::string& name)
     name_ = new std::string(name);
 }
 
-CXml::CXml(const CXml& other) {
+Xml::Xml(const Xml& other) {
     name_ = other.name_;
     text_ = other.text_;
     attrs_ = other.attrs_;
     child_ = other.child_;
 }
 
-CXml& CXml::operator=(const CXml& other) {
+Xml& Xml::operator=(const Xml& other) {
     Clear();
 
     name_ = other.name_;
@@ -40,15 +40,15 @@ CXml& CXml::operator=(const CXml& other) {
     return *this;
 }
 
-CXml::~CXml() {}
+Xml::~Xml() {}
 
-std::string CXml::GetName() const {
+std::string Xml::GetName() const {
     if (name_ == nullptr)
         return "";
     return *name_;
 }
 
-void CXml::SetName(const std::string& name) {
+void Xml::SetName(const std::string& name) {
     if (name_ != nullptr) {
         delete name_;
         name_ = nullptr;
@@ -57,13 +57,13 @@ void CXml::SetName(const std::string& name) {
     name_ = new std::string(name);
 }
 
-std::string CXml::GetText() const {
+std::string Xml::GetText() const {
     if (text_ == nullptr)
         return "";
     return *text_;
 }
 
-void CXml::SetText(const std::string& text) {
+void Xml::SetText(const std::string& text) {
     if (text_ != nullptr) {
         delete text_;
         text_ = nullptr;
@@ -72,20 +72,20 @@ void CXml::SetText(const std::string& text) {
     text_ = new std::string(text);
 }
 
-CValue& CXml::GetAttr(const std::string& key) {
+Value& Xml::GetAttr(const std::string& key) {
     if (attrs_ == nullptr)
-        attrs_ = new std::map<std::string, CValue>();
+        attrs_ = new std::map<std::string, Value>();
 
     return (*attrs_)[key];
 }
-void CXml::SetAttr(const std::string& key, const CValue& value) {
+void Xml::SetAttr(const std::string& key, const Value& value) {
     if (attrs_ == nullptr)
-        attrs_ = new std::map<std::string, CValue>();
+        attrs_ = new std::map<std::string, Value>();
 
     (*attrs_)[key] = value;
 }
 
-std::string CXml::AsString() {
+std::string Xml::AsString() {
     if (name_ == nullptr)
         throw std::logic_error("element name is empty");
 
@@ -114,7 +114,7 @@ std::string CXml::AsString() {
     return ss.str();
 }
 
-void CXml::Clear() {
+void Xml::Clear() {
     if (name_ != nullptr) {
         delete name_;
         name_ = nullptr;
@@ -139,20 +139,20 @@ void CXml::Clear() {
     }
 }
 
-void CXml::Append(const CXml& child) {
+void Xml::Append(const Xml& child) {
     if (child_ == nullptr) {
-        child_ = new std::list<CXml>();
+        child_ = new std::list<Xml>();
     }
 
     child_->push_back(child);
 }
 
-CXml& CXml::operator[](int index) {
+Xml& Xml::operator[](int index) {
     if (index < 0)
         throw std::logic_error("index less than zero");
 
     if (child_ == nullptr) {
-        child_ = new std::list<CXml>();
+        child_ = new std::list<Xml>();
     }
 
     int size = child_->size();
@@ -165,17 +165,17 @@ CXml& CXml::operator[](int index) {
     } else {
         // list 需要扩容
         for (int i = size; i <= index; i++) {
-            child_->push_back(CXml());
+            child_->push_back(Xml());
         }
     }
 
     return child_->back();
 }
 
-CXml& CXml::operator[](const char* name) { return (*this)[std::string(name)]; }
-CXml& CXml::operator[](const std::string& name) {
+Xml& Xml::operator[](const char* name) { return (*this)[std::string(name)]; }
+Xml& Xml::operator[](const std::string& name) {
     if (child_ == nullptr)
-        child_ = new std::list<CXml>();
+        child_ = new std::list<Xml>();
 
     for (auto it = child_->begin(); it != child_->end(); it++) {
         if (it->GetName() == name) {
@@ -183,11 +183,11 @@ CXml& CXml::operator[](const std::string& name) {
         }
     }
 
-    child_->push_back(CXml(name));
+    child_->push_back(Xml(name));
     return child_->back();
 }
 
-void CXml::Remove(int index) {
+void Xml::Remove(int index) {
     if (child_ == nullptr)
         return;
 
@@ -204,9 +204,9 @@ void CXml::Remove(int index) {
     child_->erase(it);
 }
 
-void CXml::Remove(const char* name) { Remove(std::string(name)); }
+void Xml::Remove(const char* name) { Remove(std::string(name)); }
 
-void CXml::Remove(const std::string& name) {
+void Xml::Remove(const std::string& name) {
     if (child_ == nullptr)
         return;
 
@@ -221,16 +221,16 @@ void CXml::Remove(const std::string& name) {
     }
 }
 
-std::list<CXml>::iterator CXml::begin() { return child_->begin(); }
+std::list<Xml>::iterator Xml::begin() { return child_->begin(); }
 
-std::list<CXml>::iterator CXml::end() { return child_->end(); }
+std::list<Xml>::iterator Xml::end() { return child_->end(); }
 
-std::list<CXml>::iterator CXml::erase(std::list<CXml>::iterator it) {
+std::list<Xml>::iterator Xml::erase(std::list<Xml>::iterator it) {
     it->Clear();
     return child_->erase(it);
 }
 
-int CXml::size() const { return child_->size(); }
+int Xml::size() const { return child_->size(); }
 
 } // namespace utility
 

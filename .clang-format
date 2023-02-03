@@ -7,7 +7,7 @@ AlwaysBreakAfterReturnType: None
 AlwaysBreakTemplateDeclarations: true
 AlwaysBreakBeforeMultilineStrings: true
 AlignOperands: true
-ColumnLimit: 100
+ColumnLimit: 80
 AlignAfterOpenBracket: true
 AlignConsecutiveBitFields: true
 AlignConsecutiveMacros: true

@@ -5,13 +5,13 @@ namespace zel {
 namespace utility {
 
 template <typename T>
-CSingleton<T>::CSingleton() {}
+Singleton<T>::Singleton() {}
 
 template <typename T>
-CSingleton<T>::~CSingleton() {}
+Singleton<T>::~Singleton() {}
 
 template <typename T>
-CSingleton<T>::CSingleton(const CSingleton<T>&) {}
+Singleton<T>::Singleton(const Singleton<T>&) {}
 
 } // namespace utility
 

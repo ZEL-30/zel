@@ -7,20 +7,20 @@ using namespace std;
 
 int main() {
 
-    CXml s1;
+    Xml s1;
     s1.SetName("student");
     s1.SetAttr("name", "curry");
     s1.SetAttr("id", 1);
     s1.SetAttr("hight", 1.75);
     s1.SetText("勇士总冠军");
 
-    CXml s2;
+    Xml s2;
     s2.SetName("student");
     s2.SetAttr("name", "curry");
     s2.SetText("勇士总冠军");
 
 
-    CXml root;
+    Xml root;
     root.SetName("students");
     root[0] = s1;
     root.Append(s2);

@@ -14,11 +14,11 @@
 namespace zel {
 namespace utility {
 
-CIniFile::CIniFile() {}
+IniFile::IniFile() {}
 
-CIniFile::~CIniFile() {}
+IniFile::~IniFile() {}
 
-bool CIniFile::Load(const std::string& filename) {
+bool IniFile::Load(const std::string& filename) {
 
     std::ifstream fin(filename);
 
@@ -35,7 +35,7 @@ bool CIniFile::Load(const std::string& filename) {
             pos = buffer.find_first_of(']');
             section = buffer.substr(1, pos - 1);
             section = Trim(section);
-            m_sections_[section] = Section();
+            m_sections_[section] = std::map<std::string, Value>();
         } else {
             pos = buffer.find_first_of('=');
             std::string key = buffer.substr(0, pos);
@@ -51,7 +51,7 @@ bool CIniFile::Load(const std::string& filename) {
     return true;
 }
 
-std::string CIniFile::Str() {
+std::string IniFile::Str() {
     std::stringstream ss;
     for (auto it = m_sections_.begin(); it != m_sections_.end(); it++) {
         ss << "[" << it->first << "]" << std::endl;
@@ -64,7 +64,7 @@ std::string CIniFile::Str() {
     return ss.str();
 }
 
-bool CIniFile::Save(const std::string& filename) {
+bool IniFile::Save(const std::string& filename) {
     std::ofstream fout(filename);
 
     if (fout.fail())
@@ -76,9 +76,9 @@ bool CIniFile::Save(const std::string& filename) {
     return true;
 }
 
-void CIniFile::Show() { std::cout << Str(); }
+void IniFile::Show() { std::cout << Str(); }
 
-std::string CIniFile::Trim(std::string s) {
+std::string IniFile::Trim(std::string s) {
     if (s.empty())
         return s;
 
@@ -88,19 +88,19 @@ std::string CIniFile::Trim(std::string s) {
     return s;
 }
 
-CValue& CIniFile::Get(const std::string& section, const std::string& key) {
+Value& IniFile::Get(const std::string& section, const std::string& key) {
     return m_sections_[section][key];
 }
 
-void CIniFile::Set(const std::string& section, const std::string& key, const CValue& value) {
+void IniFile::Set(const std::string& section, const std::string& key, const Value& value) {
     m_sections_[section][key] = value;
 }
 
-bool CIniFile::Has(const std::string& section) {
+bool IniFile::Has(const std::string& section) {
     return (m_sections_.find(section) != m_sections_.end());
 }
 
-bool CIniFile::Has(const std::string& section, const std::string& key) {
+bool IniFile::Has(const std::string& section, const std::string& key) {
     auto iter = m_sections_.find(section);
     if (iter != m_sections_.end()) {
         return (iter->second.find(key) != iter->second.end());
@@ -108,18 +108,20 @@ bool CIniFile::Has(const std::string& section, const std::string& key) {
     return false;
 }
 
-void CIniFile::Remove(const std::string& section) { m_sections_.erase(section); }
+void IniFile::Remove(const std::string& section) { m_sections_.erase(section); }
 
-void CIniFile::Remove(const std::string& section, const std::string& key) {
+void IniFile::Remove(const std::string& section, const std::string& key) {
     auto iter = m_sections_.find(section);
     if (iter != m_sections_.end()) {
         iter->second.erase(key);
     }
 }
 
-void CIniFile::Clear() { m_sections_.clear(); }
+void IniFile::Clear() { m_sections_.clear(); }
 
-Section& CIniFile::operator[](const std::string& section) { return m_sections_[section]; }
+std::map<std::string, Value>& IniFile::operator[](const std::string& section) {
+    return m_sections_[section];
+}
 
 } // namespace utility
 } // namespace zel

@@ -7,27 +7,27 @@ namespace zel {
 namespace utility {
 
 #define debug(format, ...)                                                                         \
-    CLogger::Instance()->Log(CLogger::DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::Instance()->Log(Logger::DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 #define info(format, ...)                                                                          \
-    CLogger::Instance()->Log(CLogger::INFO, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::Instance()->Log(Logger::INFO, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 #define warn(format, ...)                                                                          \
-    CLogger::Instance()->Log(CLogger::WARN, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::Instance()->Log(Logger::WARN, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 #define error(format, ...)                                                                         \
-    CLogger::Instance()->Log(CLogger::ERROR, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::Instance()->Log(Logger::ERROR, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 #define fatal(format, ...)                                                                         \
-    CLogger::Instance()->Log(CLogger::FATAL, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::Instance()->Log(Logger::FATAL, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
-class CLogger {
+class Logger {
 
   public:
     // 定义日志级别
     enum Level { DEBUG = 0, INFO, WARN, ERROR, FATAL, LEVEL_COUNT };
 
-    static CLogger* Instance();
+    static Logger* Instance();
 
     /// @brief 打开日志文件
     /// @param filename 日志文件名
@@ -53,9 +53,9 @@ class CLogger {
     void SetLevel(Level level);
 
   private:
-    CLogger();
-    CLogger(const CLogger&);
-    ~CLogger();
+    Logger();
+    Logger(const Logger&);
+    ~Logger();
 
     /// @brief 日志翻转
     void Rotate();
@@ -67,7 +67,7 @@ class CLogger {
     int len_;              // 当前文件长度
     Level level_;          // 日志文件级别
     static const char* s_level_[LEVEL_COUNT];
-    static CLogger* instance_;
+    static Logger* instance_;
 };
 
 } // namespace utility

@@ -9,7 +9,6 @@ TEST_CASE("testing Class mysql") {
 
     connection conn;
 
-
      // 登录数据库
     if (conn.connecttodb("127.0.0.1,root,19981110,data,3305", "utf8") != 0) {
         printf("connect database failed.\n%s\n", conn.m_cda.message);

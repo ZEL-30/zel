@@ -19,26 +19,26 @@ namespace zel {
 
 namespace utility {
 
-const char* CLogger::s_level_[LEVEL_COUNT] = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
+const char* Logger::s_level_[LEVEL_COUNT] = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
 
-CLogger* CLogger::instance_ = nullptr;
+Logger* Logger::instance_ = nullptr;
 
-CLogger::CLogger() : level_(DEBUG), max_(0), len_(0) {}
+Logger::Logger() : level_(DEBUG), max_(0), len_(0) {}
 
-CLogger::CLogger(const CLogger&) {}
+Logger::Logger(const Logger&) {}
 
-CLogger::~CLogger() { Close(); }
+Logger::~Logger() { Close(); }
 
-CLogger* CLogger::Instance() {
+Logger* Logger::Instance() {
     if (instance_ == nullptr) {
-        instance_ = new CLogger();
+        instance_ = new Logger();
         return instance_;
     }
 
     return instance_;
 }
 
-void CLogger::Open(const std::string& filename) {
+void Logger::Open(const std::string& filename) {
 
     filename_ = filename;
 
@@ -54,9 +54,9 @@ void CLogger::Open(const std::string& filename) {
     len_ = fout_.tellp();
 }
 
-void CLogger::Close() { fout_.close(); }
+void Logger::Close() { fout_.close(); }
 
-void CLogger::Log(Level level, const char* file, int line, const char* format, ...) {
+void Logger::Log(Level level, const char* file, int line, const char* format, ...) {
 
     if (level_ > level)
         return;
@@ -108,11 +108,11 @@ void CLogger::Log(Level level, const char* file, int line, const char* format, .
         Rotate();
 }
 
-void CLogger::SetLevel(Level level) { level_ = level; }
+void Logger::SetLevel(Level level) { level_ = level; }
 
-void CLogger::SetMax(int bytes) { max_ = bytes; }
+void Logger::SetMax(int bytes) { max_ = bytes; }
 
-void CLogger::Rotate() {
+void Logger::Rotate() {
     Close();
 
     time_t ticks = time(NULL);

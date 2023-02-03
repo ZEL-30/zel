@@ -5,7 +5,7 @@ namespace zel {
 namespace utility {
 
 template <typename T>
-class CSingleton {
+class Singleton {
 
   public:
     static T* Instance() {
@@ -15,19 +15,19 @@ class CSingleton {
     }
 
   private:
-    CSingleton();
-    ~CSingleton();
+    Singleton();
+    ~Singleton();
 
-    CSingleton(const CSingleton<T>&);
+    Singleton(const Singleton<T>&);
 
-    CSingleton<T>& operator=(const CSingleton<T>);
+    Singleton<T>& operator=(const Singleton<T>);
 
   private:
     static T* instance_;
 };
 
 template <typename T>
-T* CSingleton<T>::instance_ = nullptr;
+T* Singleton<T>::instance_ = nullptr;
 
 } // namespace utility
 

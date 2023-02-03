@@ -7,23 +7,23 @@ namespace zel {
 
 namespace utility {
 
-class CValue {
+class Value {
 
   public:
     /// @brief 构造函数
-    CValue();
-    CValue(bool value);
-    CValue(int value);
-    CValue(double value);
-    CValue(const char* value);
-    CValue(const std::string& value);
+    Value();
+    Value(bool value);
+    Value(int value);
+    Value(double value);
+    Value(const char* value);
+    Value(const std::string& value);
 
     /// @brief 重载赋值运算符
-    CValue& operator=(bool value);
-    CValue& operator=(int value);
-    CValue& operator=(double value);
-    CValue& operator=(const char* value);
-    CValue& operator=(const std::string& value);
+    Value& operator=(bool value);
+    Value& operator=(int value);
+    Value& operator=(double value);
+    Value& operator=(const char* value);
+    Value& operator=(const std::string& value);
 
     /// @brief 类型转换
     operator bool();
@@ -34,8 +34,6 @@ class CValue {
   private:
     std::string value_;
 };
-
-typedef std::map<std::string, CValue> Section;
 
 } // namespace utility
 } // namespace zel
