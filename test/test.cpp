@@ -38,7 +38,7 @@ int main() {
     // }
 
     Xml root1;
-    root1.Load("../config/test.xml");
+    root1.Load("../config/workflow.xml");
 
     Xml s1;
     s1.name("studen");
