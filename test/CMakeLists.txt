@@ -18,12 +18,3 @@ PUBLIC
     DataBase
     doctest_with_main
 )
-
-
-add_executable(test test.cpp)
-target_link_libraries(test
-PUBLIC
-    Utility
-)
-
-
