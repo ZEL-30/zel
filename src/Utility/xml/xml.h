@@ -22,29 +22,29 @@ class Xml {
 
     /// @brief 获取节点名称
     /// @return std::string
-    std::string GetName() const;
+    std::string name() const;
 
     /// @brief 设置节点名称
     /// @param name
-    void SetName(const std::string& name);
+    void name(const std::string& name);
 
     /// @brief 获取节点内容
     /// @return std::string
-    std::string GetText() const;
+    std::string text() const;
 
     /// @brief 设置节点内容
     /// @param text
-    void SetText(const std::string& text);
+    void text(const std::string& text);
 
     /// @brief 获取节点属性
     /// @param key 属性名
     /// @return std::string 属性值
-    Value& GetAttr(const std::string& key);
+    Value& attr(const std::string& key);
 
     /// @brief 设置节点属性
     /// @param key 属性名
     /// @param value 属性值
-    void SetAttr(const std::string& key, const Value& value);
+    void attr(const std::string& key, const Value& value);
 
     /// @brief 节点序列化
     /// @return std::string
@@ -61,6 +61,12 @@ class Xml {
     void Remove(int index);
     void Remove(const char* name);
     void Remove(const std::string& name);
+
+
+    bool Load(const std::string& filename);
+    bool Save(const std::string& filename);
+    bool Parse(const std::string& str);
+
 
     // 定义迭代器
     std::list<Xml>::iterator begin();

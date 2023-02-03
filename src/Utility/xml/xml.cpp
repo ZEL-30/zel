@@ -1,8 +1,13 @@
 #include "xml.h"
 
+#include "parser.h"
+#include "xml/parser.h"
+
 #include <cstddef>
+#include <fstream>
 #include <list>
 #include <sstream>
+
 
 namespace zel {
 
@@ -10,7 +15,11 @@ namespace utility {
 
 Xml::Xml() : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {}
 
-Xml::Xml(const char* name) : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {
+Xml::Xml(const char* name)
+    : name_(nullptr),
+      text_(nullptr),
+      attrs_(nullptr),
+      child_(nullptr) {
     name_ = new std::string(name);
 }
 
@@ -42,13 +51,13 @@ Xml& Xml::operator=(const Xml& other) {
 
 Xml::~Xml() {}
 
-std::string Xml::GetName() const {
+std::string Xml::name() const {
     if (name_ == nullptr)
         return "";
     return *name_;
 }
 
-void Xml::SetName(const std::string& name) {
+void Xml::name(const std::string& name) {
     if (name_ != nullptr) {
         delete name_;
         name_ = nullptr;
@@ -57,13 +66,13 @@ void Xml::SetName(const std::string& name) {
     name_ = new std::string(name);
 }
 
-std::string Xml::GetText() const {
+std::string Xml::text() const {
     if (text_ == nullptr)
         return "";
     return *text_;
 }
 
-void Xml::SetText(const std::string& text) {
+void Xml::text(const std::string& text) {
     if (text_ != nullptr) {
         delete text_;
         text_ = nullptr;
@@ -72,13 +81,13 @@ void Xml::SetText(const std::string& text) {
     text_ = new std::string(text);
 }
 
-Value& Xml::GetAttr(const std::string& key) {
+Value& Xml::attr(const std::string& key) {
     if (attrs_ == nullptr)
         attrs_ = new std::map<std::string, Value>();
 
     return (*attrs_)[key];
 }
-void Xml::SetAttr(const std::string& key, const Value& value) {
+void Xml::attr(const std::string& key, const Value& value) {
     if (attrs_ == nullptr)
         attrs_ = new std::map<std::string, Value>();
 
@@ -178,7 +187,7 @@ Xml& Xml::operator[](const std::string& name) {
         child_ = new std::list<Xml>();
 
     for (auto it = child_->begin(); it != child_->end(); it++) {
-        if (it->GetName() == name) {
+        if (it->name() == name) {
             return *it;
         }
     }
@@ -212,13 +221,48 @@ void Xml::Remove(const std::string& name) {
 
     // 边删除边操作
     for (auto it = child_->begin(); it != child_->end();) {
-        if (it->GetName() == name) {
+        if (it->name() == name) {
             it->Clear();
             it = child_->erase(it);
         } else {
             it++;
         }
     }
+}
+
+bool Xml::Load(const std::string& filename) {
+
+    Parser parser;
+    if (!parser.LoadFile(filename))
+        return false;
+
+    *this = parser.Parse();
+    return true;
+}
+
+bool Xml::Save(const std::string& filename) {
+
+    std::ofstream fout(filename);
+
+    if (fout.fail())
+        return false;
+
+    fout << AsString();
+
+    fout.close();
+
+    return true;
+}
+
+bool Xml::Parse(const std::string& str) {
+
+    Parser parser;
+    if (!parser.LoadString(str))
+        return false;
+
+    *this = parser.Parse();
+
+    return true;
 }
 
 std::list<Xml>::iterator Xml::begin() { return child_->begin(); }
