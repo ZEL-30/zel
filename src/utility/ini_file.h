@@ -12,6 +12,7 @@ class IniFile {
 
   public:
     IniFile();
+    ~IniFile();
 
     /// @brief 加载配置文件
     /// @param filename 配置文件名
@@ -34,7 +35,8 @@ class IniFile {
     /// @param section 需要设置的段名
     /// @param key 需要设置的 key
     /// @param value 需要设置的 value
-    void Set(const std::string& section, const std::string& key, const Value& value);
+    void
+    Set(const std::string& section, const std::string& key, const Value& value);
 
     /// @brief 判断 seciton 中有没有某个 secition or key
     /// @param section
@@ -52,15 +54,14 @@ class IniFile {
     /// @brief 重载[]
     std::map<std::string, Value>& operator[](const std::string& section);
 
-    ~IniFile();
-
   private:
     /// @brief 去除字符串前后的空格、换行、回车
     /// @param s 待处理的字符串
     /// @return std::string 处理后的字符串
     std::string Trim(std::string s);
 
-    std::string Str();
+    /// @brief 序列化
+    std::string str();
 
   private:
     std::string filename_;

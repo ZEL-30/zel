@@ -26,17 +26,25 @@ TEST_CASE("testing Class Xml") {
     root[0] = s1;
     root.Append(s2);
 
-    cout << root.AsString() << endl;
+    // cout << root.str() << endl;
+    printf("%s\n", root.c_str());
 
     // // 遍历子节点方式一
     // for (auto it = root.begin(); it != root.end(); it++) {
-    //     cout << it->AsString() << endl;
+    //     cout << it->Str() << endl;
     // }
 
-    // 遍历子节点方式二
-    for (int i = 0; i < root.size(); i++) {
-        cout << root[i].AsString() << endl;
-    }
+    // // 遍历子节点方式二
+    // for (int i = 0; i < root.size(); i++) {
+    //     cout << root[i].str() << endl;
+    // }
+
+
+}
+
+
+TEST_CASE("Xml Parser") {
+
 
     Xml root1;
     root1.Load("../config/workflow.xml");
@@ -44,5 +52,7 @@ TEST_CASE("testing Class Xml") {
     int id = root1[0].attr("name");
     cout << root1[0].name() << id << endl;
 
-    // root1.Save("../config/temp.xml");
+    root1.Save("../config/temp.xml");
+
+
 }

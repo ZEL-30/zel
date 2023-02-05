@@ -44,9 +44,11 @@ class Xml {
     /// @param value 属性值
     void attr(const std::string& key, const zel::utility::Value& value);
 
-    /// @brief 节点序列化
-    /// @return std::string
-    std::string AsString();
+    /// @brief 节点序列化 C++ string
+    std::string str() const;
+
+    /// @brief 序列化为 C char*
+    const std::basic_string<char>::value_type* c_str() const;
 
     void Clear();
 
@@ -72,11 +74,11 @@ class Xml {
     int size() const;
 
   private:
-    std::string* name_;                   // 节点名称
-    std::string* text_;                   // 节点内容
+    std::string* name_;                                 // 节点名称
+    std::string* text_;                                 // 节点内容
     std::map<std::string, zel::utility::Value>* attrs_; // 节点属性
-    std::list<Xml>* child_;               // 子节点
+    std::list<Xml>* child_;                             // 子节点
 };
 
-} // namespace utility
+} // namespace xml
 } // namespace zel

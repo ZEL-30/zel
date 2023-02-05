@@ -46,11 +46,11 @@ class Logger {
 
     /// @brief 设置日志文件最大长度
     /// @param bytes 日志文件最大长度
-    void SetMax(int bytes);
+    void max(int bytes);
 
     /// @brief 设置日志级别
     /// @param level 日志级别
-    void SetLevel(Level level);
+    void level(Level level);
 
   private:
     Logger();

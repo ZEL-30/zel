@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 namespace zel {
 namespace utility {
@@ -22,8 +23,9 @@ bool IniFile::Load(const std::string& filename) {
 
     std::ifstream fin(filename);
 
-    if (fin.fail())
-        return false;
+    if (fin.fail()) {
+        throw std::logic_error("open file failed \"" + filename + "\"");
+    }
 
     std::string buffer, section;
     int pos = 0;
@@ -42,7 +44,7 @@ bool IniFile::Load(const std::string& filename) {
             std::string value = buffer.substr(pos + 1, buffer.length() - pos);
             key = Trim(key);
             value = Trim(value);
-            m_sections_[section][key] = value;
+            m_sections_[section][key] = Value(value);
         }
     }
 
@@ -51,12 +53,12 @@ bool IniFile::Load(const std::string& filename) {
     return true;
 }
 
-std::string IniFile::Str() {
+std::string IniFile::str() {
     std::stringstream ss;
     for (auto it = m_sections_.begin(); it != m_sections_.end(); it++) {
         ss << "[" << it->first << "]" << std::endl;
         for (auto iter = it->second.begin(); iter != it->second.end(); iter++) {
-            ss << iter->first << " = " << std::string(iter->second) << std::endl;
+            ss << iter->first << " = " << iter->second.AsString() << std::endl;
         }
         ss << std::endl;
     }
@@ -70,13 +72,13 @@ bool IniFile::Save(const std::string& filename) {
     if (fout.fail())
         return false;
 
-    fout << Str();
+    fout << str();
     fout.close();
 
     return true;
 }
 
-void IniFile::Show() { std::cout << Str(); }
+void IniFile::Show() { std::cout << str(); }
 
 std::string IniFile::Trim(std::string s) {
     if (s.empty())

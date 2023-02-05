@@ -92,7 +92,7 @@ void Xml::attr(const std::string& key, const zel::utility::Value& value) {
     (*attrs_)[key] = value;
 }
 
-std::string Xml::AsString() {
+std::string Xml::str()const {
     if (name_ == nullptr)
         throw std::logic_error("element name is empty");
 
@@ -108,7 +108,7 @@ std::string Xml::AsString() {
 
     if (child_ != nullptr) {
         for (auto it = child_->begin(); it != child_->end(); it++) {
-            ss << it->AsString();
+            ss << it->str();
         }
     }
 
@@ -120,6 +120,12 @@ std::string Xml::AsString() {
 
     return ss.str();
 }
+
+const std::basic_string<char>::value_type* Xml::c_str() const {
+    return str().c_str();
+}
+
+
 
 void Xml::Clear() {
     if (name_ != nullptr) {
@@ -243,7 +249,7 @@ bool Xml::Save(const std::string& filename) {
     if (fout.fail())
         return false;
 
-    fout << AsString();
+    fout << str();
 
     fout.close();
 

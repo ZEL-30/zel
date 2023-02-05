@@ -108,9 +108,9 @@ void Logger::Log(Level level, const char* file, int line, const char* format, ..
         Rotate();
 }
 
-void Logger::SetLevel(Level level) { level_ = level; }
+void Logger::level(Level level) { level_ = level; }
 
-void Logger::SetMax(int bytes) { max_ = bytes; }
+void Logger::max(int bytes) { max_ = bytes; }
 
 void Logger::Rotate() {
     Close();

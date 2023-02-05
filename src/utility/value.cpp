@@ -13,6 +13,8 @@ namespace utility {
 
 Value::Value() : type_(V_NULL) {}
 
+Value::~Value() {}
+
 Value::Value(bool value) : type_(V_BOOL) { *this = value; }
 
 Value::Value(int value) : type_(V_INT) { *this = value; }
@@ -22,6 +24,12 @@ Value::Value(double value) : type_(V_DOUBLE) { *this = value; }
 Value::Value(const char* value) : type_(V_STRING), value_(value) {}
 
 Value::Value(const std::string& value) : type_(V_STRING), value_(value) {}
+
+std::string Value::str() const { return value_; }
+
+const std::basic_string<char>::value_type* Value::c_str() const {
+    return value_.c_str();
+}
 
 Value& Value::operator=(bool value) {
     type_ = V_BOOL;
@@ -67,7 +75,21 @@ bool Value::operator==(const Value& other) {
 
 bool Value::operator!=(const Value& other) { return !(value_ == other.value_); }
 
-Value::operator bool() {
+Value::operator bool() { return AsBool(); }
+
+Value::operator int() { return AsInt(); }
+
+Value::operator double() { return AsDouble(); }
+
+Value::operator std::string() { return AsString(); }
+
+Value::operator std::string() const { return AsString(); }
+
+Value::operator std::basic_string<char>::value_type*() const {
+    return (std::basic_string<char>::value_type*)value_.c_str();
+}
+
+bool Value::AsBool() const {
     if (value_ == "true")
         return true;
     else if (value_ == "false")
@@ -76,13 +98,11 @@ Value::operator bool() {
     return false;
 }
 
-Value::operator int() { return std::stoi(value_); }
+int Value::AsInt() const { return std::stoi(value_); }
 
-Value::operator double() { return std::stof(value_); }
+double Value::AsDouble() const { return std::stof(value_); }
 
-Value::operator std::string() { return value_; }
-
-Value::operator std::string() const { return value_; }
+std::string Value::AsString() const { return value_; }
 
 Value::Type Value::type() const { return type_; }
 
