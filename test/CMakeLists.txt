@@ -26,3 +26,11 @@ PUBLIC
     zel
 )
 
+
+add_executable(mysql_test mysql_test.cpp models/test_data.h)
+target_include_directories(mysql_test PUBLIC ${CMAKE_SOURCE_DIR}/vendor)
+target_link_libraries(mysql_test
+PUBLIC
+    zel
+)
+

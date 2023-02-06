@@ -85,9 +85,9 @@ Value::operator std::string() { return AsString(); }
 
 Value::operator std::string() const { return AsString(); }
 
-Value::operator std::basic_string<char>::value_type*() const {
-    return (std::basic_string<char>::value_type*)value_.c_str();
-}
+// Value::operator std::basic_string<char>::value_type*() const {
+//     return (std::basic_string<char>::value_type*)value_.c_str();
+// }
 
 bool Value::AsBool() const {
     if (value_ == "true")

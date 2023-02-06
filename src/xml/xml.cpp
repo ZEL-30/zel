@@ -92,7 +92,7 @@ void Xml::attr(const std::string& key, const zel::utility::Value& value) {
     (*attrs_)[key] = value;
 }
 
-std::string Xml::str()const {
+std::string Xml::str() const {
     if (name_ == nullptr)
         throw std::logic_error("element name is empty");
 
@@ -101,7 +101,7 @@ std::string Xml::str()const {
 
     if (attrs_ != nullptr) {
         for (auto it = attrs_->begin(); it != attrs_->end(); it++) {
-            ss << " " << it->first << "=\"" << std::string(it->second) << "\"";
+            ss << " " << it->first << "=\"" << it->second.str() << "\"";
         }
     }
     ss << ">";
@@ -124,8 +124,6 @@ std::string Xml::str()const {
 const std::basic_string<char>::value_type* Xml::c_str() const {
     return str().c_str();
 }
-
-
 
 void Xml::Clear() {
     if (name_ != nullptr) {
@@ -277,5 +275,5 @@ std::list<Xml>::iterator Xml::erase(std::list<Xml>::iterator it) {
 
 int Xml::size() const { return child_->size(); }
 
-} // namespace utility
+} // namespace xml
 } // namespace zel

@@ -1,0 +1,3 @@
+
+2023-02-06 11:43:07 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:56 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-06 11:43:07 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:260 sql: select * from `test_data` where `state` = 0

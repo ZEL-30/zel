@@ -48,7 +48,7 @@ class Value {
     operator double();
     operator std::string();
     operator std::string() const;
-    operator std::basic_string<char>::value_type*() const;
+    // operator std::basic_string<char>::value_type*() const;
 
     bool AsBool() const;
     int AsInt() const;

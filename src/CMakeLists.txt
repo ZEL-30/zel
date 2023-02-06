@@ -18,9 +18,11 @@ PUBLIC
 target_include_directories(zel
 PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}
+    "D:/MySQL/MySQL Server 5.7/include"
 )
 
 # 为target添加需要链接的共享库
 TARGET_LINK_LIBRARIES(zel
-
+PUBLIC
+    "D:/MySQL/MySQL Server 5.7/lib/libmysql.lib"
 )
