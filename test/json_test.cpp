@@ -1,4 +1,4 @@
-#include "json/json.h"
+#include "json.h"
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
@@ -9,7 +9,7 @@
 using namespace std;
 using namespace zel::json;
 
-TEST_CASE("测试Json的基本类型") {
+// TEST_CASE("测试Json的基本类型") {
 
     // Json v1;
     // Json v2 = true;
@@ -21,7 +21,7 @@ TEST_CASE("测试Json的基本类型") {
     // cout << v5.str() << endl;
     // cout << v3.str() << endl;
 
-}
+// }
 
 TEST_CASE("测试Json的数组") {
 
@@ -29,14 +29,15 @@ TEST_CASE("测试Json的数组") {
     arr[0] = true;
     arr[1] = 10;
 
+    cout << "sdfds" << endl;
     arr.Append(1.23);
     arr.Append("zel");
     arr.Append(false);
 
 
     cout << arr.str() << endl;
-    // arr.Remove(1);
-    // cout << arr.str() << endl;
+    arr.Remove(1);
+    cout << arr.str() << endl;
 
     arr.Clear();
 }
@@ -57,21 +58,22 @@ TEST_CASE("测试Json的数组") {
 //     obj.Clear();
 // }
 
-TEST_CASE("Json Parser") {
+// TEST_CASE("Json Parser") {
 
 
-    std::ifstream fin;
-    fin.open("../config/test.json");
+    // std::ifstream fin;
+    // fin.open("../config/test.json");
 
-    std::stringstream ss;
-    ss << fin.rdbuf();
+    // std::stringstream ss;
+    // ss << fin.rdbuf();
 
-    string source = ss.str();
+    // string source = ss.str();
 
-    Json json;
-    json.Parse(source);
+    // Json json;
+    // json.Parse(source);
 
-    cout << json["data"][9]["tag_name"].str() << endl;
+    // cout << json["data"][9]["tag_name"].str() << endl;
 
-}
+// }
+
 

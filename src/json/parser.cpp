@@ -1,6 +1,6 @@
-#include "json/parser.h"
+#include "parser.h"
 
-#include "json/json.h"
+#include "json.h"
 #include <fstream>
 #include <sstream>
 #include <stdexcept>

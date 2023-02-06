@@ -2,7 +2,6 @@
 
 #include "parser.h"
 
-#include "json/json.h"
 #include <iterator>
 #include <sstream>
 #include <stdexcept>
@@ -71,10 +70,12 @@ Json::Json(const Json& other) { Copy(other); }
 
 Json::~Json() {}
 
-Json::Type Json::type() const {
-    return type_;
-}
+Json::Type Json::type() const { return type_; }
 
+Json const& Json::Null() {
+    static const Json null;
+    return null;
+}
 
 std::string Json::str() const {
 
@@ -137,10 +138,6 @@ std::string Json::str() const {
     return ss.str();
 }
 
-const std::basic_string<char>::value_type* Json::c_str() const {
-
-}
-
 const Json& Json::Get(int index) const {
     if (type() != JSON_ARRAY)
         throw std::logic_error("function Json::Get [int] requires array value");
@@ -149,8 +146,7 @@ const Json& Json::Get(int index) const {
     if (index >= 0 && index < size)
         return value_.array_->at(index);
 
-    return Json();
-
+    return Null();
 }
 
 const Json& Json::Get(const char* key) const {
@@ -159,35 +155,29 @@ const Json& Json::Get(const char* key) const {
 }
 
 const Json& Json::Get(const std::string& key) const {
+    if (type() != JSON_OBJECT) {
+        throw std::logic_error(
+            "function Json::Get [const string &] requires object value");
+    }
+    std::map<std::string, Json>::const_iterator it = value_.object_->find(key);
+    if (it != value_.object_->end()) {
+        return it->second;
+    }
 
+    return Null();
 }
 
-void Json::Set(const Json& other) {
+void Json::Set(const Json& other) {}
 
-}
+void Json::Set(bool value) {}
 
-void Json::Set(bool value) {
+void Json::Set(int value) {}
 
-}
+void Json::Set(double value) {}
 
-void Json::Set(int value) {
+void Json::Set(const char* value) {}
 
-}
-
-void Json::Set(double value) {
-
-}
-
-void Json::Set(const char* value) {
-
-}
-
-void Json::Set(const std::string& value) {
-
-}
-
-
-
+void Json::Set(const std::string& value) {}
 
 void Json::Append(const Json& other) {
     if (type_ != JSON_ARRAY) {
@@ -325,7 +315,11 @@ void Json::Clear() {
 
     case JSON_ARRAY: {
         if (value_.array_ != nullptr) {
-            delete[] value_.array_;
+            for (auto it = value_.array_->begin(); it != value_.array_->end();
+                 it++) {
+                it->Clear();
+            }
+            delete value_.array_;
             value_.array_ = nullptr;
         }
         break;
@@ -333,7 +327,11 @@ void Json::Clear() {
 
     case JSON_OBJECT: {
         if (value_.object_ != nullptr) {
-            delete[] value_.object_;
+            for (auto it = value_.object_->begin(); it != value_.object_->end();
+                 it++) {
+                it->second.Clear();
+            }
+            delete value_.object_;
             value_.object_ = nullptr;
         }
         break;
@@ -342,6 +340,8 @@ void Json::Clear() {
     default:
         break;
     }
+
+    type_ = JSON_NULL;
 }
 
 bool Json::AsBool() const {
@@ -415,8 +415,6 @@ Json::operator std::basic_string<char>::value_type*() const {
     return (std::basic_string<char>::value_type*)value_.string_->c_str();
 }
 
-
-
 Json& Json::operator[](int index) {
     if (type_ != JSON_ARRAY) {
         type_ = JSON_ARRAY;
@@ -437,12 +435,7 @@ Json& Json::operator[](int index) {
     return value_.array_->at(index);
 }
 
-
-const Json& Json::operator[](int index) const {
-
-}
-
-
+const Json& Json::operator[](int index) const { return Get(index); }
 
 Json& Json::operator[](const char* key) {
 
@@ -451,11 +444,7 @@ Json& Json::operator[](const char* key) {
     return (*this)[name];
 }
 
-
-const Json& Json::operator[](const char* key) const {
-
-}
-
+const Json& Json::operator[](const char* key) const { return Get(key); }
 
 Json& Json::operator[](const std::string& key) {
 
@@ -467,11 +456,7 @@ Json& Json::operator[](const std::string& key) {
     return (*value_.object_)[key];
 }
 
-
-const Json& Json::operator[](const std::string& key)const  {
-
-}
-
+const Json& Json::operator[](const std::string& key) const { return Get(key); }
 
 Json& Json::operator=(const Json& other) {
     Copy(other);
@@ -479,25 +464,34 @@ Json& Json::operator=(const Json& other) {
 }
 
 Json& Json::operator=(bool value) {
-
+    Json other(value);
+    Copy(other);
+    return *this;
 }
 
 Json& Json::operator=(int value) {
-
+    Json other(value);
+    Copy(other);
+    return *this;
 }
 
 Json& Json::operator=(double value) {
-
+    Json other(value);
+    Copy(other);
+    return *this;
 }
 
 Json& Json::operator=(const char* value) {
-
+    Json other(value);
+    Copy(other);
+    return *this;
 }
 
 Json& Json::operator=(const std::string& value) {
-
+    Json other(value);
+    Copy(other);
+    return *this;
 }
-
 
 bool Json::operator==(const Json& other) {
 
@@ -536,55 +530,57 @@ bool Json::operator==(const Json& other) {
     return false;
 }
 
-
-
 bool Json::operator==(bool value) {
-
+    Json other = value;
+    return (*this == other);
 }
 
 bool Json::operator==(int value) {
-
+    Json other = value;
+    return (*this == other);
 }
 
 bool Json::operator==(double value) {
-
+    Json other = value;
+    return (*this == other);
 }
 
 bool Json::operator==(const char* value) {
-
+    Json other = value;
+    return (*this == other);
 }
 
 bool Json::operator==(const std::string& value) {
-
+    Json other = value;
+    return (*this == other);
 }
-
-
-
 
 bool Json::operator!=(const Json& other) { return !(*this == other); }
 
 bool Json::operator!=(bool value) {
-
+    Json other = value;
+    return (*this != other);
 }
 
 bool Json::operator!=(int value) {
-
+    Json other = value;
+    return (*this != other);
 }
 
 bool Json::operator!=(double value) {
-
+    Json other = value;
+    return (*this != other);
 }
 
 bool Json::operator!=(const char* value) {
-
+    Json other = value;
+    return (*this != other);
 }
 
 bool Json::operator!=(const std::string& value) {
-
+    Json other = value;
+    return (*this != other);
 }
-
-
-
 
 std::vector<Json>::iterator Json::begin() { return value_.array_->begin(); }
 std::vector<Json>::const_iterator Json::begin() const {
@@ -596,11 +592,11 @@ std::vector<Json>::const_iterator Json::end() const {
     return value_.array_->end();
 }
 
-int Json::size() { 
+int Json::size() {
 
     switch (type()) {
     case JSON_ARRAY:
-        return value_.array_->size(); 
+        return value_.array_->size();
 
     case JSON_OBJECT:
         return value_.object_->size();
@@ -617,10 +613,10 @@ bool Json::empty() {
     switch (type()) {
 
     case JSON_NULL:
-        return true; 
+        return true;
 
     case JSON_ARRAY:
-        return value_.array_->empty(); 
+        return value_.array_->empty();
 
     case JSON_OBJECT:
         return value_.object_->empty();
@@ -631,9 +627,6 @@ bool Json::empty() {
 
     throw std::logic_error("function Json::empty value type error");
 }
-
-
-
 
 } // namespace json
 
