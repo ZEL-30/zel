@@ -1,10 +1,10 @@
 #include <iostream>
 
 #include <utility/logger.h>
-using namespace yazi::utility;
+using namespace zel::utility;
 
-#include <myorm/database.h>
-using namespace yazi::myorm;
+#include <mysql/database.h>
+using namespace zel::mysql;
 
 #include <models/user.h>
 
