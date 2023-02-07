@@ -13,56 +13,56 @@ namespace zel {
 
 namespace mysql {
 
-Transaction::Transaction(Database& db) : m_conn(db()) {
-    m_is_start = false;
-    m_counter = 0;
+Transaction::Transaction(Database& db) : conn_(db()) {
+    is_start_ = false;
+    counter_ = 0;
 }
 
-Transaction::Transaction(Connection* conn) : m_conn(conn) {
-    m_is_start = false;
-    m_counter = 0;
+Transaction::Transaction(Connection* conn) : conn_(conn) {
+    is_start_ = false;
+    counter_ = 0;
 }
 
 Transaction::~Transaction() {}
 
 void Transaction::begin() {
-    if (m_is_start) {
+    if (is_start_) {
         std::ostringstream oss;
-        oss << "sp" << m_counter;
-        const std::string& sp = m_conn->quote(oss.str());
-        m_savepoints.push(sp);
-        if (m_conn->savepoint(sp)) {
-            m_counter += 1;
+        oss << "sp" << counter_;
+        const std::string& sp = conn_->quote(oss.str());
+        savepoints_.push(sp);
+        if (conn_->savepoint(sp)) {
+            counter_ += 1;
         }
     } else {
-        if (m_conn->begin()) {
-            m_is_start = true;
+        if (conn_->begin()) {
+            is_start_ = true;
         }
     }
 }
 
 void Transaction::rollback() {
-    if (!m_savepoints.empty()) {
-        const std::string& sp = m_savepoints.top();
-        if (m_conn->rollback_savepoint(sp)) {
-            m_savepoints.pop();
+    if (!savepoints_.empty()) {
+        const std::string& sp = savepoints_.top();
+        if (conn_->rollback_savepoint(sp)) {
+            savepoints_.pop();
         }
     } else {
-        if (m_conn->rollback()) {
-            m_is_start = false;
+        if (conn_->rollback()) {
+            is_start_ = false;
         }
     }
 }
 
 void Transaction::commit() {
-    if (!m_savepoints.empty()) {
-        const std::string& sp = m_savepoints.top();
-        if (m_conn->release_savepoint(sp)) {
-            m_savepoints.pop();
+    if (!savepoints_.empty()) {
+        const std::string& sp = savepoints_.top();
+        if (conn_->release_savepoint(sp)) {
+            savepoints_.pop();
         }
     } else {
-        if (m_conn->commit()) {
-            m_is_start = false;
+        if (conn_->commit()) {
+            is_start_ = false;
         }
     }
 }

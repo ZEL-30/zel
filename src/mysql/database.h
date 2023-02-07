@@ -30,7 +30,7 @@ class Database {
     Connection* operator()();
 
   private:
-    Connection* m_conn;
+    Connection* conn_;
 };
 
 } // namespace mysql

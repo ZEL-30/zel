@@ -62,36 +62,36 @@ class Connection {
     bool release_savepoint(const std::string& sp);
 
   private:
-    MYSQL m_mysql;
-    std::string m_host;
-    int m_port;
-    std::string m_username;
-    std::string m_password;
-    std::string m_database;
-    std::string m_charset;
-    bool m_debug;
-    bool m_auto_commit;
-    int m_ping;
-    int m_last_ping_time;
-    char m_quote;
+    MYSQL mysql_;
+    std::string host_;
+    int port_;
+    std::string username_;
+    std::string password_;
+    std::string database_;
+    std::string charset_;
+    bool debug_;
+    bool auto_commit_;
+    int ping_;
+    int last_ping_time_;
+    char quote_;
 };
 
 template <typename T>
 Batch<T> Connection::batch(const std::string& sql) {
     Batch<T> batch;
-    if (m_debug) {
+    if (debug_) {
         log_debug("sql: %s", sql.c_str());
     }
-    int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
+    int ret = mysql_real_query(&mysql_, sql.data(), sql.size());
     if (ret != 0) {
         log_error(
-            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_real_query errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return batch;
     }
-    MYSQL_RES* res = mysql_store_result(&m_mysql);
+    MYSQL_RES* res = mysql_store_result(&mysql_);
     if (res == NULL) {
         log_error(
-            "mysql_store_result errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_store_result errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return batch;
     }
     int rows = mysql_num_rows(res);

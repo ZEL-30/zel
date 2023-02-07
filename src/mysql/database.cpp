@@ -13,9 +13,9 @@ namespace zel {
 
 namespace mysql {
 
-Database::Database() : m_conn(nullptr) {}
+Database::Database() : conn_(nullptr) {}
 
-Database::Database(Connection* conn) : m_conn(conn) {}
+Database::Database(Connection* conn) : conn_(conn) {}
 
 Database::~Database() {}
 
@@ -26,36 +26,36 @@ bool Database::connect(const std::string& host,
                        const std::string& database,
                        const std::string& charset,
                        bool debug) {
-    m_conn = new Connection();
-    return m_conn->connect(host, port, username, password, database, charset, debug);
+    conn_ = new Connection();
+    return conn_->connect(host, port, username, password, database, charset, debug);
 }
 
 void Database::close() {
-    if (m_conn != nullptr) {
-        m_conn->close();
-        delete m_conn;
+    if (conn_ != nullptr) {
+        conn_->close();
+        delete conn_;
     }
 }
 
-void Database::execute(const std::string& sql) { m_conn->execute(sql); }
+void Database::execute(const std::string& sql) { conn_->execute(sql); }
 
 std::vector<std::map<std::string, Value>> Database::query(const std::string& sql) {
-    return m_conn->fetchall(sql);
+    return conn_->fetchall(sql);
 }
 
-std::vector<std::string> Database::tables() { return m_conn->tables(); }
+std::vector<std::string> Database::tables() { return conn_->tables(); }
 
-bool Database::exists(const std::string& table) { return m_conn->table_exists(table); }
+bool Database::exists(const std::string& table) { return conn_->table_exists(table); }
 
 std::vector<std::map<std::string, Value>> Database::schema(const std::string& table) {
-    return m_conn->schema(table);
+    return conn_->schema(table);
 }
 
-std::string Database::primary_key(const std::string& table) { return m_conn->primary_key(table); }
+std::string Database::primary_key(const std::string& table) { return conn_->primary_key(table); }
 
-std::string Database::escape(const std::string& str) { return m_conn->escape(str); }
+std::string Database::escape(const std::string& str) { return conn_->escape(str); }
 
-Connection* Database::operator()() { return m_conn; }
+Connection* Database::operator()() { return conn_; }
 
 } // namespace mysql
 

@@ -83,31 +83,31 @@ class Model {
     std::string build_simple_sql(const std::string& field, const std::string& func = "") const;
 
   protected:
-    Connection* m_conn;
-    std::vector<std::string> m_select;
-    std::map<std::string, Value> m_old_fields;
-    std::map<std::string, Value> m_new_fields;
-    std::map<std::string, Value> m_update;
-    std::vector<std::string> m_where;
-    std::vector<std::string> m_join;
-    std::string m_alias;
-    std::string m_order;
-    std::string m_group;
-    std::string m_having;
-    int m_offset;
-    int m_limit;
+    Connection* conn_;
+    std::vector<std::string> select_;
+    std::map<std::string, Value> old_fields_;
+    std::map<std::string, Value> new_fields_;
+    std::map<std::string, Value> update_;
+    std::vector<std::string> where_;
+    std::vector<std::string> join_;
+    std::string alias_;
+    std::string order_;
+    std::string group_;
+    std::string having_;
+    int offset_;
+    int limit_;
 };
 
 template <typename T>
-Model<T>::Model() : m_conn(nullptr) {
-    m_offset = 0;
-    m_limit = 0;
+Model<T>::Model() : conn_(nullptr) {
+    offset_ = 0;
+    limit_ = 0;
 }
 
 template <typename T>
-Model<T>::Model(Connection* conn) : m_conn(conn) {
-    m_offset = 0;
-    m_limit = 0;
+Model<T>::Model(Connection* conn) : conn_(conn) {
+    offset_ = 0;
+    limit_ = 0;
 }
 
 template <typename T>
@@ -121,13 +121,13 @@ std::string Model<T>::primary_key() const {
 template <typename T>
 template <typename P, typename... Args>
 T& Model<T>::select(P head, Args... args) {
-    m_select.push_back(head);
+    select_.push_back(head);
     return select(args...);
 }
 
 template <typename T>
 T& Model<T>::where(const std::string& cond) {
-    m_where.push_back(cond);
+    where_.push_back(cond);
     return *dynamic_cast<T*>(this);
 }
 
@@ -139,13 +139,13 @@ T& Model<T>::where(const std::string& field, const Value& value) {
 template <typename T>
 T& Model<T>::where(const std::string& field, const std::string& op, const Value& value) {
     std::ostringstream oss;
-    oss << m_conn->quote(field) << " " << op << " ";
+    oss << conn_->quote(field) << " " << op << " ";
     if (value.IsString()) {
-        oss << "'" << m_conn->escape(value) << "'";
+        oss << "'" << conn_->escape(value) << "'";
     } else {
         oss << (std::string)value;
     }
-    m_where.push_back(oss.str());
+    where_.push_back(oss.str());
     return *dynamic_cast<T*>(this);
 }
 
@@ -154,20 +154,20 @@ T& Model<T>::where(const std::string& field,
                    const std::string& op,
                    const std::vector<Value>& values) {
     std::ostringstream oss;
-    oss << m_conn->quote(field) << " " << op << " ";
+    oss << conn_->quote(field) << " " << op << " ";
     oss << "(";
     for (auto it = values.begin(); it != values.end(); it++) {
         if (it != values.begin()) {
             oss << ",";
         }
         if (it->IsString()) {
-            oss << "'" << m_conn->escape(*it) << "'";
+            oss << "'" << conn_->escape(*it) << "'";
         } else {
             oss << (std::string)(*it);
         }
     }
     oss << ")";
-    m_where.push_back(oss.str());
+    where_.push_back(oss.str());
     return *dynamic_cast<T*>(this);
 }
 
@@ -177,25 +177,25 @@ T& Model<T>::where(const std::string& field,
                    const Value& min,
                    const Value& max) {
     std::ostringstream oss;
-    oss << m_conn->quote(field) << " " << op << " ";
+    oss << conn_->quote(field) << " " << op << " ";
     if (min.IsString()) {
-        oss << "'" << m_conn->escape(min) << "'";
+        oss << "'" << conn_->escape(min) << "'";
     } else {
         oss << (std::string)min;
     }
     oss << " and ";
     if (max.IsString()) {
-        oss << "'" << m_conn->escape(max) << "'";
+        oss << "'" << conn_->escape(max) << "'";
     } else {
         oss << (std::string)max;
     }
-    m_where.push_back(oss.str());
+    where_.push_back(oss.str());
     return *dynamic_cast<T*>(this);
 }
 
 template <typename T>
 T& Model<T>::alias(const std::string& alias) {
-    m_alias = alias;
+    alias_ = alias;
     return *dynamic_cast<T*>(this);
 }
 
@@ -205,50 +205,50 @@ T& Model<T>::join(const std::string& table,
                   const std::string& on,
                   const std::string& type) {
     std::ostringstream oss;
-    oss << type << " join " << m_conn->quote(table) << " as " << m_conn->quote(alias) << " on "
+    oss << type << " join " << conn_->quote(table) << " as " << conn_->quote(alias) << " on "
         << on;
-    m_join.push_back(oss.str());
+    join_.push_back(oss.str());
     return *dynamic_cast<T*>(this);
 }
 
 template <typename T>
 T& Model<T>::group(const std::string& group) {
-    m_group = group;
+    group_ = group;
     return *dynamic_cast<T*>(this);
 }
 
 template <typename T>
 T& Model<T>::having(const std::string& having) {
-    m_having = having;
+    having_ = having;
     return *dynamic_cast<T*>(this);
 }
 
 template <typename T>
 T& Model<T>::order(const std::string& order) {
-    m_order = order;
+    order_ = order;
     return *dynamic_cast<T*>(this);
 }
 
 template <typename T>
 T& Model<T>::offset(int offset) {
-    m_offset = offset;
+    offset_ = offset;
     return *dynamic_cast<T*>(this);
 }
 
 template <typename T>
 T& Model<T>::limit(int limit) {
-    m_limit = limit;
+    limit_ = limit;
     return *dynamic_cast<T*>(this);
 }
 
 template <typename T>
 Value Model<T>::get(const std::string& field) const {
-    auto it = m_new_fields.find(field);
-    if (it != m_new_fields.end()) {
+    auto it = new_fields_.find(field);
+    if (it != new_fields_.end()) {
         return it->second;
     }
-    it = m_old_fields.find(field);
-    if (it != m_old_fields.end()) {
+    it = old_fields_.find(field);
+    if (it != old_fields_.end()) {
         return it->second;
     }
     return Value();
@@ -256,7 +256,7 @@ Value Model<T>::get(const std::string& field) const {
 
 template <typename T>
 void Model<T>::set(const std::string& field, const Value& value) {
-    m_new_fields[field] = value;
+    new_fields_[field] = value;
 }
 
 template <typename T>
@@ -266,15 +266,15 @@ Value Model<T>::operator()(const std::string& field) {
 
 template <typename T>
 Value& Model<T>::operator[](const std::string& field) {
-    return m_new_fields[field];
+    return new_fields_[field];
 }
 
 template <typename T>
 std::string Model<T>::sql() const {
     std::ostringstream oss;
     oss << build_select_sql();
-    if (m_alias != "") {
-        oss << " as " << m_conn->quote(m_alias);
+    if (alias_ != "") {
+        oss << " as " << conn_->quote(alias_);
     }
     oss << build_join_sql();
     oss << build_where_sql();
@@ -285,10 +285,10 @@ std::string Model<T>::sql() const {
 template <typename T>
 std::string Model<T>::str() const {
     std::map<std::string, Value> fields;
-    for (auto it = m_old_fields.begin(); it != m_old_fields.end(); it++) {
+    for (auto it = old_fields_.begin(); it != old_fields_.end(); it++) {
         fields[it->first] = it->second;
     }
-    for (auto it = m_new_fields.begin(); it != m_new_fields.end(); it++) {
+    for (auto it = new_fields_.begin(); it != new_fields_.end(); it++) {
         fields[it->first] = it->second;
     }
     std::ostringstream oss;
@@ -327,30 +327,30 @@ template <typename T>
 std::string Model<T>::build_select_sql() const {
     std::ostringstream oss;
     oss << "select ";
-    if (m_select.empty()) {
+    if (select_.empty()) {
         oss << "*";
     } else {
-        for (auto it = m_select.begin(); it != m_select.end(); it++) {
-            if (it == m_select.begin()) {
+        for (auto it = select_.begin(); it != select_.end(); it++) {
+            if (it == select_.begin()) {
                 oss << (*it);
             } else {
                 oss << "," << (*it);
             }
         }
     }
-    oss << " from " << m_conn->quote(table());
+    oss << " from " << conn_->quote(table());
     return oss.str();
 }
 
 template <typename T>
 std::string Model<T>::build_join_sql() const {
-    if (m_join.empty()) {
+    if (join_.empty()) {
         return "";
     }
     std::ostringstream oss;
     oss << " ";
-    for (auto it = m_join.begin(); it != m_join.end(); it++) {
-        if (it == m_join.begin()) {
+    for (auto it = join_.begin(); it != join_.end(); it++) {
+        if (it == join_.begin()) {
             oss << *it;
         } else {
             oss << " " << *it;
@@ -361,13 +361,13 @@ std::string Model<T>::build_join_sql() const {
 
 template <typename T>
 std::string Model<T>::build_where_sql() const {
-    if (m_where.empty()) {
+    if (where_.empty()) {
         return "";
     }
     std::ostringstream oss;
     oss << " where ";
-    for (auto it = m_where.begin(); it != m_where.end(); it++) {
-        if (it == m_where.begin()) {
+    for (auto it = where_.begin(); it != where_.end(); it++) {
+        if (it == where_.begin()) {
             oss << (*it);
         } else {
             oss << " and " << (*it);
@@ -379,20 +379,20 @@ std::string Model<T>::build_where_sql() const {
 template <typename T>
 std::string Model<T>::build_other_sql() const {
     std::ostringstream oss;
-    if (!m_group.empty()) {
-        oss << " group by " << m_group;
+    if (!group_.empty()) {
+        oss << " group by " << group_;
     }
-    if (!m_having.empty()) {
-        oss << " having " << m_having;
+    if (!having_.empty()) {
+        oss << " having " << having_;
     }
-    if (!m_order.empty()) {
-        oss << " order by " << m_order;
+    if (!order_.empty()) {
+        oss << " order by " << order_;
     }
-    if (m_limit > 0) {
-        if (m_offset > 0) {
-            oss << " limit " << m_limit << " offset " << m_offset;
+    if (limit_ > 0) {
+        if (offset_ > 0) {
+            oss << " limit " << limit_ << " offset " << offset_;
         } else {
-            oss << " limit " << m_limit;
+            oss << " limit " << limit_;
         }
     }
     return oss.str();
@@ -403,13 +403,13 @@ std::string Model<T>::build_simple_sql(const std::string& field, const std::stri
     std::ostringstream oss;
     oss << "select ";
     if (func.empty()) {
-        oss << m_conn->quote(field);
+        oss << conn_->quote(field);
     } else {
-        oss << func << "(" << m_conn->quote(field) << ")";
+        oss << func << "(" << conn_->quote(field) << ")";
     }
-    oss << " from " << m_conn->quote(table());
-    if (!m_alias.empty()) {
-        oss << " as " << m_conn->quote(m_alias);
+    oss << " from " << conn_->quote(table());
+    if (!alias_.empty()) {
+        oss << " as " << conn_->quote(alias_);
     }
     oss << build_join_sql();
     oss << build_where_sql();
@@ -420,54 +420,54 @@ std::string Model<T>::build_simple_sql(const std::string& field, const std::stri
 template <typename T>
 bool Model<T>::save() {
     std::string pk = primary_key();
-    if (m_old_fields.find(pk) == m_old_fields.end()) {
+    if (old_fields_.find(pk) == old_fields_.end()) {
         // insert
-        if (m_new_fields.empty()) {
+        if (new_fields_.empty()) {
             return false;
         }
         std::ostringstream fields;
         std::ostringstream values;
-        for (auto it = m_new_fields.begin(); it != m_new_fields.end(); it++) {
-            if (it != m_new_fields.begin()) {
+        for (auto it = new_fields_.begin(); it != new_fields_.end(); it++) {
+            if (it != new_fields_.begin()) {
                 fields << ",";
                 values << ",";
             }
-            fields << m_conn->quote(it->first);
+            fields << conn_->quote(it->first);
             if (it->second.IsString()) {
-                values << "'" << m_conn->escape(it->second) << "'";
+                values << "'" << conn_->escape(it->second) << "'";
             } else {
                 values << (std::string)(it->second);
             }
         }
         std::ostringstream oss;
-        oss << "insert into " << m_conn->quote(table()) << "(" << fields.str() << ") values("
+        oss << "insert into " << conn_->quote(table()) << "(" << fields.str() << ") values("
             << values.str() << ")";
         std::string sql = oss.str();
-        int last_id = m_conn->insert(sql);
-        m_new_fields[pk] = last_id;
+        int last_id = conn_->insert(sql);
+        new_fields_[pk] = last_id;
         return true;
     } else {
         // update
-        if (m_new_fields.empty()) {
+        if (new_fields_.empty()) {
             return false;
         }
         std::ostringstream update;
-        for (auto it = m_new_fields.begin(); it != m_new_fields.end(); it++) {
-            if (it != m_new_fields.begin()) {
+        for (auto it = new_fields_.begin(); it != new_fields_.end(); it++) {
+            if (it != new_fields_.begin()) {
                 update << ", ";
             }
-            update << m_conn->quote(it->first) << " = ";
+            update << conn_->quote(it->first) << " = ";
             if (it->second.IsString()) {
-                update << "'" << m_conn->escape(it->second) << "'";
+                update << "'" << conn_->escape(it->second) << "'";
             } else {
                 update << (std::string)(it->second);
             }
         }
         std::ostringstream oss;
-        oss << "update " << m_conn->quote(table()) << " set " << update.str() << " where "
-            << m_conn->quote(pk) << " = " << (std::string)m_old_fields[pk];
+        oss << "update " << conn_->quote(table()) << " set " << update.str() << " where "
+            << conn_->quote(pk) << " = " << (std::string)old_fields_[pk];
         std::string sql = oss.str();
-        m_conn->execute(sql);
+        conn_->execute(sql);
         return true;
     }
 }
@@ -475,22 +475,22 @@ bool Model<T>::save() {
 template <typename T>
 void Model<T>::remove() {
     std::ostringstream oss;
-    oss << "delete from " << m_conn->quote(table());
+    oss << "delete from " << conn_->quote(table());
     std::string pk = primary_key();
-    if (m_old_fields.find(pk) == m_old_fields.end()) {
+    if (old_fields_.find(pk) == old_fields_.end()) {
         // oss << build_join_sql();
         oss << build_where_sql();
         oss << build_other_sql();
     } else {
-        oss << " where " << m_conn->quote(pk) << " = " << (std::string)m_old_fields[pk];
+        oss << " where " << conn_->quote(pk) << " = " << (std::string)old_fields_[pk];
     }
     std::string sql = oss.str();
-    m_conn->execute(sql);
+    conn_->execute(sql);
 }
 
 template <typename T>
 void Model<T>::update(const T& row) {
-    update(row.m_new_fields);
+    update(row.new_fields_);
 }
 
 template <typename T>
@@ -499,14 +499,14 @@ void Model<T>::update(const std::map<std::string, Value>& fields) {
         return;
     }
     std::ostringstream oss;
-    oss << "update " << m_conn->quote(table()) << " set ";
+    oss << "update " << conn_->quote(table()) << " set ";
     for (auto it = fields.begin(); it != fields.end(); it++) {
         if (it != fields.begin()) {
             oss << ", ";
         }
-        oss << m_conn->quote(it->first) << " = ";
+        oss << conn_->quote(it->first) << " = ";
         if (it->second.IsString()) {
-            oss << "'" << m_conn->escape(it->second) << "'";
+            oss << "'" << conn_->escape(it->second) << "'";
         } else {
             oss << (std::string)(it->second);
         }
@@ -515,7 +515,7 @@ void Model<T>::update(const std::map<std::string, Value>& fields) {
     oss << build_where_sql();
     oss << build_other_sql();
     std::string sql = oss.str();
-    m_conn->execute(sql);
+    conn_->execute(sql);
 }
 
 template <typename T>
@@ -524,13 +524,13 @@ void Model<T>::insert(const std::vector<T>& rows) {
         return;
     }
     std::ostringstream oss;
-    oss << "insert into " << m_conn->quote(table());
+    oss << "insert into " << conn_->quote(table());
     oss << "(";
-    for (auto it = rows[0].m_new_fields.begin(); it != rows[0].m_new_fields.end(); it++) {
-        if (it != rows[0].m_new_fields.begin()) {
+    for (auto it = rows[0].new_fields_.begin(); it != rows[0].new_fields_.end(); it++) {
+        if (it != rows[0].new_fields_.begin()) {
             oss << ",";
         }
-        oss << m_conn->quote(it->first);
+        oss << conn_->quote(it->first);
     }
     oss << ") values ";
     for (auto row = rows.begin(); row != rows.end(); row++) {
@@ -538,12 +538,12 @@ void Model<T>::insert(const std::vector<T>& rows) {
             oss << ",";
         }
         oss << "(";
-        for (auto it = row->m_new_fields.begin(); it != row->m_new_fields.end(); it++) {
-            if (it != row->m_new_fields.begin()) {
+        for (auto it = row->new_fields_.begin(); it != row->new_fields_.end(); it++) {
+            if (it != row->new_fields_.begin()) {
                 oss << ",";
             }
             if (it->second.IsString()) {
-                oss << "'" << m_conn->escape(it->second) << "'";
+                oss << "'" << conn_->escape(it->second) << "'";
             } else {
                 oss << std::string(it->second);
             }
@@ -551,29 +551,29 @@ void Model<T>::insert(const std::vector<T>& rows) {
         oss << ")";
     }
     std::string sql = oss.str();
-    m_conn->insert(sql);
+    conn_->insert(sql);
 }
 
 template <typename T>
 void Model<T>::truncate() {
     std::ostringstream oss;
-    oss << "truncate table " << m_conn->quote(table());
+    oss << "truncate table " << conn_->quote(table());
     std::string sql = oss.str();
-    m_conn->execute(sql);
+    conn_->execute(sql);
 }
 
 template <typename T>
 int Model<T>::count(const std::string& field) {
     std::ostringstream oss;
-    oss << "select count(" << field << ") from " << m_conn->quote(table());
-    if (!m_alias.empty()) {
-        oss << " as " << m_conn->quote(m_alias);
+    oss << "select count(" << field << ") from " << conn_->quote(table());
+    if (!alias_.empty()) {
+        oss << " as " << conn_->quote(alias_);
     }
     oss << build_join_sql();
     oss << build_where_sql();
     oss << build_other_sql();
     std::string sql = oss.str();
-    auto one = m_conn->fetchone(sql);
+    auto one = conn_->fetchone(sql);
     for (auto it = one.begin(); it != one.end(); it++) {
         return it->second;
     }
@@ -583,7 +583,7 @@ int Model<T>::count(const std::string& field) {
 template <typename T>
 double Model<T>::sum(const std::string& field) {
     std::string sql = build_simple_sql(field, "sum");
-    auto one = m_conn->fetchone(sql);
+    auto one = conn_->fetchone(sql);
     for (auto it = one.begin(); it != one.end(); it++) {
         return it->second;
     }
@@ -593,7 +593,7 @@ double Model<T>::sum(const std::string& field) {
 template <typename T>
 double Model<T>::min(const std::string& field) {
     std::string sql = build_simple_sql(field, "min");
-    auto one = m_conn->fetchone(sql);
+    auto one = conn_->fetchone(sql);
     for (auto it = one.begin(); it != one.end(); it++) {
         return it->second;
     }
@@ -603,7 +603,7 @@ double Model<T>::min(const std::string& field) {
 template <typename T>
 double Model<T>::max(const std::string& field) {
     std::string sql = build_simple_sql(field, "max");
-    auto one = m_conn->fetchone(sql);
+    auto one = conn_->fetchone(sql);
     for (auto it = one.begin(); it != one.end(); it++) {
         return it->second;
     }
@@ -613,7 +613,7 @@ double Model<T>::max(const std::string& field) {
 template <typename T>
 double Model<T>::average(const std::string& field) {
     std::string sql = build_simple_sql(field, "avg");
-    auto one = m_conn->fetchone(sql);
+    auto one = conn_->fetchone(sql);
     for (auto it = one.begin(); it != one.end(); it++) {
         return it->second;
     }
@@ -627,7 +627,7 @@ bool Model<T>::exists() {
     std::string sql = oss.str();
 
     int total = 0;
-    auto one = m_conn->fetchone(sql);
+    auto one = conn_->fetchone(sql);
     for (auto it = one.begin(); it != one.end(); it++) {
         total = it->second;
     }
@@ -636,16 +636,16 @@ bool Model<T>::exists() {
 
 template <typename T>
 Value Model<T>::scalar(const std::string& field) {
-    m_limit = 1;
+    limit_ = 1;
     std::string sql = build_simple_sql(field);
-    auto one = m_conn->fetchone(sql);
+    auto one = conn_->fetchone(sql);
     return one[field];
 }
 
 template <typename T>
 std::vector<Value> Model<T>::column(const std::string& field) {
     std::string sql = build_simple_sql(field);
-    auto all = m_conn->fetchall(sql);
+    auto all = conn_->fetchall(sql);
     std::vector<Value> result;
     for (auto it = all.begin(); it != all.end(); it++) {
         result.push_back((*it)[field]);
@@ -655,19 +655,19 @@ std::vector<Value> Model<T>::column(const std::string& field) {
 
 template <typename T>
 T Model<T>::one() {
-    m_limit = 1;
-    T one(m_conn);
-    one.m_old_fields = m_conn->fetchone(sql());
+    limit_ = 1;
+    T one(conn_);
+    one.old_fields_ = conn_->fetchone(sql());
     return one;
 }
 
 template <typename T>
 std::vector<T> Model<T>::all() {
     std::vector<T> all;
-    std::vector<std::map<std::string, Value>> result = m_conn->fetchall(sql());
+    std::vector<std::map<std::string, Value>> result = conn_->fetchall(sql());
     for (auto it = result.begin(); it != result.end(); it++) {
-        T one(m_conn);
-        one.m_old_fields = (*it);
+        T one(conn_);
+        one.old_fields_ = (*it);
         all.push_back(one);
     }
     return all;
@@ -675,7 +675,7 @@ std::vector<T> Model<T>::all() {
 
 template <typename T>
 Batch<T> Model<T>::batch(int size) {
-    Batch<T> batch = m_conn->batch<T>(sql());
+    Batch<T> batch = conn_->batch<T>(sql());
     batch.size(size);
     return batch;
 }

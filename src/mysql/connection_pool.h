@@ -28,10 +28,10 @@ class ConnectionPool {
     Connection* get();
 
   private:
-    std::list<Connection*> m_pool;
-    int m_size;
-    int m_ping;
-    bool m_debug;
+    std::list<Connection*> pool_;
+    int size_;
+    int ping_;
+    bool debug_;
 };
 
 } // namespace mysql

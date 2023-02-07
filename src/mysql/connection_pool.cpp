@@ -15,14 +15,14 @@ namespace zel {
 
 namespace mysql {
 
-ConnectionPool::ConnectionPool() : m_size(0), m_ping(3600), m_debug(false) {}
+ConnectionPool::ConnectionPool() : size_(0), ping_(3600), debug_(false) {}
 
 ConnectionPool::~ConnectionPool() {
-    for (auto it = m_pool.begin(); it != m_pool.end(); it++) {
+    for (auto it = pool_.begin(); it != pool_.end(); it++) {
         (*it)->close();
         delete (*it);
     }
-    m_pool.clear();
+    pool_.clear();
 }
 
 void ConnectionPool::create(const std::string& host,
@@ -32,33 +32,33 @@ void ConnectionPool::create(const std::string& host,
                             const std::string& database,
                             const std::string& charset,
                             bool debug) {
-    if (m_size <= 0) {
+    if (size_ <= 0) {
         log_error("connection pool size error");
         return;
     }
-    m_debug = debug;
-    for (int i = 0; i < m_size; i++) {
+    debug_ = debug;
+    for (int i = 0; i < size_; i++) {
         auto* conn = new Connection();
         conn->connect(host, port, username, password, database, charset, debug);
-        if (m_ping > 0) {
-            conn->set_ping(m_ping);
+        if (ping_ > 0) {
+            conn->set_ping(ping_);
         }
         put(conn);
     }
 }
 
-void ConnectionPool::size(int size) { m_size = size; }
+void ConnectionPool::size(int size) { size_ = size; }
 
-void ConnectionPool::ping(int ping) { m_ping = ping; }
+void ConnectionPool::ping(int ping) { ping_ = ping; }
 
-void ConnectionPool::put(Connection* conn) { m_pool.push_back(conn); }
+void ConnectionPool::put(Connection* conn) { pool_.push_back(conn); }
 
 Connection* ConnectionPool::get() {
-    if (m_pool.empty()) {
+    if (pool_.empty()) {
         return nullptr;
     }
-    auto conn = m_pool.front();
-    m_pool.pop_front();
+    auto conn = pool_.front();
+    pool_.pop_front();
     if (!conn->ping()) {
         conn->reconnect();
     }

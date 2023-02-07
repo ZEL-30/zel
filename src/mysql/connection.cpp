@@ -19,10 +19,10 @@ namespace zel {
 namespace mysql {
 
 Connection::Connection() {
-    mysql_init(&m_mysql);
-    m_ping = 3600;
-    m_last_ping_time = time(nullptr);
-    m_quote = '`';
+    mysql_init(&mysql_);
+    ping_ = 3600;
+    last_ping_time_ = time(nullptr);
+    quote_ = '`';
 }
 
 Connection::~Connection() {}
@@ -34,14 +34,14 @@ bool Connection::connect(const std::string& host,
                          const std::string& database,
                          const std::string& charset,
                          bool debug) {
-    m_host = host;
-    m_port = port;
-    m_username = username;
-    m_database = database;
-    m_charset = charset;
-    m_debug = debug;
-    mysql_options(&m_mysql, MYSQL_SET_CHARSET_NAME, charset.c_str());
-    MYSQL* res = mysql_real_connect(&m_mysql,
+    host_ = host;
+    port_ = port;
+    username_ = username;
+    database_ = database;
+    charset_ = charset;
+    debug_ = debug;
+    mysql_options(&mysql_, MYSQL_SET_CHARSET_NAME, charset.c_str());
+    MYSQL* res = mysql_real_connect(&mysql_,
                                     host.c_str(),
                                     username.c_str(),
                                     password.c_str(),
@@ -51,7 +51,7 @@ bool Connection::connect(const std::string& host,
                                     0);
     if (res == NULL) {
         log_error(
-            "mysql_real_connect errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_real_connect errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return false;
     }
     if (debug) {
@@ -61,43 +61,43 @@ bool Connection::connect(const std::string& host,
                   username.c_str(),
                   database.c_str());
     }
-    m_auto_commit = true;
-    mysql_autocommit(&m_mysql, 1);
+    auto_commit_ = true;
+    mysql_autocommit(&mysql_, 1);
     return true;
 }
 
 bool Connection::reconnect() {
     close();
-    return connect(m_host, m_port, m_username, m_password, m_database, m_charset, m_debug);
+    return connect(host_, port_, username_, password_, database_, charset_, debug_);
 }
 
 void Connection::close() {
-    if (m_debug) {
+    if (debug_) {
         log_debug("mysql close: host=%s port=%d username=%s database=%s",
-                  m_host.c_str(),
-                  m_port,
-                  m_username.c_str(),
-                  m_database.c_str());
+                  host_.c_str(),
+                  port_,
+                  username_.c_str(),
+                  database_.c_str());
     }
-    mysql_close(&m_mysql);
+    mysql_close(&mysql_);
 }
 
 bool Connection::ping() {
     int current_time = time(nullptr);
-    if (current_time - m_last_ping_time > m_ping) {
-        m_last_ping_time = current_time;
-        return mysql_ping(&m_mysql) == 0;
+    if (current_time - last_ping_time_ > ping_) {
+        last_ping_time_ = current_time;
+        return mysql_ping(&mysql_) == 0;
     }
     return true;
 }
 
-void Connection::set_ping(int seconds) { m_ping = seconds; }
+void Connection::set_ping(int seconds) { ping_ = seconds; }
 
 std::string Connection::escape(const std::string& str) {
     int size = 2 * str.size() + 1;
     char* buf = new char[size];
     memset(buf, 0, size);
-    int len = mysql_real_escape_string(&m_mysql, buf, str.c_str(), str.size());
+    int len = mysql_real_escape_string(&mysql_, buf, str.c_str(), str.size());
     std::string ret = std::string(buf, len);
     delete[] buf;
     return std::move(ret);
@@ -108,7 +108,7 @@ std::string Connection::quote(const std::string& str) const {
     size_t index = str.find(separator);
     if (index == std::string::npos) {
         std::ostringstream oss;
-        oss << m_quote << str << m_quote;
+        oss << quote_ << str << quote_;
         return oss.str();
     }
 
@@ -123,17 +123,17 @@ std::string Connection::quote(const std::string& str) const {
         if (it != output.begin()) {
             oss << ".";
         }
-        oss << m_quote << (*it) << m_quote;
+        oss << quote_ << (*it) << quote_;
     }
     return oss.str();
 }
 
 std::vector<std::string> Connection::tables() {
     std::vector<std::string> all;
-    MYSQL_RES* res = mysql_list_tables(&m_mysql, NULL);
+    MYSQL_RES* res = mysql_list_tables(&mysql_, NULL);
     if (res == NULL) {
         log_error(
-            "mysql_list_tables errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_list_tables errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return all;
     }
     int fields = mysql_num_fields(res);
@@ -152,7 +152,7 @@ std::vector<std::map<std::string, Value>> Connection::schema(const std::string& 
     std::ostringstream oss;
     oss << "select column_name,column_key,data_type,extra,column_comment from "
            "information_schema.columns where table_schema='"
-        << escape(m_database) << "' and table_name='" << escape(table) << "'";
+        << escape(database_) << "' and table_name='" << escape(table) << "'";
     const std::string& sql = oss.str();
     return fetchall(sql);
 }
@@ -161,7 +161,7 @@ bool Connection::table_exists(const std::string& table) {
     std::ostringstream oss;
     oss << "select table_name from information_schema.tables WHERE "
            "table_schema='"
-        << m_database << "' and table_name='" << table << "'";
+        << database_ << "' and table_name='" << table << "'";
     const std::string& sql = oss.str();
     auto one = fetchone(sql);
     return !one.empty();
@@ -178,26 +178,26 @@ std::string Connection::primary_key(const std::string& table) {
 }
 
 int Connection::insert(const std::string& sql) {
-    if (m_debug) {
+    if (debug_) {
         log_debug("sql: %s", sql.c_str());
     }
-    int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
+    int ret = mysql_real_query(&mysql_, sql.data(), sql.size());
     if (ret != 0) {
         log_error(
-            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_real_query errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return -1;
     }
-    return mysql_insert_id(&m_mysql);
+    return mysql_insert_id(&mysql_);
 }
 
 bool Connection::execute(const std::string& sql) {
-    if (m_debug) {
+    if (debug_) {
         log_debug("sql: %s", sql.c_str());
     }
-    int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
+    int ret = mysql_real_query(&mysql_, sql.data(), sql.size());
     if (ret != 0) {
         log_error(
-            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_real_query errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return false;
     }
     return true;
@@ -205,19 +205,19 @@ bool Connection::execute(const std::string& sql) {
 
 std::map<std::string, Value> Connection::fetchone(const std::string& sql) {
     std::map<std::string, Value> one;
-    if (m_debug) {
+    if (debug_) {
         log_debug("sql: %s", sql.c_str());
     }
-    int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
+    int ret = mysql_real_query(&mysql_, sql.data(), sql.size());
     if (ret != 0) {
         log_error(
-            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_real_query errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return one;
     }
-    MYSQL_RES* res = mysql_store_result(&m_mysql);
+    MYSQL_RES* res = mysql_store_result(&mysql_);
     if (res == NULL) {
         log_error(
-            "mysql_store_result errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_store_result errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return one;
     }
     int fields = mysql_num_fields(res);
@@ -255,19 +255,19 @@ std::map<std::string, Value> Connection::fetchone(const std::string& sql) {
 
 std::vector<std::map<std::string, Value>> Connection::fetchall(const std::string& sql) {
     std::vector<std::map<std::string, Value>> all;
-    if (m_debug) {
+    if (debug_) {
         log_debug("sql: %s", sql.c_str());
     }
-    int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
+    int ret = mysql_real_query(&mysql_, sql.data(), sql.size());
     if (ret != 0) {
         log_error(
-            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_real_query errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return all;
     }
-    MYSQL_RES* res = mysql_store_result(&m_mysql);
+    MYSQL_RES* res = mysql_store_result(&mysql_);
     if (res == NULL) {
         log_error(
-            "mysql_store_result errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
+            "mysql_store_result errno:%d error:%s", mysql_errno(&mysql_), mysql_error(&mysql_));
         return all;
     }
     int fields = mysql_num_fields(res);
@@ -305,14 +305,14 @@ std::vector<std::map<std::string, Value>> Connection::fetchall(const std::string
     return all;
 }
 
-bool Connection::auto_commit() { return m_auto_commit; }
+bool Connection::auto_commit() { return auto_commit_; }
 
 void Connection::auto_commit(bool auto_commit) {
-    m_auto_commit = auto_commit;
+    auto_commit_ = auto_commit;
     if (auto_commit) {
-        mysql_autocommit(&m_mysql, 1);
+        mysql_autocommit(&mysql_, 1);
     } else {
-        mysql_autocommit(&m_mysql, 0);
+        mysql_autocommit(&mysql_, 0);
     }
 }
 
