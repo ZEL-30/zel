@@ -1,14 +1,15 @@
 #include "models/test_data.h"
-#include "utility/ini_file.h"
-#include "utility/logger.h"
 
-#include <mysql/connection.h>
 #include <mysql/database.h>
+using namespace zel::mysql;
+
+#include <utility/ini_file.h>
+#include <utility/logger.h>
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
+#include <iostream>
 
-using namespace zel::mysql;
 using namespace std;
 
 TEST_CASE("testing Class mysql") {
@@ -28,11 +29,24 @@ TEST_CASE("testing Class mysql") {
                      ini["mysql"]["charset"],
                      true);
 
+    TestData test_data;
+    test_data["state"] = 1;
 
-    auto one = TestData(database).where("state", 0).order(ini["mysql"]["primary_key"].asString() + " asc").one();
+    TestData(database)
+        .where("state", 0)
+        .order(ini["mysql"]["primary_key"].str() + " asc")
+        .one()
+        .update(test_data);
 
-    cout << one.get("ICCID").str() << endl;
+    // cout << one("ICCID").str() << endl;
+
+
+    // // 原地修改
+    // TestData(database)
+    //     .where("state", 1)
+    //     .order(ini["mysql"]["primary_key"].str() + " asc")
+    //     .one()
+    //     .update({{"state", 0}});
 
     database.close();
-
 }

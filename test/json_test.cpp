@@ -29,14 +29,13 @@ TEST_CASE("测试Json的数组") {
     arr[0] = true;
     arr[1] = 10;
 
-    cout << "sdfds" << endl;
     arr.append(1.23);
     arr.append("zel");
     arr.append(false);
 
 
     cout << arr.str() << endl;
-    arr.remove(1);
+    arr.remove(2);
     cout << arr.str() << endl;
 
     arr.clear();

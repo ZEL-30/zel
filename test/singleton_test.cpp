@@ -1,14 +1,13 @@
-#include "utility/singleton.h"
-
+#include <iostream>
 #include <mutex>
 #include <thread>
-#include <iostream>
 #include <unistd.h>
+#include <utility/singleton.h>
+
 
 using namespace zel::utility;
 
 std::mutex g_mutex; // 全局互斥锁
-
 
 class A {
 
@@ -27,7 +26,6 @@ class A {
   private:
     std::string name_;
 };
-
 
 void Run(A* a) {
 

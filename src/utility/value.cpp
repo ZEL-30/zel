@@ -31,8 +31,6 @@ void Value::type(Type type) { type_ = type; }
 
 std::string Value::str() const { return value_; }
 
-// const std::basic_string<char>::value_type* Value::c_str() const { return value_.c_str(); }
-
 bool Value::isNull() const { return type_ == V_NULL; }
 
 bool Value::isInt() const { return type_ == V_INT; }

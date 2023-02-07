@@ -218,7 +218,11 @@ void Json::remove(int index) {
         return;
 
     value_.array_->at(index).clear();
+
+    std::cout << "1 :" <<value_.array_->at(3).str() << std::endl;
     value_.array_->erase(value_.array_->begin() + index);
+
+    std::cout << "2 :" <<value_.array_->at(2).str() << std::endl;
 }
 
 void Json::remove(const char* key) {
@@ -309,6 +313,7 @@ void Json::clear() {
 
     case JSON_STRING: {
         if (value_.string_ != nullptr) {
+            printf("%s\n", value_.string_->c_str());
             delete value_.string_;
             value_.string_ = nullptr;
         }
