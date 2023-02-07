@@ -51,21 +51,21 @@ class Xml {
     /// @brief 序列化为 C char*
     const std::basic_string<char>::value_type* c_str() const;
 
-    void Clear();
+    void clear();
 
-    void Append(const Xml& child);
+    void append(const Xml& child);
+
+    void remove(int index);
+    void remove(const char* name);
+    void remove(const std::string& name);
+
+    bool load(const std::string& filename);
+    bool save(const std::string& filename);
+    bool parse(const std::string& str);
 
     Xml& operator[](int index);
     Xml& operator[](const char* name);
     Xml& operator[](const std::string& name);
-
-    void Remove(int index);
-    void Remove(const char* name);
-    void Remove(const std::string& name);
-
-    bool Load(const std::string& filename);
-    bool Save(const std::string& filename);
-    bool Parse(const std::string& str);
 
     // 定义迭代器
     std::list<Xml>::iterator begin();

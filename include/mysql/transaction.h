@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mysql/database.h"
+#include "database.h"
 
 #include <stack>
 #include <string>
@@ -20,10 +20,10 @@ class Transaction {
     void commit();
 
   private:
-    Connection* m_conn;
-    bool m_is_start;
-    std::stack<string> m_savepoints;
-    int m_counter;
+    Connection* conn_;
+    bool is_start_;
+    std::stack<std::string> savepoints_;
+    int counter_;
 };
 
 } // namespace mysql

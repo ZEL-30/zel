@@ -1,10 +1,9 @@
 #pragma once
 
-#include <mysql.h>
-#include <utility/value.h>
-#include <vector>
+#include "utility/value.h"
 
-using namespace zel::utility;
+#include <mysql.h>
+#include <vector>
 
 namespace zel {
 namespace mysql {
@@ -32,44 +31,42 @@ class Batch {
         friend class Batch<T>;
 
       public:
-        iterator() : m_batch(nullptr), m_next(nullptr) {}
+        iterator() : batch_(nullptr), next_(nullptr) {}
 
-        iterator(Batch<T>* batch) : m_batch(batch), m_next(batch->next()) {}
+        iterator(Batch<T>* batch) : batch_(batch), next_(batch->next()) {}
 
         iterator(const iterator& other) = delete;
 
         iterator(iterator&& other) noexcept {
-            m_batch = other.m_batch;
-            m_next = other.m_next;
-            other.m_next = nullptr;
+            batch_ = other.batch_;
+            next_ = other.next_;
+            other.next_ = nullptr;
         }
 
         ~iterator() {
-            if (m_next != nullptr) {
-                delete m_next;
-                m_next = nullptr;
+            if (next_ != nullptr) {
+                delete next_;
+                next_ = nullptr;
             }
         }
 
         iterator& operator=(const iterator& other) = delete;
         iterator& operator=(iterator&& other) noexcept {
-            m_batch = other.m_batch;
-            m_next = other.m_next;
-            other.m_next = nullptr;
+            batch_ = other.batch_;
+            next_ = other.next_;
+            other.next_ = nullptr;
             return *this;
         }
 
-        bool operator!=(const iterator& other) {
-            return m_next != other.m_next;
-        }
+        bool operator!=(const iterator& other) { return next_ != other.next_; }
 
         iterator& operator++() // 前缀++
         {
-            if (m_next != nullptr) {
-                delete m_next;
-                m_next = nullptr;
+            if (next_ != nullptr) {
+                delete next_;
+                next_ = nullptr;
             }
-            m_next = m_batch->next();
+            next_ = batch_->next();
             return *this;
         }
 
@@ -80,17 +77,17 @@ class Batch {
             return it;
         }
 
-        std::vector<T>& operator*() { return *m_next; }
+        std::vector<T>& operator*() { return *next_; }
 
-        std::vector<T>* operator->() { return m_next; }
+        std::vector<T>* operator->() { return next_; }
 
-        typename std::vector<T>::iterator begin() { return m_next->begin(); }
+        typename std::vector<T>::iterator begin() { return next_->begin(); }
 
-        typename std::vector<T>::iterator end() { return m_next->end(); }
+        typename std::vector<T>::iterator end() { return next_->end(); }
 
       private:
-        Batch<T>* m_batch;
-        std::vector<T>* m_next;
+        Batch<T>* batch_;
+        std::vector<T>* next_;
     };
 
     iterator begin();
@@ -100,29 +97,29 @@ class Batch {
     std::vector<T>* next();
 
   private:
-    MYSQL_RES* m_res;
-    int m_size;
-    int m_total;
+    MYSQL_RES* res_;
+    int size_;
+    int total_;
 };
 
 template <typename T>
-Batch<T>::Batch() : m_res(nullptr),
-                    m_size(0),
-                    m_total(0) {}
+Batch<T>::Batch() : res_(nullptr),
+                    size_(0),
+                    total_(0) {}
 
 template <typename T>
 Batch<T>::Batch(Batch<T>&& other) noexcept {
-    m_res = other.m_res;
-    m_size = other.m_size;
-    m_total = other.m_total;
-    other.m_res = nullptr;
+    res_ = other.res_;
+    size_ = other.size_;
+    total_ = other.total_;
+    other.res_ = nullptr;
 }
 
 template <typename T>
 Batch<T>::~Batch() {
-    if (m_res != nullptr) {
-        mysql_free_result(m_res);
-        m_res = nullptr;
+    if (res_ != nullptr) {
+        mysql_free_result(res_);
+        res_ = nullptr;
     }
 }
 
@@ -131,76 +128,75 @@ Batch<T>& Batch<T>::operator=(Batch<T>&& other) noexcept {
     if (this == &other) {
         return *this;
     }
-    m_res = other.m_res;
-    m_size = other.m_size;
-    m_total = other.m_total;
-    other.m_res = nullptr;
+    res_ = other.res_;
+    size_ = other.size_;
+    total_ = other.total_;
+    other.res_ = nullptr;
     return *this;
 }
 
 template <typename T>
 void Batch<T>::size(int size) {
-    m_size = size;
+    size_ = size;
 }
 
 template <typename T>
 int Batch<T>::size() const {
-    return m_size;
+    return size_;
 }
 
 template <typename T>
 void Batch<T>::total(int total) {
-    m_total = total;
+    total_ = total;
 }
 
 template <typename T>
 int Batch<T>::total() const {
-    return m_total;
+    return total_;
 }
 
 template <typename T>
 void Batch<T>::result(MYSQL_RES* res) {
-    m_res = res;
+    res_ = res;
 }
 
 template <typename T>
 std::vector<T>* Batch<T>::next() {
     std::vector<T>* batch = nullptr;
-    int fields = mysql_num_fields(m_res);
+    int fields = mysql_num_fields(res_);
     MYSQL_ROW row;
-    while ((row = mysql_fetch_row(m_res)) != NULL) {
+    while ((row = mysql_fetch_row(res_)) != NULL) {
         if (batch == nullptr) {
             batch = new std::vector<T>();
         }
         T one;
-        unsigned long* lengths = mysql_fetch_lengths(m_res);
+        unsigned long* lengths = mysql_fetch_lengths(res_);
         for (int i = 0; i < fields; i++) {
-            MYSQL_FIELD* field = mysql_fetch_field_direct(m_res, i);
+            MYSQL_FIELD* field = mysql_fetch_field_direct(res_, i);
             char* data = row[i];
             unsigned int length = lengths[i];
-            Value v;
-            v = string(data, length);
+            zel::utility::Value v;
+            v = std::string(data, length);
             if (IS_NUM(field->type)) {
                 if (length == 0) {
-                    v.type(Value::V_NULL);
+                    v.type(zel::utility::Value::V_NULL);
                 } else {
-                    if (field->type == MYSQL_TYPE_DECIMAL ||
-                        field->type == MYSQL_TYPE_FLOAT ||
+                    if (field->type == MYSQL_TYPE_DECIMAL || field->type == MYSQL_TYPE_FLOAT ||
                         field->type == MYSQL_TYPE_DOUBLE) {
-                        v.type(Value::V_DOUBLE);
+                        v.type(zel::utility::Value::V_DOUBLE);
                     } else {
-                        v.type(Value::V_INT);
+                        v.type(zel::utility::Value::V_INT);
                     }
                 }
             } else if (field->type == MYSQL_TYPE_NULL) {
-                v.type(Value::V_NULL);
+                v.type(zel::utility::Value::V_NULL);
             } else {
-                v.type(Value::V_STRING);
+                v.type(zel::utility::Value::V_STRING);
             }
             one[field->name] = v;
         }
         batch->push_back(one);
-        if (batch->size() >= m_size) {
+        if (batch->size() >= size_) {
             break;
         }
     }

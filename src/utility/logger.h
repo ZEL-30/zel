@@ -7,19 +7,19 @@ namespace zel {
 namespace utility {
 
 #define log_debug(format, ...)                                                                     \
-    Logger::Instance()->Log(Logger::Level::LOG_DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::instance()->log(Logger::LOG_DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 #define log_info(format, ...)                                                                      \
-    Logger::Instance()->Log(Logger::LOG_INFO, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::instance()->log(Logger::LOG_INFO, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 #define log_warn(format, ...)                                                                      \
-    Logger::Instance()->Log(Logger::LOG_WARN, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::instance()->log(Logger::LOG_WARN, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 #define log_error(format, ...)                                                                     \
-    Logger::Instance()->Log(Logger::LOG_ERROR, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::instance()->log(Logger::LOG_ERROR, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 #define log_fatal(format, ...)                                                                     \
-    Logger::Instance()->Log(Logger::LOG_FATAL, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::instance()->log(Logger::LOG_FATAL, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 class Logger {
 
@@ -27,14 +27,14 @@ class Logger {
     // 定义日志级别
     enum Level { LOG_DEBUG = 0, LOG_INFO, LOG_WARN, LOG_ERROR, LOG_FATAL, LOG_COUNT };
 
-    static Logger* Instance();
+    static Logger* instance();
 
     /// @brief 打开日志文件
     /// @param filename 日志文件名
-    void Open(const std::string& filename);
+    void open(const std::string& filename);
 
     /// @brief 关闭日志文件
-    void Close();
+    void close();
 
     /// @brief 记录日志
     /// @param level 日志级别
@@ -42,7 +42,7 @@ class Logger {
     /// @param line 当前文件行数
     /// @param format 类似于 printf
     /// @param ...
-    void Log(Level level, const char* file, int line, const char* format, ...);
+    void log(Level level, const char* file, int line, const char* format, ...);
 
     /// @brief 设置日志文件最大长度
     /// @param bytes 日志文件最大长度
@@ -58,7 +58,7 @@ class Logger {
     ~Logger();
 
     /// @brief 日志翻转
-    void Rotate();
+    void rotate();
 
   private:
     std::string filename_; // 日志文件名

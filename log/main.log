@@ -1,0 +1,19 @@
+2023-02-07 10:49:58 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 10:49:58 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select * from `test_data` where `state` = 0
+2023-02-07 10:54:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 10:54:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:209 sql: select * from `test_data` where `state` = 0 order by asc limit 1
+2023-02-07 10:54:53 ERROR D:\Workspaces\C++\zel\src\mysql\connection.cpp:214 mysql_real_query errno:1064 error:You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'asc limit 1' at line 1
+2023-02-07 11:02:02 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 11:02:02 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:209 sql: select * from `test_data` where `state` = 0 order by data_idasc limit 1
+2023-02-07 11:02:02 ERROR D:\Workspaces\C++\zel\src\mysql\connection.cpp:214 mysql_real_query errno:1054 error:Unknown column 'data_idasc' in 'order clause'
+2023-02-07 11:02:26 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 11:02:26 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:209 sql: select * from `test_data` where `state` = 0 order by data_id asc limit 1
+2023-02-07 11:03:15 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 11:03:15 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:209 sql: select * from `test_data` where `state` = 0 order by data_id asc limit 1
+2023-02-07 11:06:00 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 11:06:00 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:209 sql: select * from `test_data` where `state` = 0 order by data_id asc limit 1
+2023-02-07 11:06:23 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 11:06:23 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:209 sql: select * from `test_data` where `state` = 0 order by data_id asc limit 1
+2023-02-07 11:06:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 11:06:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:209 sql: select * from `test_data` where `state` = 0 order by data_id asc limit 1
+2023-02-07 11:06:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data

@@ -21,7 +21,7 @@ Parser::Parser() : str_(""), index_(0) {}
 
 Parser::~Parser() {}
 
-bool Parser::LoadFile(const std::string& filename) {
+bool Parser::loadFile(const std::string& filename) {
 
     std::ifstream fin(filename);
     if (fin.fail())
@@ -35,53 +35,53 @@ bool Parser::LoadFile(const std::string& filename) {
     return true;
 }
 
-bool Parser::LoadString(const std::string& str) {
+bool Parser::loadString(const std::string& str) {
     str_ = str;
     index_ = 0;
 
     return true;
 }
 
-Xml Parser::Parse() {
+Xml Parser::parse() {
 
     // 识别声明
-    SkipWhiteSpace();
+    skipWhiteSpace();
     if (str_.compare(index_, 5, "<?xml") == 0) {
-        if (!ParseDeclaration())
+        if (!parseDeclaration())
             throw std::logic_error("parse declaration error");
     }
 
     // 识别注释
-    SkipWhiteSpace();
+    skipWhiteSpace();
     if (str_.compare(index_, 4, "<!--") == 0) {
-        if (!ParseComment())
+        if (!parseComment())
             throw std::logic_error("parse comment error");
 
-        SkipWhiteSpace();
+        skipWhiteSpace();
     }
-    SkipWhiteSpace();
+    skipWhiteSpace();
     while (str_.compare(index_, 4, "<!--") == 0) {
-        if (!ParseComment())
+        if (!parseComment())
             throw std::logic_error("parse comment error");
 
-        SkipWhiteSpace();
+        skipWhiteSpace();
     }
 
     // 识别节点
     if (str_[index_] == '<' && (std::isalpha(str_[index_ + 1]) || str_[index_ + 1] == '_')) {
-        return ParseElement();
+        return parseElement();
     }
     throw std::logic_error("parse element error");
 }
 
-void Parser::SkipWhiteSpace() {
+void Parser::skipWhiteSpace() {
     while (str_[index_] == ' ' || str_[index_] == '\n' || str_[index_] == '\r' ||
            str_[index_] == '\t') {
         index_++;
     }
 }
 
-bool Parser::ParseDeclaration() {
+bool Parser::parseDeclaration() {
 
     if (str_.compare(index_, 5, "<?xml") != 0)
         return false;
@@ -98,7 +98,7 @@ bool Parser::ParseDeclaration() {
     return true;
 }
 
-bool Parser::ParseComment() {
+bool Parser::parseComment() {
 
     if (str_.compare(index_, 4, "<!--") != 0)
         return false;
@@ -116,18 +116,18 @@ bool Parser::ParseComment() {
     return true;
 }
 
-Xml Parser::ParseElement() {
+Xml Parser::parseElement() {
 
     Xml element;
 
     index_++;
-    SkipWhiteSpace();
+    skipWhiteSpace();
 
-    const std::string& name = ParseElementName();
+    const std::string& name = parseElementName();
     element.name(name);
 
     while (str_[index_] != '\0') {
-        SkipWhiteSpace();
+        skipWhiteSpace();
 
         if (str_[index_] == '/') {
             if (str_[index_ + 1] == '>') {
@@ -139,7 +139,7 @@ Xml Parser::ParseElement() {
 
         } else if (str_[index_] == '>') {
             index_++;
-            std::string text = ParseElementText();
+            std::string text = parseElementText();
             if (text != "")
                 element.text(text);
         } else if (str_[index_] == '<') {
@@ -157,25 +157,25 @@ Xml Parser::ParseElement() {
                 break;
             } else if (str_.compare(index_, 4, "<!--") == 0) {
                 // 解析注释
-                if (!ParseComment())
+                if (!parseComment())
                     throw std::logic_error("xml comment is error");
             } else {
                 // 解析子节点
-                element.Append(ParseElement());
+                element.append(parseElement());
             }
 
         } else {
             // 解析节点属性
-            std::string key = ParseElementAttrKey();
-            SkipWhiteSpace();
+            std::string key = parseElementAttrKey();
+            skipWhiteSpace();
 
             if (str_[index_] != '=')
                 throw std::logic_error("xml element attr is error: " + key);
 
             index_++;
-            SkipWhiteSpace();
+            skipWhiteSpace();
 
-            std::string value = ParseElementAttrValue();
+            std::string value = parseElementAttrValue();
             element.attr(key, value);
         }
     }
@@ -183,7 +183,7 @@ Xml Parser::ParseElement() {
     return element;
 }
 
-std::string Parser::ParseElementName() {
+std::string Parser::parseElementName() {
 
     int pos = index_;
     if (isalpha(str_[index_]) || str_[index_] == '_') {
@@ -197,7 +197,7 @@ std::string Parser::ParseElementName() {
     return str_.substr(pos, index_ - pos);
 }
 
-std::string Parser::ParseElementText() {
+std::string Parser::parseElementText() {
 
     int pos = index_;
     while (str_[index_] != '<') {
@@ -207,7 +207,7 @@ std::string Parser::ParseElementText() {
     return str_.substr(pos, index_ - pos);
 }
 
-std::string Parser::ParseElementAttrKey() {
+std::string Parser::parseElementAttrKey() {
 
     int pos = index_;
     if (isalpha(str_[index_]) || (str_[index_] == '_')) {
@@ -221,7 +221,7 @@ std::string Parser::ParseElementAttrKey() {
     return str_.substr(pos, index_ - pos);
 }
 
-std::string Parser::ParseElementAttrValue() {
+std::string Parser::parseElementAttrValue() {
 
     // 判断属性值是否以双引号开始
     if (str_[index_] != '"')

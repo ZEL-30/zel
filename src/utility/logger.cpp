@@ -27,9 +27,9 @@ Logger::Logger() : level_(LOG_DEBUG), max_(0), len_(0) {}
 
 Logger::Logger(const Logger&) {}
 
-Logger::~Logger() { Close(); }
+Logger::~Logger() { close(); }
 
-Logger* Logger::Instance() {
+Logger* Logger::instance() {
     if (instance_ == nullptr) {
         instance_ = new Logger();
         return instance_;
@@ -38,7 +38,7 @@ Logger* Logger::Instance() {
     return instance_;
 }
 
-void Logger::Open(const std::string& filename) {
+void Logger::open(const std::string& filename) {
 
     filename_ = filename;
 
@@ -54,9 +54,9 @@ void Logger::Open(const std::string& filename) {
     len_ = fout_.tellp();
 }
 
-void Logger::Close() { fout_.close(); }
+void Logger::close() { fout_.close(); }
 
-void Logger::Log(Level level, const char* file, int line, const char* format, ...) {
+void Logger::log(Level level, const char* file, int line, const char* format, ...) {
 
     if (level_ > level)
         return;
@@ -105,15 +105,15 @@ void Logger::Log(Level level, const char* file, int line, const char* format, ..
     fout_.flush();
 
     if (max_ > 0 && len_ >= max_)
-        Rotate();
+        rotate();
 }
 
 void Logger::level(Level level) { level_ = level; }
 
 void Logger::max(int bytes) { max_ = bytes; }
 
-void Logger::Rotate() {
-    Close();
+void Logger::rotate() {
+    close();
 
     time_t ticks = time(NULL);
     struct tm* ptm = localtime(&ticks);
@@ -126,7 +126,7 @@ void Logger::Rotate() {
         throw std::logic_error("rename log file failed: " + std::string(strerror(errno)));
     }
 
-    Open(filename_);
+    open(filename_);
 }
 
 } // namespace utility

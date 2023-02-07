@@ -1,6 +1,6 @@
 /// @file json.cpp
 /// @author ZEL (zel1362848545@gmail.com)
-/// @brief 
+/// @brief
 /// @version 0.1
 /// @date 2023-02-07
 /// @copyright Copyright (c) 2023 ZEL
@@ -71,13 +71,13 @@ Json::Json(Type type) : type_(type) {
     }
 }
 
-Json::Json(const Json& other) { Copy(other); }
+Json::Json(const Json& other) { copy(other); }
 
 Json::~Json() {}
 
 Json::Type Json::type() const { return type_; }
 
-Json const& Json::Null() {
+Json const& Json::null() {
     static const Json null;
     return null;
 }
@@ -141,47 +141,47 @@ std::string Json::str() const {
     return ss.str();
 }
 
-const Json& Json::Get(int index) const {
+const Json& Json::get(int index) const {
     if (type() != JSON_ARRAY)
-        throw std::logic_error("function Json::Get [int] requires array value");
+        throw std::logic_error("function Json::get [int] requires array value");
 
     int size = value_.array_->size();
     if (index >= 0 && index < size)
         return value_.array_->at(index);
 
-    return Null();
+    return null();
 }
 
-const Json& Json::Get(const char* key) const {
+const Json& Json::get(const char* key) const {
     const std::string name = key;
-    return Get(name);
+    return get(name);
 }
 
-const Json& Json::Get(const std::string& key) const {
+const Json& Json::get(const std::string& key) const {
     if (type() != JSON_OBJECT) {
-        throw std::logic_error("function Json::Get [const string &] requires object value");
+        throw std::logic_error("function Json::get [const string &] requires object value");
     }
     std::map<std::string, Json>::const_iterator it = value_.object_->find(key);
     if (it != value_.object_->end()) {
         return it->second;
     }
 
-    return Null();
+    return null();
 }
 
-void Json::Set(const Json& other) {}
+void Json::set(const Json& other) {}
 
-void Json::Set(bool value) {}
+void Json::set(bool value) {}
 
-void Json::Set(int value) {}
+void Json::set(int value) {}
 
-void Json::Set(double value) {}
+void Json::set(double value) {}
 
-void Json::Set(const char* value) {}
+void Json::set(const char* value) {}
 
-void Json::Set(const std::string& value) {}
+void Json::set(const std::string& value) {}
 
-void Json::Append(const Json& other) {
+void Json::append(const Json& other) {
     if (type_ != JSON_ARRAY) {
         type_ = JSON_ARRAY;
         value_.array_ = new std::vector<Json>();
@@ -190,7 +190,7 @@ void Json::Append(const Json& other) {
     (value_.array_)->push_back(other);
 }
 
-bool Json::Has(int index) {
+bool Json::has(int index) {
     if (type_ != JSON_ARRAY)
         return false;
 
@@ -198,18 +198,18 @@ bool Json::Has(int index) {
     return (index >= 0 && index < size);
 }
 
-bool Json::Has(const char* key) {
+bool Json::has(const char* key) {
     std::string name(key);
-    return Has(name);
+    return has(name);
 }
 
-bool Json::Has(std::string& key) {
+bool Json::has(std::string& key) {
     if (type_ != JSON_OBJECT)
         return false;
 
     return value_.object_->find(key) != value_.object_->end();
 }
-void Json::Remove(int index) {
+void Json::remove(int index) {
     if (type_ != JSON_ARRAY)
         return;
 
@@ -217,16 +217,16 @@ void Json::Remove(int index) {
     if (index < 0 || index >= size)
         return;
 
-    value_.array_->at(index).Clear();
+    value_.array_->at(index).clear();
     value_.array_->erase(value_.array_->begin() + index);
 }
 
-void Json::Remove(const char* key) {
+void Json::remove(const char* key) {
     std::string name(key);
-    Remove(name);
+    remove(name);
 }
 
-void Json::Remove(std::string& key) {
+void Json::remove(std::string& key) {
     if (type_ != JSON_OBJECT)
         return;
 
@@ -234,23 +234,23 @@ void Json::Remove(std::string& key) {
     if (it == value_.object_->end())
         return;
 
-    (*value_.object_)[key].Clear();
+    (*value_.object_)[key].clear();
     value_.object_->erase(key);
 }
 
-bool Json::Parse(const std::string& str) {
+bool Json::parse(const std::string& str) {
     Parser parser;
-    if (!parser.LoadString(str))
+    if (!parser.loadString(str))
         return false;
 
-    *this = parser.Parse();
+    *this = parser.parse();
 
     return true;
 }
 
-void Json::Copy(const Json& other) {
+void Json::copy(const Json& other) {
 
-    Clear();
+    clear();
 
     type_ = other.type_;
 
@@ -288,7 +288,7 @@ void Json::Copy(const Json& other) {
     }
 }
 
-void Json::Clear() {
+void Json::clear() {
 
     switch (type_) {
 
@@ -318,7 +318,7 @@ void Json::Clear() {
     case JSON_ARRAY: {
         if (value_.array_ != nullptr) {
             for (auto it = value_.array_->begin(); it != value_.array_->end(); it++) {
-                it->Clear();
+                it->clear();
             }
             delete value_.array_;
             value_.array_ = nullptr;
@@ -329,7 +329,7 @@ void Json::Clear() {
     case JSON_OBJECT: {
         if (value_.object_ != nullptr) {
             for (auto it = value_.object_->begin(); it != value_.object_->end(); it++) {
-                it->second.Clear();
+                it->second.clear();
             }
             delete value_.object_;
             value_.object_ = nullptr;
@@ -344,7 +344,7 @@ void Json::Clear() {
     type_ = JSON_NULL;
 }
 
-bool Json::AsBool() const {
+bool Json::asBool() const {
 
     if (type_ != JSON_BOOL)
         throw std::logic_error("type error, not bool value");
@@ -352,7 +352,7 @@ bool Json::AsBool() const {
     return value_.bool_;
 }
 
-int Json::AsInt() const {
+int Json::asInt() const {
 
     if (type_ != JSON_INT)
         throw std::logic_error("type error, not int value");
@@ -360,14 +360,14 @@ int Json::AsInt() const {
     return value_.int_;
 }
 
-double Json::AsDouble() const {
+double Json::asDouble() const {
     if (type_ != JSON_DOUBLE)
         throw std::logic_error("type error, not double value");
 
     return value_.double_;
 }
 
-std::string Json::AsString() const {
+std::string Json::asString() const {
 
     if (type_ != JSON_STRING)
         throw std::logic_error("type error, not string value");
@@ -375,25 +375,25 @@ std::string Json::AsString() const {
     return *value_.string_;
 }
 
-bool Json::IsNULL() const { return type_ == JSON_NULL; }
+bool Json::isNULL() const { return type_ == JSON_NULL; }
 
-bool Json::IsBool() const { return type_ == JSON_BOOL; }
+bool Json::isBool() const { return type_ == JSON_BOOL; }
 
-bool Json::IsInt() const { return type_ == JSON_INT; }
+bool Json::isInt() const { return type_ == JSON_INT; }
 
-bool Json::IsDouble() const { return type_ == JSON_DOUBLE; }
+bool Json::isDouble() const { return type_ == JSON_DOUBLE; }
 
-bool Json::IsString() const { return type_ == JSON_STRING; }
+bool Json::isString() const { return type_ == JSON_STRING; }
 
-bool Json::IsArray() const { return type_ == JSON_ARRAY; }
+bool Json::isArray() const { return type_ == JSON_ARRAY; }
 
-bool Json::IsObject() const { return type_ == JSON_OBJECT; }
+bool Json::isObject() const { return type_ == JSON_OBJECT; }
 
-Json::operator bool() { return AsBool(); }
+Json::operator bool() { return asBool(); }
 
-Json::operator int() { return AsInt(); }
+Json::operator int() { return asInt(); }
 
-Json::operator double() { return AsDouble(); }
+Json::operator double() { return asDouble(); }
 
 Json::operator std::string() {
 
@@ -435,7 +435,7 @@ Json& Json::operator[](int index) {
     return value_.array_->at(index);
 }
 
-const Json& Json::operator[](int index) const { return Get(index); }
+const Json& Json::operator[](int index) const { return get(index); }
 
 Json& Json::operator[](const char* key) {
 
@@ -444,7 +444,7 @@ Json& Json::operator[](const char* key) {
     return (*this)[name];
 }
 
-const Json& Json::operator[](const char* key) const { return Get(key); }
+const Json& Json::operator[](const char* key) const { return get(key); }
 
 Json& Json::operator[](const std::string& key) {
 
@@ -456,40 +456,40 @@ Json& Json::operator[](const std::string& key) {
     return (*value_.object_)[key];
 }
 
-const Json& Json::operator[](const std::string& key) const { return Get(key); }
+const Json& Json::operator[](const std::string& key) const { return get(key); }
 
 Json& Json::operator=(const Json& other) {
-    Copy(other);
+    copy(other);
     return *this;
 }
 
 Json& Json::operator=(bool value) {
     Json other(value);
-    Copy(other);
+    copy(other);
     return *this;
 }
 
 Json& Json::operator=(int value) {
     Json other(value);
-    Copy(other);
+    copy(other);
     return *this;
 }
 
 Json& Json::operator=(double value) {
     Json other(value);
-    Copy(other);
+    copy(other);
     return *this;
 }
 
 Json& Json::operator=(const char* value) {
     Json other(value);
-    Copy(other);
+    copy(other);
     return *this;
 }
 
 Json& Json::operator=(const std::string& value) {
     Json other(value);
-    Copy(other);
+    copy(other);
     return *this;
 }
 
@@ -583,9 +583,11 @@ bool Json::operator!=(const std::string& value) {
 }
 
 std::vector<Json>::iterator Json::begin() { return value_.array_->begin(); }
+
 std::vector<Json>::const_iterator Json::begin() const { return value_.array_->begin(); }
 
 std::vector<Json>::iterator Json::end() { return value_.array_->end(); }
+
 std::vector<Json>::const_iterator Json::end() const { return value_.array_->end(); }
 
 int Json::size() {

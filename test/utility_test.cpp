@@ -10,8 +10,8 @@ using namespace std;
 
 TEST_CASE("testing Class Logger") {
 
-    Logger::Instance()->Open("/Users/zel/Workspaces/C++/zel//log/test.log");
-    Logger::Instance()->max(10000);
+    Logger::instance()->open("/Users/zel/Workspaces/C++/zel//log/test.log");
+    Logger::instance()->max(10000);
 
     log_debug("勇士总冠军");
     log_warn("warn message");
@@ -21,7 +21,7 @@ TEST_CASE("testing Class Logger") {
 
 TEST_CASE("testing Class IniFile") {
     IniFile ini_file;
-    ini_file.Load("/Users/zel/Workspaces/C++/zel/config/main.ini");
+    ini_file.load("/Users/zel/Workspaces/C++/zel/config/main.ini");
 
     const std::string& ip = ini_file["mysql"]["ip"];
     int port = ini_file["mysql"]["port"];
@@ -30,10 +30,8 @@ TEST_CASE("testing Class IniFile") {
 
     // cout << ini_file.Str() << endl;
     cout << ini_file["mysql"]["tablename"].str() << endl;
-    printf("%s\n", ini_file["mysql"]["tablename"].c_str());
 
-    char* dbname = ini_file["mysql"]["dbname"];
-    printf("dbname: %s\n", dbname);
+
     // ini_file.Set("server", "timeout", 1000);
     // ini_file.Set("server", "flag", true);
 

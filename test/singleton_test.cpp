@@ -40,7 +40,7 @@ void Run(A* a) {
 int main() {
 
     // 主线程
-    A* a = Singleton<A>::Instance();
+    A* a = Singleton<A>::instance();
 
     // 子线程
     for (int i = 0; i < 10; i++) {

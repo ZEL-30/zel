@@ -22,20 +22,20 @@ class Value {
 
     /// @brief 序列化为 C++ string 或 C char
     std::string str() const;
-    const std::basic_string<char>::value_type* c_str() const;
+    // const std::basic_string<char>::value_type* c_str() const;
 
     Type type() const;
     void type(Type type);
 
-    bool IsNull() const;
-    bool IsInt() const;
-    bool IsDouble() const;
-    bool IsString() const;
+    bool isNull() const;
+    bool isInt() const;
+    bool isDouble() const;
+    bool isString() const;
 
-    bool AsBool() const;
-    int AsInt() const;
-    double AsDouble() const;
-    std::string AsString() const;
+    bool asBool() const;
+    int asInt() const;
+    double asDouble() const;
+    std::string asString() const;
 
     /// @brief 重载赋值运算符
     Value& operator=(bool value);

@@ -1,7 +1,9 @@
 #pragma once
 
+#include "connection.h"
+
 #include <list>
-#include <mysql/connection.h>
+
 
 namespace zel {
 namespace mysql {
@@ -11,12 +13,12 @@ class ConnectionPool {
     ConnectionPool();
     ~ConnectionPool();
 
-    void create(const string& host,
+    void create(const std::string& host,
                 int port,
-                const string& username,
-                const string& password,
-                const string& database,
-                const string& charset,
+                const std::string& username,
+                const std::string& password,
+                const std::string& database,
+                const std::string& charset,
                 bool debug = false);
 
     void size(int size);
@@ -26,10 +28,10 @@ class ConnectionPool {
     Connection* get();
 
   private:
-    std::list<Connection*> m_pool;
-    int m_size;
-    int m_ping;
-    bool m_debug;
+    std::list<Connection*> pool_;
+    int size_;
+    int ping_;
+    bool debug_;
 };
 
 } // namespace mysql

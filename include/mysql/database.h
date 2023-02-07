@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mysql/connection.h"
+#include "connection.h"
 
 namespace zel {
 namespace mysql {
@@ -20,17 +20,17 @@ class Database {
                  bool debug = false);
     void close();
     void execute(const std::string& sql);
-    std::vector<std::map<std::string, Value>> query(const std::string& sql);
+    std::vector<std::map<std::string, zel::utility::Value>> query(const std::string& sql);
     std::vector<std::string> tables();
     bool exists(const std::string& table);
-    std::vector<std::map<std::string, Value>> schema(const std::string& table);
+    std::vector<std::map<std::string, zel::utility::Value>> schema(const std::string& table);
     std::string primary_key(const std::string& table);
     std::string escape(const std::string& str);
 
     Connection* operator()();
 
   private:
-    Connection* m_conn;
+    Connection* conn_;
 };
 
 } // namespace mysql

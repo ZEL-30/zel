@@ -24,7 +24,7 @@ TEST_CASE("testing Class Xml") {
     Xml root;
     root.name("students");
     root[0] = s1;
-    root.Append(s2);
+    root.append(s2);
 
     // cout << root.str() << endl;
     printf("%s\n", root.c_str());

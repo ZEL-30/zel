@@ -35,9 +35,11 @@ class Json {
 
     Type type() const;
 
-    /// @brief 序列化为 C++ string 或 C char*
+    // static
+    static Json const& Null();
+
+    /// @brief 序列化为 C++ string
     std::string str() const;
-    const std::basic_string<char>::value_type* c_str() const;
 
     const Json& Get(int index) const;
     const Json& Get(const char* key) const;

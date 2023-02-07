@@ -36,51 +36,51 @@ class Json {
     Type type() const;
 
     // static
-    static Json const& Null();
+    static Json const& null();
 
     /// @brief 序列化为 C++ string
     std::string str() const;
 
-    const Json& Get(int index) const;
-    const Json& Get(const char* key) const;
-    const Json& Get(const std::string& key) const;
+    const Json& get(int index) const;
+    const Json& get(const char* key) const;
+    const Json& get(const std::string& key) const;
 
-    void Set(const Json& other);
-    void Set(bool value);
-    void Set(int value);
-    void Set(double value);
-    void Set(const char* value);
-    void Set(const std::string& value);
+    void set(const Json& other);
+    void set(bool value);
+    void set(int value);
+    void set(double value);
+    void set(const char* value);
+    void set(const std::string& value);
 
     /// @brief 追加值到数组末尾
-    void Append(const Json& other);
+    void append(const Json& other);
 
-    bool Has(int index);
-    bool Has(const char* key);
-    bool Has(std::string& key);
+    bool has(int index);
+    bool has(const char* key);
+    bool has(std::string& key);
 
-    void Remove(int index);
-    void Remove(const char* key);
-    void Remove(std::string& key);
+    void remove(int index);
+    void remove(const char* key);
+    void remove(std::string& key);
 
-    bool Parse(const std::string& str);
+    bool parse(const std::string& str);
 
-    void Copy(const Json& other);
-    void Clear();
+    void copy(const Json& other);
+    void clear();
 
     /// @brief 类型转换
-    bool AsBool() const;
-    int AsInt() const;
-    double AsDouble() const;
-    std::string AsString() const;
+    bool asBool() const;
+    int asInt() const;
+    double asDouble() const;
+    std::string asString() const;
 
-    bool IsNULL() const;
-    bool IsBool() const;
-    bool IsInt() const;
-    bool IsDouble() const;
-    bool IsString() const;
-    bool IsArray() const;
-    bool IsObject() const;
+    bool isNULL() const;
+    bool isBool() const;
+    bool isInt() const;
+    bool isDouble() const;
+    bool isString() const;
+    bool isArray() const;
+    bool isObject() const;
 
     operator bool();
     operator int();

@@ -30,16 +30,16 @@ TEST_CASE("测试Json的数组") {
     arr[1] = 10;
 
     cout << "sdfds" << endl;
-    arr.Append(1.23);
-    arr.Append("zel");
-    arr.Append(false);
+    arr.append(1.23);
+    arr.append("zel");
+    arr.append(false);
 
 
     cout << arr.str() << endl;
-    arr.Remove(1);
+    arr.remove(1);
     cout << arr.str() << endl;
 
-    arr.Clear();
+    arr.clear();
 }
 
 // TEST_CASE("测试Json的对象") {

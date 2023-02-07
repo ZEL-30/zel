@@ -13,22 +13,22 @@ class Parser {
     Parser();
     ~Parser();
 
-    bool LoadString(const std::string& str);
-    bool LoadFile(const std::string& filename);
+    bool loadString(const std::string& str);
+    bool loadFile(const std::string& filename);
 
-    Json Parse();
+    Json parse();
 
   private:
-    void SkipWhiteSpace();
+    void skipWhiteSpace();
 
-    char GetNextChar();
+    char getNextChar();
 
-    Json ParseNull();
-    Json ParseBool();
-    Json ParseNumber();
-    std::string ParseString();
-    Json ParseArray();
-    Json ParseObject();
+    Json parseNull();
+    Json parseBool();
+    Json parseNumber();
+    std::string parseString();
+    Json parseArray();
+    Json parseObject();
 
   private:
     std::string str_; // json buffer

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utility/value.h"
+#include "value.h"
 
 #include <string>
 
@@ -35,8 +35,7 @@ class IniFile {
     /// @param section 需要设置的段名
     /// @param key 需要设置的 key
     /// @param value 需要设置的 value
-    void
-    Set(const std::string& section, const std::string& key, const Value& value);
+    void Set(const std::string& section, const std::string& key, const Value& value);
 
     /// @brief 判断 seciton 中有没有某个 secition or key
     /// @param section

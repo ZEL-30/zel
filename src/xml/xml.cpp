@@ -1,6 +1,6 @@
 /// @file xml.cpp
 /// @author ZEL (zel1362848545@gmail.com)
-/// @brief 
+/// @brief
 /// @version 0.1
 /// @date 2023-02-07
 /// @copyright Copyright (c) 2023 ZEL
@@ -39,7 +39,7 @@ Xml::Xml(const Xml& other) {
 }
 
 Xml& Xml::operator=(const Xml& other) {
-    Clear();
+    clear();
 
     name_ = other.name_;
     text_ = other.text_;
@@ -125,7 +125,7 @@ std::string Xml::str() const {
 
 const std::basic_string<char>::value_type* Xml::c_str() const { return str().c_str(); }
 
-void Xml::Clear() {
+void Xml::clear() {
     if (name_ != nullptr) {
         delete name_;
         name_ = nullptr;
@@ -143,14 +143,14 @@ void Xml::Clear() {
 
     if (child_ != nullptr) {
         for (auto it = child_->begin(); it != child_->end(); it++) {
-            it->Clear();
+            it->clear();
         }
         delete child_;
         child_ = nullptr;
     }
 }
 
-void Xml::Append(const Xml& child) {
+void Xml::append(const Xml& child) {
     if (child_ == nullptr) {
         child_ = new std::list<Xml>();
     }
@@ -183,6 +183,72 @@ Xml& Xml::operator[](int index) {
     return child_->back();
 }
 
+void Xml::remove(int index) {
+    if (child_ == nullptr)
+        return;
+
+    int size = child_->size();
+    if (index < 0 || index >= size)
+        return;
+
+    auto it = child_->begin();
+    for (int i = 0; i < index; i++) {
+        it++;
+    }
+
+    it->clear();
+    child_->erase(it);
+}
+
+void Xml::remove(const char* name) { remove(std::string(name)); }
+
+void Xml::remove(const std::string& name) {
+    if (child_ == nullptr)
+        return;
+
+    // 边删除边操作
+    for (auto it = child_->begin(); it != child_->end();) {
+        if (it->name() == name) {
+            it->clear();
+            it = child_->erase(it);
+        } else {
+            it++;
+        }
+    }
+}
+
+bool Xml::load(const std::string& filename) {
+    Parser parser;
+    if (!parser.LoadFile(filename))
+        return false;
+
+    *this = parser.Parse();
+    return true;
+}
+
+bool Xml::save(const std::string& filename) {
+    std::ofstream fout(filename);
+
+    if (fout.fail())
+        return false;
+
+    fout << str();
+
+    fout.close();
+
+    return true;
+}
+
+bool Xml::parse(const std::string& str) {
+    Parser parser;
+    if (!parser.LoadString(str))
+        return false;
+
+    *this = parser.Parse();
+
+    return true;
+}
+
 Xml& Xml::operator[](const char* name) { return (*this)[std::string(name)]; }
 Xml& Xml::operator[](const std::string& name) {
     if (child_ == nullptr)
@@ -198,78 +264,12 @@ Xml& Xml::operator[](const std::string& name) {
     return child_->back();
 }
 
-void Xml::Remove(int index) {
-    if (child_ == nullptr)
-        return;
-
-    int size = child_->size();
-    if (index < 0 || index >= size)
-        return;
-
-    auto it = child_->begin();
-    for (int i = 0; i < index; i++) {
-        it++;
-    }
-
-    it->Clear();
-    child_->erase(it);
-}
-
-void Xml::Remove(const char* name) { Remove(std::string(name)); }
-
-void Xml::Remove(const std::string& name) {
-    if (child_ == nullptr)
-        return;
-
-    // 边删除边操作
-    for (auto it = child_->begin(); it != child_->end();) {
-        if (it->name() == name) {
-            it->Clear();
-            it = child_->erase(it);
-        } else {
-            it++;
-        }
-    }
-}
-
-bool Xml::Load(const std::string& filename) {
-    Parser parser;
-    if (!parser.LoadFile(filename))
-        return false;
-
-    *this = parser.Parse();
-    return true;
-}
-
-bool Xml::Save(const std::string& filename) {
-    std::ofstream fout(filename);
-
-    if (fout.fail())
-        return false;
-
-    fout << str();
-
-    fout.close();
-
-    return true;
-}
-
-bool Xml::Parse(const std::string& str) {
-    Parser parser;
-    if (!parser.LoadString(str))
-        return false;
-
-    *this = parser.Parse();
-
-    return true;
-}
-
 std::list<Xml>::iterator Xml::begin() { return child_->begin(); }
 
 std::list<Xml>::iterator Xml::end() { return child_->end(); }
 
 std::list<Xml>::iterator Xml::erase(std::list<Xml>::iterator it) {
-    it->Clear();
+    it->clear();
     return child_->erase(it);
 }
 

@@ -31,17 +31,17 @@ void Value::type(Type type) { type_ = type; }
 
 std::string Value::str() const { return value_; }
 
-const std::basic_string<char>::value_type* Value::c_str() const { return value_.c_str(); }
+// const std::basic_string<char>::value_type* Value::c_str() const { return value_.c_str(); }
 
-bool Value::IsNull() const { return type_ == V_NULL; }
+bool Value::isNull() const { return type_ == V_NULL; }
 
-bool Value::IsInt() const { return type_ == V_INT; }
+bool Value::isInt() const { return type_ == V_INT; }
 
-bool Value::IsDouble() const { return type_ == V_DOUBLE; }
+bool Value::isDouble() const { return type_ == V_DOUBLE; }
 
-bool Value::IsString() const { return type_ == V_STRING; }
+bool Value::isString() const { return type_ == V_STRING; }
 
-bool Value::AsBool() const {
+bool Value::asBool() const {
     if (value_ == "true")
         return true;
     else if (value_ == "false")
@@ -50,11 +50,11 @@ bool Value::AsBool() const {
     return false;
 }
 
-int Value::AsInt() const { return std::stoi(value_); }
+int Value::asInt() const { return std::stoi(value_); }
 
-double Value::AsDouble() const { return std::stof(value_); }
+double Value::asDouble() const { return std::stof(value_); }
 
-std::string Value::AsString() const { return value_; }
+std::string Value::asString() const { return value_; }
 
 Value& Value::operator=(bool value) {
     type_ = V_BOOL;
@@ -100,15 +100,15 @@ bool Value::operator==(const Value& other) {
 
 bool Value::operator!=(const Value& other) { return !(value_ == other.value_); }
 
-Value::operator bool() { return AsBool(); }
+Value::operator bool() { return asBool(); }
 
-Value::operator int() { return AsInt(); }
+Value::operator int() { return asInt(); }
 
-Value::operator double() { return AsDouble(); }
+Value::operator double() { return asDouble(); }
 
-Value::operator std::string() { return AsString(); }
+Value::operator std::string() { return asString(); }
 
-Value::operator std::string() const { return AsString(); }
+Value::operator std::string() const { return asString(); }
 
 } // namespace utility
 } // namespace zel

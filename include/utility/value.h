@@ -20,11 +20,22 @@ class Value {
     Value(const std::string& value);
     ~Value();
 
-    /// @brief 序列化为 c++ string
+    /// @brief 序列化为 C++ string 或 C char
     std::string str() const;
-
-    /// @brief 序列化为 c char
     const std::basic_string<char>::value_type* c_str() const;
+
+    Type type() const;
+    void type(Type type);
+
+    bool IsNull() const;
+    bool IsInt() const;
+    bool IsDouble() const;
+    bool IsString() const;
+
+    bool AsBool() const;
+    int AsInt() const;
+    double AsDouble() const;
+    std::string AsString() const;
 
     /// @brief 重载赋值运算符
     Value& operator=(bool value);
@@ -37,26 +48,12 @@ class Value {
     bool operator==(const Value& other);
     bool operator!=(const Value& other);
 
-    bool IsNull() const;
-    bool IsInt() const;
-    bool IsDouble() const;
-    bool IsString() const;
-
     /// @brief 类型转换
     operator bool();
     operator int();
     operator double();
     operator std::string();
     operator std::string() const;
-    // operator std::basic_string<char>::value_type*() const;
-
-    bool AsBool() const;
-    int AsInt() const;
-    double AsDouble() const;
-    std::string AsString() const;
-
-    Type type() const;
-    void type(Type type);
 
   private:
     Type type_;

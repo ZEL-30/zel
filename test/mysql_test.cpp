@@ -1,4 +1,5 @@
 #include "models/test_data.h"
+#include "utility/ini_file.h"
 #include "utility/logger.h"
 
 #include <mysql/connection.h>
@@ -12,15 +13,26 @@ using namespace std;
 
 TEST_CASE("testing Class mysql") {
 
-    Logger::Instance()->Open("../log/main.log");
+    Logger::instance()->open("../log/main.log");
+
+    IniFile ini;
+    ini.load("../config/main.ini");
 
     Database database;
-    database.connect(
-        "127.0.0.1", 3305, "root", "19981110", "data", "utf8", true);
 
-    auto all = TestData(database).where("state", 0).all();
+    database.connect(ini["mysql"]["ip"],
+                     ini["mysql"]["port"],
+                     ini["mysql"]["username"],
+                     ini["mysql"]["password"],
+                     ini["mysql"]["dbname"],
+                     ini["mysql"]["charset"],
+                     true);
 
-    for (auto one : all) {
-        cout << one.str() << endl;
-    }
+
+    auto one = TestData(database).where("state", 0).order(ini["mysql"]["primary_key"].AsString() + " asc").one();
+
+    cout << one.get("ICCID").str() << endl;
+
+    database.close();
+
 }

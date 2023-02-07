@@ -20,7 +20,7 @@ Parser::Parser() : str_(""), index_(0) {}
 
 Parser::~Parser() {}
 
-bool Parser::LoadFile(const std::string& filename) {
+bool Parser::loadFile(const std::string& filename) {
 
     std::ifstream fin(filename);
     if (fin.fail())
@@ -34,24 +34,24 @@ bool Parser::LoadFile(const std::string& filename) {
     return true;
 }
 
-bool Parser::LoadString(const std::string& str) {
+bool Parser::loadString(const std::string& str) {
     str_ = str;
     index_ = 0;
 
     return true;
 }
 
-Json Parser::Parse() {
+Json Parser::parse() {
 
-    char ch = GetNextChar();
+    char ch = getNextChar();
 
     switch (ch) {
     case 'n':
-        return ParseNull();
+        return parseNull();
 
     case 't':
     case 'f':
-        return ParseBool();
+        return parseBool();
 
     case '-':
     case '0':
@@ -64,16 +64,16 @@ Json Parser::Parse() {
     case '7':
     case '8':
     case '9':
-        return ParseNumber();
+        return parseNumber();
 
     case '"':
-        return Json(ParseString());
+        return Json(parseString());
 
     case '[':
-        return ParseArray();
+        return parseArray();
 
     case '{':
-        return ParseObject();
+        return parseObject();
 
     default:
         throw std::logic_error("unexpected char '" + std::string(1, ch) + "'");
@@ -81,7 +81,7 @@ Json Parser::Parse() {
     }
 }
 
-void Parser::SkipWhiteSpace() {
+void Parser::skipWhiteSpace() {
 
     while (str_[index_] == ' ' || str_[index_] == '\n' || str_[index_] == '\t' ||
            str_[index_] == '\r') {
@@ -89,12 +89,12 @@ void Parser::SkipWhiteSpace() {
     }
 }
 
-char Parser::GetNextChar() {
-    SkipWhiteSpace();
+char Parser::getNextChar() {
+    skipWhiteSpace();
     return str_[index_++];
 }
 
-Json Parser::ParseNull() {
+Json Parser::parseNull() {
     index_--;
     if (str_.compare(index_, 4, "null") == 0) {
         index_ += 4;
@@ -104,7 +104,7 @@ Json Parser::ParseNull() {
     throw std::logic_error("parse null error");
 }
 
-Json Parser::ParseBool() {
+Json Parser::parseBool() {
 
     index_--;
     if (str_.compare(index_, 4, "true") == 0) {
@@ -118,7 +118,7 @@ Json Parser::ParseBool() {
     throw std::logic_error("parse bool error");
 }
 
-Json Parser::ParseNumber() {
+Json Parser::parseNumber() {
 
     index_--;
 
@@ -151,7 +151,7 @@ Json Parser::ParseNumber() {
     return Json(std::stof(str_.substr(pos, index_ - pos)));
 }
 
-std::string Parser::ParseString() {
+std::string Parser::parseString() {
 
     std::string out;
 
@@ -213,37 +213,37 @@ std::string Parser::ParseString() {
     return out;
 }
 
-Json Parser::ParseArray() {
+Json Parser::parseArray() {
 
     Json arr(Json::JSON_ARRAY);
 
-    char ch = GetNextChar();
+    char ch = getNextChar();
 
     if (ch == ']') {
         return arr;
     }
     index_--;
     while (true) {
-        arr.Append(Parse());
+        arr.append(parse());
 
-        ch = GetNextChar();
+        ch = getNextChar();
         if (ch == ']')
             break;
 
         if (ch != ',')
             throw std::logic_error("parse array error");
 
-        SkipWhiteSpace();
+        skipWhiteSpace();
     }
 
     return arr;
 }
 
-Json Parser::ParseObject() {
+Json Parser::parseObject() {
 
     Json object(Json::JSON_OBJECT);
 
-    char ch = GetNextChar();
+    char ch = getNextChar();
 
     if (ch == '}')
         return object;
@@ -251,23 +251,23 @@ Json Parser::ParseObject() {
     index_--;
     while (true) {
         // "
-        ch = GetNextChar();
+        ch = getNextChar();
         if (ch != '"')
             throw std::logic_error("parse object error");
 
         // key
-        std::string key = ParseString();
+        std::string key = parseString();
 
         // :
-        ch = GetNextChar();
+        ch = getNextChar();
         if (ch != ':')
             throw std::logic_error("parse object error");
 
         // value
-        object[key] = Parse();
+        object[key] = parse();
 
         // }
-        ch = GetNextChar();
+        ch = getNextChar();
         if (ch == '}')
             break;
 
@@ -275,7 +275,7 @@ Json Parser::ParseObject() {
         if (ch != ',')
             throw std::logic_error("parse object error");
 
-        SkipWhiteSpace();
+        skipWhiteSpace();
     }
 
     return object;
