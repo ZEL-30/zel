@@ -1,7 +1,13 @@
+/// @file xml.cpp
+/// @author ZEL (zel1362848545@gmail.com)
+/// @brief 
+/// @version 0.1
+/// @date 2023-02-07
+/// @copyright Copyright (c) 2023 ZEL
+
 #include "xml.h"
 
 #include "parser.h"
-#include "xml/parser.h"
 
 #include <cstddef>
 #include <fstream>
@@ -13,11 +19,7 @@ namespace xml {
 
 Xml::Xml() : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {}
 
-Xml::Xml(const char* name)
-    : name_(nullptr),
-      text_(nullptr),
-      attrs_(nullptr),
-      child_(nullptr) {
+Xml::Xml(const char* name) : name_(nullptr), text_(nullptr), attrs_(nullptr), child_(nullptr) {
     name_ = new std::string(name);
 }
 
@@ -121,9 +123,7 @@ std::string Xml::str() const {
     return ss.str();
 }
 
-const std::basic_string<char>::value_type* Xml::c_str() const {
-    return str().c_str();
-}
+const std::basic_string<char>::value_type* Xml::c_str() const { return str().c_str(); }
 
 void Xml::Clear() {
     if (name_ != nullptr) {

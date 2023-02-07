@@ -6,19 +6,19 @@
 namespace zel {
 namespace utility {
 
-#define log_debug(format, ...)                                                                         \
+#define log_debug(format, ...)                                                                     \
     Logger::Instance()->Log(Logger::LOG_DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
-#define log_info(format, ...)                                                                          \
+#define log_info(format, ...)                                                                      \
     Logger::Instance()->Log(Logger::LOG_INFO, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
-#define log_warn(format, ...)                                                                          \
+#define log_warn(format, ...)                                                                      \
     Logger::Instance()->Log(Logger::LOG_WARN, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
-#define log_error(format, ...)                                                                         \
+#define log_error(format, ...)                                                                     \
     Logger::Instance()->Log(Logger::LOG_ERROR, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
-#define log_fatal(format, ...)                                                                         \
+#define log_fatal(format, ...)                                                                     \
     Logger::Instance()->Log(Logger::LOG_FATAL, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 class Logger {

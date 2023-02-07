@@ -5,7 +5,7 @@
 /// @date 2023-02-01
 /// @copyright Copyright (c) 2023 ZEL
 
-#include "utility/logger.h"
+#include "logger.h"
 
 #include <cstddef>
 #include <errno.h>
@@ -19,8 +19,7 @@ namespace zel {
 
 namespace utility {
 
-const char* Logger::s_level_[LOG_COUNT] = {
-    "DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
+const char* Logger::s_level_[LOG_COUNT] = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
 
 Logger* Logger::instance_ = nullptr;
 
@@ -57,8 +56,7 @@ void Logger::Open(const std::string& filename) {
 
 void Logger::Close() { fout_.close(); }
 
-void Logger::Log(
-    Level level, const char* file, int line, const char* format, ...) {
+void Logger::Log(Level level, const char* file, int line, const char* format, ...) {
 
     if (level_ > level)
         return;
@@ -125,8 +123,7 @@ void Logger::Rotate() {
 
     std::string filename = filename_ + timestamp;
     if (rename(filename_.c_str(), filename.c_str()) != 0) {
-        throw std::logic_error("rename log file failed: " +
-                               std::string(strerror(errno)));
+        throw std::logic_error("rename log file failed: " + std::string(strerror(errno)));
     }
 
     Open(filename_);

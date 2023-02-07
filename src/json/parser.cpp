@@ -1,6 +1,14 @@
+/// @file parser.cpp
+/// @author ZEL (zel1362848545@gmail.com)
+/// @brief
+/// @version 0.1
+/// @date 2023-02-07
+/// @copyright Copyright (c) 2023 ZEL
+
 #include "parser.h"
 
 #include "json.h"
+
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -75,8 +83,8 @@ Json Parser::Parse() {
 
 void Parser::SkipWhiteSpace() {
 
-    while (str_[index_] == ' ' || str_[index_] == '\n' ||
-           str_[index_] == '\t' || str_[index_] == '\r') {
+    while (str_[index_] == ' ' || str_[index_] == '\n' || str_[index_] == '\t' ||
+           str_[index_] == '\r') {
         index_++;
     }
 }
@@ -231,15 +239,15 @@ Json Parser::ParseArray() {
     return arr;
 }
 
-Json Parser::ParseObject() { 
-    
+Json Parser::ParseObject() {
+
     Json object(Json::JSON_OBJECT);
-    
+
     char ch = GetNextChar();
 
     if (ch == '}')
-        return object; 
-    
+        return object;
+
     index_--;
     while (true) {
         // "

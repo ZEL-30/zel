@@ -1,6 +1,6 @@
 #pragma once
 
-#include "xml/xml.h"
+#include "xml.h"
 
 #include <iostream>
 
@@ -61,6 +61,6 @@ class Parser {
     int index_;       // 下标
 };
 
-} // namespace utility
+} // namespace xml
 
 } // namespace zel

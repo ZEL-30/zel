@@ -1,4 +1,11 @@
-#include "xml/parser.h"
+/// @file parser.cpp
+/// @author ZEL (zel1362848545@gmail.com)
+/// @brief
+/// @version 0.1
+/// @date 2023-02-07
+/// @copyright Copyright (c) 2023 ZEL
+
+#include "parser.h"
 
 #include <cctype>
 #include <ctype.h>
@@ -61,16 +68,15 @@ Xml Parser::Parse() {
     }
 
     // 识别节点
-    if (str_[index_] == '<' &&
-        (std::isalpha(str_[index_ + 1]) || str_[index_ + 1] == '_')) {
+    if (str_[index_] == '<' && (std::isalpha(str_[index_ + 1]) || str_[index_ + 1] == '_')) {
         return ParseElement();
     }
     throw std::logic_error("parse element error");
 }
 
 void Parser::SkipWhiteSpace() {
-    while (str_[index_] == ' ' || str_[index_] == '\n' ||
-           str_[index_] == '\r' || str_[index_] == '\t') {
+    while (str_[index_] == ' ' || str_[index_] == '\n' || str_[index_] == '\r' ||
+           str_[index_] == '\t') {
         index_++;
     }
 }
@@ -144,8 +150,7 @@ Xml Parser::ParseElement() {
 
                 // not find the end tag
                 if (pos == std::string::npos) {
-                    throw std::logic_error("xml element \"" + name +
-                                           "\" end tag not found");
+                    throw std::logic_error("xml element \"" + name + "\" end tag not found");
                 }
 
                 index_ = (pos + end_tag.size());
@@ -183,8 +188,8 @@ std::string Parser::ParseElementName() {
     int pos = index_;
     if (isalpha(str_[index_]) || str_[index_] == '_') {
         index_++;
-        while (isalnum(str_[index_]) || (str_[index_] == ':') ||
-               (str_[index_] == '-') || (str_[index_] == '.')) {
+        while (isalnum(str_[index_]) || (str_[index_] == ':') || (str_[index_] == '-') ||
+               (str_[index_] == '.')) {
             index_++;
         }
     }
@@ -207,8 +212,8 @@ std::string Parser::ParseElementAttrKey() {
     int pos = index_;
     if (isalpha(str_[index_]) || (str_[index_] == '_')) {
         index_++;
-        while (isalnum(str_[index_]) || (str_[index_] == '_') ||
-               (str_[index_] == '-') || (str_[index_] == ':')) {
+        while (isalnum(str_[index_]) || (str_[index_] == '_') || (str_[index_] == '-') ||
+               (str_[index_] == ':')) {
             index_++;
         }
     }
@@ -220,8 +225,7 @@ std::string Parser::ParseElementAttrValue() {
 
     // 判断属性值是否以双引号开始
     if (str_[index_] != '"')
-        throw std::logic_error(
-            "xml element attr value should be in double quotes");
+        throw std::logic_error("xml element attr value should be in double quotes");
 
     int pos = ++index_;
     while (str_[index_] != '"') {
@@ -232,6 +236,6 @@ std::string Parser::ParseElementAttrValue() {
     return str_.substr(pos, index_ - pos - 1);
 }
 
-} // namespace utility
+} // namespace xml
 
 } // namespace zel

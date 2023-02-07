@@ -59,9 +59,7 @@ class Batch {
             return *this;
         }
 
-        bool operator!=(const iterator& other) {
-            return m_next != other.m_next;
-        }
+        bool operator!=(const iterator& other) { return m_next != other.m_next; }
 
         iterator& operator++() // 前缀++
         {
@@ -184,8 +182,7 @@ std::vector<T>* Batch<T>::next() {
                 if (length == 0) {
                     v.type(Value::V_NULL);
                 } else {
-                    if (field->type == MYSQL_TYPE_DECIMAL ||
-                        field->type == MYSQL_TYPE_FLOAT ||
+                    if (field->type == MYSQL_TYPE_DECIMAL || field->type == MYSQL_TYPE_FLOAT ||
                         field->type == MYSQL_TYPE_DOUBLE) {
                         v.type(Value::V_DOUBLE);
                     } else {

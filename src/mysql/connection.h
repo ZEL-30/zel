@@ -86,16 +86,14 @@ Batch<T> Connection::batch(const string& sql) {
     }
     int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
     if (ret != 0) {
-        log_error("mysql_real_query errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return batch;
     }
     MYSQL_RES* res = mysql_store_result(&m_mysql);
     if (res == NULL) {
-        log_error("mysql_store_result errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_store_result errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return batch;
     }
     int rows = mysql_num_rows(res);

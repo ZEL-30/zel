@@ -23,3 +23,11 @@
 2023-02-06 13:43:25 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:260 sql: select * from `test_data` where `state` = 0
 2023-02-06 13:43:29 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:56 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
 2023-02-06 13:43:29 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:260 sql: select * from `test_data` where `state` = 0
+2023-02-07 08:47:51 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:56 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 08:47:51 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:260 sql: select * from `test_data` where `state` = 0
+2023-02-07 08:53:32 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:56 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 08:53:32 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:260 sql: select * from `test_data` where `state` = 0
+2023-02-07 08:54:13 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:56 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 08:54:13 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:260 sql: select * from `test_data` where `state` = 0
+2023-02-07 08:54:21 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:56 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 08:54:21 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:260 sql: select * from `test_data` where `state` = 0

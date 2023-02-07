@@ -42,18 +42,16 @@ bool Connection::connect(const std::string& host,
                                     NULL,
                                     0);
     if (res == NULL) {
-        log_error("mysql_real_connect errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_real_connect errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return false;
     }
     if (debug) {
-        log_debug(
-            "mysql connect success: host=%s port=%d username=%s database=%s",
-            host.c_str(),
-            port,
-            username.c_str(),
-            database.c_str());
+        log_debug("mysql connect success: host=%s port=%d username=%s database=%s",
+                  host.c_str(),
+                  port,
+                  username.c_str(),
+                  database.c_str());
     }
     m_auto_commit = true;
     mysql_autocommit(&m_mysql, 1);
@@ -62,8 +60,7 @@ bool Connection::connect(const std::string& host,
 
 bool Connection::reconnect() {
     close();
-    return connect(
-        m_host, m_port, m_username, m_password, m_database, m_charset, m_debug);
+    return connect(m_host, m_port, m_username, m_password, m_database, m_charset, m_debug);
 }
 
 void Connection::close() {
@@ -127,9 +124,8 @@ std::vector<string> Connection::tables() {
     std::vector<string> all;
     MYSQL_RES* res = mysql_list_tables(&m_mysql, NULL);
     if (res == NULL) {
-        log_error("mysql_list_tables errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_list_tables errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return all;
     }
     int fields = mysql_num_fields(res);
@@ -179,9 +175,8 @@ int Connection::insert(const string& sql) {
     }
     int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
     if (ret != 0) {
-        log_error("mysql_real_query errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return -1;
     }
     return mysql_insert_id(&m_mysql);
@@ -193,9 +188,8 @@ bool Connection::execute(const string& sql) {
     }
     int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
     if (ret != 0) {
-        log_error("mysql_real_query errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return false;
     }
     return true;
@@ -208,16 +202,14 @@ std::map<string, Value> Connection::fetchone(const string& sql) {
     }
     int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
     if (ret != 0) {
-        log_error("mysql_real_query errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return one;
     }
     MYSQL_RES* res = mysql_store_result(&m_mysql);
     if (res == NULL) {
-        log_error("mysql_store_result errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_store_result errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return one;
     }
     int fields = mysql_num_fields(res);
@@ -234,8 +226,7 @@ std::map<string, Value> Connection::fetchone(const string& sql) {
                 if (length == 0) {
                     v.type(Value::V_NULL);
                 } else {
-                    if (field->type == MYSQL_TYPE_DECIMAL ||
-                        field->type == MYSQL_TYPE_FLOAT ||
+                    if (field->type == MYSQL_TYPE_DECIMAL || field->type == MYSQL_TYPE_FLOAT ||
                         field->type == MYSQL_TYPE_DOUBLE) {
                         v.type(Value::V_DOUBLE);
                     } else {
@@ -261,16 +252,14 @@ std::vector<std::map<string, Value>> Connection::fetchall(const string& sql) {
     }
     int ret = mysql_real_query(&m_mysql, sql.data(), sql.size());
     if (ret != 0) {
-        log_error("mysql_real_query errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_real_query errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return all;
     }
     MYSQL_RES* res = mysql_store_result(&m_mysql);
     if (res == NULL) {
-        log_error("mysql_store_result errno:%d error:%s",
-                  mysql_errno(&m_mysql),
-                  mysql_error(&m_mysql));
+        log_error(
+            "mysql_store_result errno:%d error:%s", mysql_errno(&m_mysql), mysql_error(&m_mysql));
         return all;
     }
     int fields = mysql_num_fields(res);
@@ -288,8 +277,7 @@ std::vector<std::map<string, Value>> Connection::fetchall(const string& sql) {
                 if (length == 0) {
                     v.type(Value::V_NULL);
                 } else {
-                    if (field->type == MYSQL_TYPE_DECIMAL ||
-                        field->type == MYSQL_TYPE_FLOAT ||
+                    if (field->type == MYSQL_TYPE_DECIMAL || field->type == MYSQL_TYPE_FLOAT ||
                         field->type == MYSQL_TYPE_DOUBLE) {
                         v.type(Value::V_DOUBLE);
                     } else {

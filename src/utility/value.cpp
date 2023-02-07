@@ -5,7 +5,7 @@
 /// @date 2023-02-02
 /// @copyright Copyright (c) 2023 ZEL
 
-#include "utility/value.h"
+#include "value.h"
 
 namespace zel {
 
@@ -25,11 +25,36 @@ Value::Value(const char* value) : type_(V_STRING), value_(value) {}
 
 Value::Value(const std::string& value) : type_(V_STRING), value_(value) {}
 
+Value::Type Value::type() const { return type_; }
+
+void Value::type(Type type) { type_ = type; }
+
 std::string Value::str() const { return value_; }
 
-const std::basic_string<char>::value_type* Value::c_str() const {
-    return value_.c_str();
+const std::basic_string<char>::value_type* Value::c_str() const { return value_.c_str(); }
+
+bool Value::IsNull() const { return type_ == V_NULL; }
+
+bool Value::IsInt() const { return type_ == V_INT; }
+
+bool Value::IsDouble() const { return type_ == V_DOUBLE; }
+
+bool Value::IsString() const { return type_ == V_STRING; }
+
+bool Value::AsBool() const {
+    if (value_ == "true")
+        return true;
+    else if (value_ == "false")
+        return false;
+
+    return false;
 }
+
+int Value::AsInt() const { return std::stoi(value_); }
+
+double Value::AsDouble() const { return std::stof(value_); }
+
+std::string Value::AsString() const { return value_; }
 
 Value& Value::operator=(bool value) {
     type_ = V_BOOL;
@@ -84,37 +109,6 @@ Value::operator double() { return AsDouble(); }
 Value::operator std::string() { return AsString(); }
 
 Value::operator std::string() const { return AsString(); }
-
-// Value::operator std::basic_string<char>::value_type*() const {
-//     return (std::basic_string<char>::value_type*)value_.c_str();
-// }
-
-bool Value::AsBool() const {
-    if (value_ == "true")
-        return true;
-    else if (value_ == "false")
-        return false;
-
-    return false;
-}
-
-int Value::AsInt() const { return std::stoi(value_); }
-
-double Value::AsDouble() const { return std::stof(value_); }
-
-std::string Value::AsString() const { return value_; }
-
-Value::Type Value::type() const { return type_; }
-
-void Value::type(Type type) { type_ = type; }
-
-bool Value::IsNull() const { return type_ == V_NULL; }
-
-bool Value::IsInt() const { return type_ == V_INT; }
-
-bool Value::IsDouble() const { return type_ == V_DOUBLE; }
-
-bool Value::IsString() const { return type_ == V_STRING; }
 
 } // namespace utility
 } // namespace zel

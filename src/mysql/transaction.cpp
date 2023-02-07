@@ -1,7 +1,6 @@
-#include <mysql/transaction.h>
-#include <sstream>
+#include "transaction.h"
 
-using std::ostringstream;
+#include <sstream>
 
 namespace zel {
 
@@ -21,7 +20,7 @@ Transaction::~Transaction() {}
 
 void Transaction::begin() {
     if (m_is_start) {
-        ostringstream oss;
+        std::ostringstream oss;
         oss << "sp" << m_counter;
         const string& sp = m_conn->quote(oss.str());
         m_savepoints.push(sp);

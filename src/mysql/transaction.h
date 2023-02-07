@@ -1,11 +1,10 @@
 #pragma once
 
+#include "database.h"
+
 #include <stack>
 #include <string>
 
-using std::string;
-
-#include <mysql/database.h>
 
 namespace zel {
 namespace mysql {
@@ -23,7 +22,7 @@ class Transaction {
   private:
     Connection* m_conn;
     bool m_is_start;
-    std::stack<string> m_savepoints;
+    std::stack<std::string> m_savepoints;
     int m_counter;
 };
 

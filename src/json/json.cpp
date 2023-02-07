@@ -1,3 +1,10 @@
+/// @file json.cpp
+/// @author ZEL (zel1362848545@gmail.com)
+/// @brief 
+/// @version 0.1
+/// @date 2023-02-07
+/// @copyright Copyright (c) 2023 ZEL
+
 #include "json.h"
 
 #include "parser.h"
@@ -22,9 +29,7 @@ Json::Json(int value) : type_(JSON_INT) { value_.int_ = value; }
 
 Json::Json(double value) : type_(JSON_DOUBLE) { value_.double_ = value; }
 
-Json::Json(const char* value) : type_(JSON_STRING) {
-    value_.string_ = new std::string(value);
-}
+Json::Json(const char* value) : type_(JSON_STRING) { value_.string_ = new std::string(value); }
 
 Json::Json(const std::string& value) : type_(JSON_STRING) {
     value_.string_ = new std::string(value);
@@ -107,8 +112,7 @@ std::string Json::str() const {
 
     case Json::Type::JSON_ARRAY: {
         ss << "[";
-        for (auto it = value_.array_->begin(); it != value_.array_->end();
-             it++) {
+        for (auto it = value_.array_->begin(); it != value_.array_->end(); it++) {
             if (it != value_.array_->begin())
                 ss << ", ";
             ss << it->str();
@@ -120,8 +124,7 @@ std::string Json::str() const {
 
     case Json::Type::JSON_OBJECT: {
         ss << "{";
-        for (auto it = value_.object_->begin(); it != value_.object_->end();
-             it++) {
+        for (auto it = value_.object_->begin(); it != value_.object_->end(); it++) {
             if (it != value_.object_->begin())
                 ss << ", ";
             ss << "\"" << it->first << "\" : " << it->second.str();
@@ -156,8 +159,7 @@ const Json& Json::Get(const char* key) const {
 
 const Json& Json::Get(const std::string& key) const {
     if (type() != JSON_OBJECT) {
-        throw std::logic_error(
-            "function Json::Get [const string &] requires object value");
+        throw std::logic_error("function Json::Get [const string &] requires object value");
     }
     std::map<std::string, Json>::const_iterator it = value_.object_->find(key);
     if (it != value_.object_->end()) {
@@ -315,8 +317,7 @@ void Json::Clear() {
 
     case JSON_ARRAY: {
         if (value_.array_ != nullptr) {
-            for (auto it = value_.array_->begin(); it != value_.array_->end();
-                 it++) {
+            for (auto it = value_.array_->begin(); it != value_.array_->end(); it++) {
                 it->Clear();
             }
             delete value_.array_;
@@ -327,8 +328,7 @@ void Json::Clear() {
 
     case JSON_OBJECT: {
         if (value_.object_ != nullptr) {
-            for (auto it = value_.object_->begin(); it != value_.object_->end();
-                 it++) {
+            for (auto it = value_.object_->begin(); it != value_.object_->end(); it++) {
                 it->second.Clear();
             }
             delete value_.object_;
@@ -583,14 +583,10 @@ bool Json::operator!=(const std::string& value) {
 }
 
 std::vector<Json>::iterator Json::begin() { return value_.array_->begin(); }
-std::vector<Json>::const_iterator Json::begin() const {
-    return value_.array_->begin();
-}
+std::vector<Json>::const_iterator Json::begin() const { return value_.array_->begin(); }
 
 std::vector<Json>::iterator Json::end() { return value_.array_->end(); }
-std::vector<Json>::const_iterator Json::end() const {
-    return value_.array_->end();
-}
+std::vector<Json>::const_iterator Json::end() const { return value_.array_->end(); }
 
 int Json::size() {
 
