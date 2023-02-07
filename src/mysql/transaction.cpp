@@ -1,3 +1,10 @@
+/// @file transaction.cpp
+/// @author ZEL (zel1362848545@gmail.com)
+/// @brief
+/// @version 0.1
+/// @date 2023-02-07
+/// @copyright Copyright (c) 2023 ZEL
+
 #include "transaction.h"
 
 #include <sstream>
@@ -22,7 +29,7 @@ void Transaction::begin() {
     if (m_is_start) {
         std::ostringstream oss;
         oss << "sp" << m_counter;
-        const string& sp = m_conn->quote(oss.str());
+        const std::string& sp = m_conn->quote(oss.str());
         m_savepoints.push(sp);
         if (m_conn->savepoint(sp)) {
             m_counter += 1;
@@ -36,7 +43,7 @@ void Transaction::begin() {
 
 void Transaction::rollback() {
     if (!m_savepoints.empty()) {
-        const string& sp = m_savepoints.top();
+        const std::string& sp = m_savepoints.top();
         if (m_conn->rollback_savepoint(sp)) {
             m_savepoints.pop();
         }
@@ -49,7 +56,7 @@ void Transaction::rollback() {
 
 void Transaction::commit() {
     if (!m_savepoints.empty()) {
-        const string& sp = m_savepoints.top();
+        const std::string& sp = m_savepoints.top();
         if (m_conn->release_savepoint(sp)) {
             m_savepoints.pop();
         }

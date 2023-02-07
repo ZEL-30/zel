@@ -1,9 +1,8 @@
 #pragma once
 
-#include "mysql/connection.h"
-// #include "mysql/database.h"
-// #include "utility/logger.h"
+#include "connection.h"
 #include "utility/value.h"
+using namespace zel::utility;
 
 #include <iostream>
 #include <map>
@@ -77,11 +76,11 @@ class Model {
     Batch<T> batch(int size);
 
   protected:
-    string build_select_sql() const;
-    string build_join_sql() const;
-    string build_where_sql() const;
-    string build_other_sql() const;
-    string build_simple_sql(const std::string& field, const std::string& func = "") const;
+    std::string build_select_sql() const;
+    std::string build_join_sql() const;
+    std::string build_where_sql() const;
+    std::string build_other_sql() const;
+    std::string build_simple_sql(const std::string& field, const std::string& func = "") const;
 
   protected:
     Connection* m_conn;

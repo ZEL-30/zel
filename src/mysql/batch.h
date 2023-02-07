@@ -1,10 +1,9 @@
 #pragma once
 
-#include <mysql.h>
-#include <utility/value.h>
-#include <vector>
+#include "utility/value.h"
 
-using namespace zel::utility;
+#include <mysql.h>
+#include <vector>
 
 namespace zel {
 namespace mysql {
@@ -176,23 +175,23 @@ std::vector<T>* Batch<T>::next() {
             MYSQL_FIELD* field = mysql_fetch_field_direct(m_res, i);
             char* data = row[i];
             unsigned int length = lengths[i];
-            Value v;
-            v = string(data, length);
+            zel::utility::Value v;
+            v = std::string(data, length);
             if (IS_NUM(field->type)) {
                 if (length == 0) {
-                    v.type(Value::V_NULL);
+                    v.type(zel::utility::Value::V_NULL);
                 } else {
                     if (field->type == MYSQL_TYPE_DECIMAL || field->type == MYSQL_TYPE_FLOAT ||
                         field->type == MYSQL_TYPE_DOUBLE) {
-                        v.type(Value::V_DOUBLE);
+                        v.type(zel::utility::Value::V_DOUBLE);
                     } else {
-                        v.type(Value::V_INT);
+                        v.type(zel::utility::Value::V_INT);
                     }
                 }
             } else if (field->type == MYSQL_TYPE_NULL) {
-                v.type(Value::V_NULL);
+                v.type(zel::utility::Value::V_NULL);
             } else {
-                v.type(Value::V_STRING);
+                v.type(zel::utility::Value::V_STRING);
             }
             one[field->name] = v;
         }

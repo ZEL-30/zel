@@ -1,10 +1,18 @@
+/// @file connection.cpp
+/// @author ZEL (zel1362848545@gmail.com)
+/// @brief 
+/// @version 0.1
+/// @date 2023-02-07
+/// @copyright Copyright (c) 2023 ZEL
+
+#include "connection.h"
+
 #include <ctime>
 #include <iterator>
-#include <mysql/connection.h>
 #include <sstream>
 
-using std::ostringstream;
-using std::stringstream;
+
+using namespace zel::utility;
 
 namespace zel {
 
@@ -85,32 +93,32 @@ bool Connection::ping() {
 
 void Connection::set_ping(int seconds) { m_ping = seconds; }
 
-string Connection::escape(const string& str) {
+std::string Connection::escape(const std::string& str) {
     int size = 2 * str.size() + 1;
     char* buf = new char[size];
     memset(buf, 0, size);
     int len = mysql_real_escape_string(&m_mysql, buf, str.c_str(), str.size());
-    string ret = string(buf, len);
+    std::string ret = std::string(buf, len);
     delete[] buf;
     return std::move(ret);
 }
 
-string Connection::quote(const string& str) const {
+std::string Connection::quote(const std::string& str) const {
     char separator = '.';
     size_t index = str.find(separator);
-    if (index == string::npos) {
-        ostringstream oss;
+    if (index == std::string::npos) {
+        std::ostringstream oss;
         oss << m_quote << str << m_quote;
         return oss.str();
     }
 
-    std::vector<string> output;
-    stringstream ss(str);
-    string item;
+    std::vector<std::string> output;
+    std::stringstream ss(str);
+    std::string item;
     while (getline(ss, item, separator)) {
         output.push_back(item);
     }
-    ostringstream oss;
+    std::ostringstream oss;
     for (auto it = output.begin(); it != output.end(); it++) {
         if (it != output.begin()) {
             oss << ".";
@@ -120,8 +128,8 @@ string Connection::quote(const string& str) const {
     return oss.str();
 }
 
-std::vector<string> Connection::tables() {
-    std::vector<string> all;
+std::vector<std::string> Connection::tables() {
+    std::vector<std::string> all;
     MYSQL_RES* res = mysql_list_tables(&m_mysql, NULL);
     if (res == NULL) {
         log_error(
@@ -140,26 +148,26 @@ std::vector<string> Connection::tables() {
     return all;
 }
 
-std::vector<std::map<string, Value>> Connection::schema(const string& table) {
-    ostringstream oss;
+std::vector<std::map<std::string, Value>> Connection::schema(const std::string& table) {
+    std::ostringstream oss;
     oss << "select column_name,column_key,data_type,extra,column_comment from "
            "information_schema.columns where table_schema='"
         << escape(m_database) << "' and table_name='" << escape(table) << "'";
-    const string& sql = oss.str();
+    const std::string& sql = oss.str();
     return fetchall(sql);
 }
 
-bool Connection::table_exists(const string& table) {
-    ostringstream oss;
+bool Connection::table_exists(const std::string& table) {
+    std::ostringstream oss;
     oss << "select table_name from information_schema.tables WHERE "
            "table_schema='"
         << m_database << "' and table_name='" << table << "'";
-    const string& sql = oss.str();
+    const std::string& sql = oss.str();
     auto one = fetchone(sql);
     return !one.empty();
 }
 
-string Connection::primary_key(const string& table) {
+std::string Connection::primary_key(const std::string& table) {
     auto all = schema(table);
     for (auto it = all.begin(); it != all.end(); it++) {
         if ((*it)["column_key"] == "PRI") {
@@ -169,7 +177,7 @@ string Connection::primary_key(const string& table) {
     return "";
 }
 
-int Connection::insert(const string& sql) {
+int Connection::insert(const std::string& sql) {
     if (m_debug) {
         log_debug("sql: %s", sql.c_str());
     }
@@ -182,7 +190,7 @@ int Connection::insert(const string& sql) {
     return mysql_insert_id(&m_mysql);
 }
 
-bool Connection::execute(const string& sql) {
+bool Connection::execute(const std::string& sql) {
     if (m_debug) {
         log_debug("sql: %s", sql.c_str());
     }
@@ -195,8 +203,8 @@ bool Connection::execute(const string& sql) {
     return true;
 }
 
-std::map<string, Value> Connection::fetchone(const string& sql) {
-    std::map<string, Value> one;
+std::map<std::string, Value> Connection::fetchone(const std::string& sql) {
+    std::map<std::string, Value> one;
     if (m_debug) {
         log_debug("sql: %s", sql.c_str());
     }
@@ -221,7 +229,7 @@ std::map<string, Value> Connection::fetchone(const string& sql) {
             char* data = row[i];
             unsigned int length = lengths[i];
             Value v;
-            v = string(data, length);
+            v = std::string(data, length);
             if (IS_NUM(field->type)) {
                 if (length == 0) {
                     v.type(Value::V_NULL);
@@ -245,8 +253,8 @@ std::map<string, Value> Connection::fetchone(const string& sql) {
     return one;
 }
 
-std::vector<std::map<string, Value>> Connection::fetchall(const string& sql) {
-    std::vector<std::map<string, Value>> all;
+std::vector<std::map<std::string, Value>> Connection::fetchall(const std::string& sql) {
+    std::vector<std::map<std::string, Value>> all;
     if (m_debug) {
         log_debug("sql: %s", sql.c_str());
     }
@@ -265,14 +273,14 @@ std::vector<std::map<string, Value>> Connection::fetchall(const string& sql) {
     int fields = mysql_num_fields(res);
     MYSQL_ROW row;
     while ((row = mysql_fetch_row(res)) != NULL) {
-        std::map<string, Value> one;
+        std::map<std::string, Value> one;
         unsigned long* lengths = mysql_fetch_lengths(res);
         for (int i = 0; i < fields; i++) {
             MYSQL_FIELD* field = mysql_fetch_field_direct(res, i);
             char* data = row[i];
             unsigned int length = lengths[i];
             Value v;
-            v = string(data, length);
+            v = std::string(data, length);
             if (IS_NUM(field->type)) {
                 if (length == 0) {
                     v.type(Value::V_NULL);
@@ -309,7 +317,7 @@ void Connection::auto_commit(bool auto_commit) {
 }
 
 bool Connection::begin() {
-    string sql = "begin";
+    std::string sql = "begin";
     auto_commit(false);
     if (execute(sql)) {
         return true;
@@ -319,7 +327,7 @@ bool Connection::begin() {
 }
 
 bool Connection::rollback() {
-    string sql = "rollback";
+    std::string sql = "rollback";
     if (execute(sql)) {
         auto_commit(true);
         return true;
@@ -328,7 +336,7 @@ bool Connection::rollback() {
 }
 
 bool Connection::commit() {
-    string sql = "commit";
+    std::string sql = "commit";
     if (execute(sql)) {
         auto_commit(true);
         return true;
@@ -336,24 +344,24 @@ bool Connection::commit() {
     return false;
 }
 
-bool Connection::savepoint(const string& sp) {
-    ostringstream oss;
+bool Connection::savepoint(const std::string& sp) {
+    std::ostringstream oss;
     oss << "savepoint " << sp;
-    const string& sql = oss.str();
+    const std::string& sql = oss.str();
     return execute(sql);
 }
 
-bool Connection::rollback_savepoint(const string& sp) {
-    ostringstream oss;
+bool Connection::rollback_savepoint(const std::string& sp) {
+    std::ostringstream oss;
     oss << "rollback to savepoint " << sp;
-    const string& sql = oss.str();
+    const std::string& sql = oss.str();
     return execute(sql);
 }
 
-bool Connection::release_savepoint(const string& sp) {
-    ostringstream oss;
+bool Connection::release_savepoint(const std::string& sp) {
+    std::ostringstream oss;
     oss << "release savepoint " << sp;
-    const string& sql = oss.str();
+    const std::string& sql = oss.str();
     return execute(sql);
 }
 

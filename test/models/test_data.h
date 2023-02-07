@@ -1,7 +1,7 @@
-#include "mysql/connection.h"
-#include "mysql/database.h"
-
+#include <mysql/connection.h>
+#include <mysql/database.h>
 #include <mysql/model.h>
+
 
 class TestData : public zel::mysql::Model<TestData> {
 
@@ -11,7 +11,7 @@ class TestData : public zel::mysql::Model<TestData> {
     TestData(zel::mysql::Connection* conn) : Model(conn) {}
     ~TestData() {}
 
-    string table() const { return "test_data"; }
+    std::string table() const { return "test_data"; }
 
-    string primary_key() const { return "data_id"; }
+    std::string primary_key() const { return "data_id"; }
 };

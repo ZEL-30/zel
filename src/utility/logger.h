@@ -7,7 +7,7 @@ namespace zel {
 namespace utility {
 
 #define log_debug(format, ...)                                                                     \
-    Logger::Instance()->Log(Logger::LOG_DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
+    Logger::Instance()->Log(Logger::Level::LOG_DEBUG, __FILE__, __LINE__, format, ##__VA_ARGS__)
 
 #define log_info(format, ...)                                                                      \
     Logger::Instance()->Log(Logger::LOG_INFO, __FILE__, __LINE__, format, ##__VA_ARGS__)

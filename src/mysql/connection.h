@@ -5,19 +5,17 @@
 #define NOMINMAX
 #endif
 
-#include <string.h>
-#include <string>
-using std::string;
-
-#include <map>
-#include <utility/logger.h>
-#include <utility/value.h>
-#include <vector>
-
+#include "batch.h"
+#include "utility/logger.h"
+#include "utility/value.h"
 using namespace zel::utility;
 
+#include <map>
 #include <mysql.h>
-#include <mysql/batch.h>
+#include <string.h>
+#include <string>
+#include <vector>
+
 
 namespace zel {
 namespace mysql {
@@ -27,31 +25,31 @@ class Connection {
     Connection();
     ~Connection();
 
-    bool connect(const string& host,
+    bool connect(const std::string& host,
                  int port,
-                 const string& username,
-                 const string& password,
-                 const string& database,
-                 const string& charset,
+                 const std::string& username,
+                 const std::string& password,
+                 const std::string& database,
+                 const std::string& charset,
                  bool debug);
     bool reconnect();
     void close();
     bool ping();
     void set_ping(int seconds);
-    string escape(const string& str);
-    string quote(const string& str) const;
-    std::vector<string> tables();
-    std::vector<std::map<string, Value>> schema(const string& table);
-    bool table_exists(const string& table);
-    string primary_key(const string& table);
+    std::string escape(const std::string& str);
+    std::string quote(const std::string& str) const;
+    std::vector<std::string> tables();
+    std::vector<std::map<std::string, zel::utility::Value>> schema(const std::string& table);
+    bool table_exists(const std::string& table);
+    std::string primary_key(const std::string& table);
 
-    int insert(const string& sql);
-    bool execute(const string& sql);
-    std::map<string, Value> fetchone(const string& sql);
-    std::vector<std::map<string, Value>> fetchall(const string& sql);
+    int insert(const std::string& sql);
+    bool execute(const std::string& sql);
+    std::map<std::string, zel::utility::Value> fetchone(const std::string& sql);
+    std::vector<std::map<std::string, zel::utility::Value>> fetchall(const std::string& sql);
 
     template <typename T>
-    Batch<T> batch(const string& sql);
+    Batch<T> batch(const std::string& sql);
 
     // transaction
     bool auto_commit();
@@ -59,18 +57,18 @@ class Connection {
     bool begin();
     bool rollback();
     bool commit();
-    bool savepoint(const string& sp);
-    bool rollback_savepoint(const string& sp);
-    bool release_savepoint(const string& sp);
+    bool savepoint(const std::string& sp);
+    bool rollback_savepoint(const std::string& sp);
+    bool release_savepoint(const std::string& sp);
 
   private:
     MYSQL m_mysql;
-    string m_host;
+    std::string m_host;
     int m_port;
-    string m_username;
-    string m_password;
-    string m_database;
-    string m_charset;
+    std::string m_username;
+    std::string m_password;
+    std::string m_database;
+    std::string m_charset;
     bool m_debug;
     bool m_auto_commit;
     int m_ping;
@@ -79,7 +77,7 @@ class Connection {
 };
 
 template <typename T>
-Batch<T> Connection::batch(const string& sql) {
+Batch<T> Connection::batch(const std::string& sql) {
     Batch<T> batch;
     if (m_debug) {
         log_debug("sql: %s", sql.c_str());
