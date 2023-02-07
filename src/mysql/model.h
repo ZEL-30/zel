@@ -140,7 +140,7 @@ template <typename T>
 T& Model<T>::where(const std::string& field, const std::string& op, const Value& value) {
     std::ostringstream oss;
     oss << conn_->quote(field) << " " << op << " ";
-    if (value.IsString()) {
+    if (value.isString()) {
         oss << "'" << conn_->escape(value) << "'";
     } else {
         oss << (std::string)value;
@@ -160,7 +160,7 @@ T& Model<T>::where(const std::string& field,
         if (it != values.begin()) {
             oss << ",";
         }
-        if (it->IsString()) {
+        if (it->isString()) {
             oss << "'" << conn_->escape(*it) << "'";
         } else {
             oss << (std::string)(*it);
@@ -178,13 +178,13 @@ T& Model<T>::where(const std::string& field,
                    const Value& max) {
     std::ostringstream oss;
     oss << conn_->quote(field) << " " << op << " ";
-    if (min.IsString()) {
+    if (min.isString()) {
         oss << "'" << conn_->escape(min) << "'";
     } else {
         oss << (std::string)min;
     }
     oss << " and ";
-    if (max.IsString()) {
+    if (max.isString()) {
         oss << "'" << conn_->escape(max) << "'";
     } else {
         oss << (std::string)max;
@@ -433,7 +433,7 @@ bool Model<T>::save() {
                 values << ",";
             }
             fields << conn_->quote(it->first);
-            if (it->second.IsString()) {
+            if (it->second.isString()) {
                 values << "'" << conn_->escape(it->second) << "'";
             } else {
                 values << (std::string)(it->second);
@@ -457,7 +457,7 @@ bool Model<T>::save() {
                 update << ", ";
             }
             update << conn_->quote(it->first) << " = ";
-            if (it->second.IsString()) {
+            if (it->second.isString()) {
                 update << "'" << conn_->escape(it->second) << "'";
             } else {
                 update << (std::string)(it->second);
@@ -505,7 +505,7 @@ void Model<T>::update(const std::map<std::string, Value>& fields) {
             oss << ", ";
         }
         oss << conn_->quote(it->first) << " = ";
-        if (it->second.IsString()) {
+        if (it->second.isString()) {
             oss << "'" << conn_->escape(it->second) << "'";
         } else {
             oss << (std::string)(it->second);
@@ -542,7 +542,7 @@ void Model<T>::insert(const std::vector<T>& rows) {
             if (it != row->new_fields_.begin()) {
                 oss << ",";
             }
-            if (it->second.IsString()) {
+            if (it->second.isString()) {
                 oss << "'" << conn_->escape(it->second) << "'";
             } else {
                 oss << std::string(it->second);

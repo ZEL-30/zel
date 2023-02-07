@@ -17,3 +17,6 @@
 2023-02-07 11:06:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
 2023-02-07 11:06:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:209 sql: select * from `test_data` where `state` = 0 order by data_id asc limit 1
 2023-02-07 11:06:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 11:45:37 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-07 11:45:37 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:209 sql: select * from `test_data` where `state` = 0 order by data_id asc limit 1
+2023-02-07 11:45:37 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data

@@ -47,12 +47,12 @@ TEST_CASE("Xml Parser") {
 
 
     Xml root1;
-    root1.Load("../config/workflow.xml");
+    root1.load("../config/workflow.xml");
 
     int id = root1[0].attr("name");
     cout << root1[0].name() << id << endl;
 
-    root1.Save("../config/temp.xml");
+    root1.save("../config/temp.xml");
 
 
 }

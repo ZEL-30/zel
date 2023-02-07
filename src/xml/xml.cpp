@@ -219,10 +219,10 @@ void Xml::remove(const std::string& name) {
 
 bool Xml::load(const std::string& filename) {
     Parser parser;
-    if (!parser.LoadFile(filename))
+    if (!parser.loadFile(filename))
         return false;
 
-    *this = parser.Parse();
+    *this = parser.parse();
     return true;
 }
 
@@ -241,10 +241,10 @@ bool Xml::save(const std::string& filename) {
 
 bool Xml::parse(const std::string& str) {
     Parser parser;
-    if (!parser.LoadString(str))
+    if (!parser.loadString(str))
         return false;
 
-    *this = parser.Parse();
+    *this = parser.parse();
 
     return true;
 }

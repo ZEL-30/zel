@@ -29,7 +29,7 @@ TEST_CASE("testing Class mysql") {
                      true);
 
 
-    auto one = TestData(database).where("state", 0).order(ini["mysql"]["primary_key"].AsString() + " asc").one();
+    auto one = TestData(database).where("state", 0).order(ini["mysql"]["primary_key"].asString() + " asc").one();
 
     cout << one.get("ICCID").str() << endl;
 
