@@ -9,6 +9,7 @@
 
 #include "parser.h"
 
+#include <algorithm>
 #include <iterator>
 #include <sstream>
 #include <stdexcept>
@@ -73,7 +74,7 @@ Json::Json(Type type) : type_(type) {
 
 Json::Json(const Json& other) { copy(other); }
 
-Json::~Json() {}
+Json::~Json() { clear(); }
 
 Json::Type Json::type() const { return type_; }
 
@@ -219,10 +220,7 @@ void Json::remove(int index) {
 
     value_.array_->at(index).clear();
 
-    std::cout << "1 :" <<value_.array_->at(3).str() << std::endl;
     value_.array_->erase(value_.array_->begin() + index);
-
-    std::cout << "2 :" <<value_.array_->at(2).str() << std::endl;
 }
 
 void Json::remove(const char* key) {
@@ -275,17 +273,23 @@ void Json::copy(const Json& other) {
         value_.double_ = other.value_.double_;
         break;
 
-    case JSON_STRING:
-        value_.string_ = other.value_.string_;
+    case JSON_STRING: {
+        Json temp(other.value_.string_);
+        std::swap(value_.string_, temp.value_.string_);
         break;
+    }
 
-    case JSON_ARRAY:
-        value_.array_ = other.value_.array_;
+    case JSON_ARRAY: {
+        Json temp(other.value_.array_);
+        std::swap(value_.array_, temp.value_.array_);
         break;
+    }
 
-    case JSON_OBJECT:
-        value_.object_ = other.value_.object_;
+    case JSON_OBJECT: {
+        Json temp(other.value_.object_);
+        std::swap(value_.object_, temp.value_.object_);
         break;
+    }
 
     default:
         break;
@@ -312,8 +316,7 @@ void Json::clear() {
         break;
 
     case JSON_STRING: {
-        if (value_.string_ != nullptr) {
-            printf("%s\n", value_.string_->c_str());
+        if (value_.string_) {
             delete value_.string_;
             value_.string_ = nullptr;
         }
@@ -321,7 +324,7 @@ void Json::clear() {
     }
 
     case JSON_ARRAY: {
-        if (value_.array_ != nullptr) {
+        if (value_.array_) {
             for (auto it = value_.array_->begin(); it != value_.array_->end(); it++) {
                 it->clear();
             }
@@ -332,7 +335,7 @@ void Json::clear() {
     }
 
     case JSON_OBJECT: {
-        if (value_.object_ != nullptr) {
+        if (value_.object_) {
             for (auto it = value_.object_->begin(); it != value_.object_->end(); it++) {
                 it->second.clear();
             }
@@ -464,7 +467,49 @@ Json& Json::operator[](const std::string& key) {
 const Json& Json::operator[](const std::string& key) const { return get(key); }
 
 Json& Json::operator=(const Json& other) {
-    copy(other);
+    // copy(other);
+
+    type_ = other.type_;
+
+    switch (type_) {
+
+    case JSON_NULL:
+        break;
+
+    case JSON_BOOL:
+        value_.bool_ = other.value_.bool_;
+        break;
+
+    case JSON_INT:
+        value_.int_ = other.value_.int_;
+        break;
+
+    case JSON_DOUBLE:
+        value_.double_ = other.value_.double_;
+        break;
+
+    case JSON_STRING: {
+        Json temp(other.value_.string_);
+        std::swap(value_.string_, temp.value_.string_);
+        break;
+    }
+
+    case JSON_ARRAY: {
+        Json temp(other.value_.array_);
+        std::swap(value_.array_, temp.value_.array_);
+        break;
+    }
+
+    case JSON_OBJECT: {
+        Json temp(other.value_.object_);
+        std::swap(value_.object_, temp.value_.object_);
+        break;
+    }
+
+    default:
+        break;
+    }
+
     return *this;
 }
 
