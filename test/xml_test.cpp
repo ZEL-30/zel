@@ -26,8 +26,7 @@ TEST_CASE("testing Class Xml") {
     root[0] = s1;
     root.append(s2);
 
-    // cout << root.str() << endl;
-    printf("%s\n", root.c_str());
+    cout << root.str() << endl;
 
     // // 遍历子节点方式一
     // for (auto it = root.begin(); it != root.end(); it++) {

@@ -1,6 +1,6 @@
-#include <string>
-#include<algorithm>
-
+#include <algorithm>
+#include <stdio.h>
+#include <string.h>
 
 namespace zel {
 
@@ -16,7 +16,7 @@ class string {
     }
     // 拷贝构造函数
     string(const string& other) : str_(nullptr) {
-        string temp(other.str_);   // 函数调用结束时会被析构
+        string temp(other.str_);    // 函数调用结束时会被析构
         std::swap(str_, temp.str_); // 交换
     }
     // 赋值运算符重载
@@ -27,8 +27,13 @@ class string {
         }
         return *this;
     }
+
+    char* str() { return str_; }
+
     ~string() // 和传统方法相同
     {
+
+        printf("析构函数：%s\n", str_);
         if (str_) {
             delete[] str_;
             str_ = nullptr;
@@ -38,8 +43,7 @@ class string {
   private:
     char* str_;
 };
-} // namespace bit2
-
+} // namespace zel
 
 int main() {
 
@@ -47,7 +51,7 @@ int main() {
 
     zel::string aa = string;
 
-    printf("%s\n", aa);
+    printf("%s\n", aa.str());
 
     return 0;
 }

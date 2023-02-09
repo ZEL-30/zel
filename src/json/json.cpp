@@ -14,7 +14,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <type_traits>
 #include <variant>
 #include <vector>
 
@@ -170,17 +169,36 @@ const Json& Json::get(const std::string& key) const {
     return null();
 }
 
-void Json::set(const Json& other) {}
+void Json::set(const Json& other) { copy(other); }
 
-void Json::set(bool value) {}
+void Json::set(bool value) {
+    clear();
+    type_ = JSON_BOOL;
+    value_.bool_ = value;
+}
 
-void Json::set(int value) {}
+void Json::set(int value) {
+    clear();
+    type_ = JSON_INT;
+    value_.int_ = value;
+}
 
-void Json::set(double value) {}
+void Json::set(double value) {
+    clear();
+    type_ = JSON_DOUBLE;
+    value_.double_ = value;
+}
 
-void Json::set(const char* value) {}
+void Json::set(const char* value) {
+    std::string name(value);
+    set(name);
+}
 
-void Json::set(const std::string& value) {}
+void Json::set(const std::string& value) {
+    clear();
+    type_ = JSON_STRING;
+    *value_.string_ = value;
+}
 
 void Json::append(const Json& other) {
     if (type_ != JSON_ARRAY) {
@@ -274,20 +292,23 @@ void Json::copy(const Json& other) {
         break;
 
     case JSON_STRING: {
-        Json temp(other.value_.string_);
-        std::swap(value_.string_, temp.value_.string_);
+        auto temp = new std::string();
+        *temp = *other.value_.string_;
+        std::swap(value_.string_, temp);
         break;
     }
 
     case JSON_ARRAY: {
-        Json temp(other.value_.array_);
-        std::swap(value_.array_, temp.value_.array_);
+        auto temp = new std::vector<Json>();
+        *temp = *other.value_.array_;
+        std::swap(value_.array_, temp);
         break;
     }
 
     case JSON_OBJECT: {
-        Json temp(other.value_.object_);
-        std::swap(value_.object_, temp.value_.object_);
+        auto temp = new std::map<std::string, Json>();
+        *temp = *other.value_.object_;
+        std::swap(value_.object_, temp);
         break;
     }
 
@@ -467,49 +488,7 @@ Json& Json::operator[](const std::string& key) {
 const Json& Json::operator[](const std::string& key) const { return get(key); }
 
 Json& Json::operator=(const Json& other) {
-    // copy(other);
-
-    type_ = other.type_;
-
-    switch (type_) {
-
-    case JSON_NULL:
-        break;
-
-    case JSON_BOOL:
-        value_.bool_ = other.value_.bool_;
-        break;
-
-    case JSON_INT:
-        value_.int_ = other.value_.int_;
-        break;
-
-    case JSON_DOUBLE:
-        value_.double_ = other.value_.double_;
-        break;
-
-    case JSON_STRING: {
-        Json temp(other.value_.string_);
-        std::swap(value_.string_, temp.value_.string_);
-        break;
-    }
-
-    case JSON_ARRAY: {
-        Json temp(other.value_.array_);
-        std::swap(value_.array_, temp.value_.array_);
-        break;
-    }
-
-    case JSON_OBJECT: {
-        Json temp(other.value_.object_);
-        std::swap(value_.object_, temp.value_.object_);
-        break;
-    }
-
-    default:
-        break;
-    }
-
+    copy(other);
     return *this;
 }
 

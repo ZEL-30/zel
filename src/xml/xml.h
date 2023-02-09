@@ -48,8 +48,8 @@ class Xml {
     /// @brief 节点序列化 C++ string
     std::string str() const;
 
-    /// @brief 序列化为 C char*
-    const std::basic_string<char>::value_type* c_str() const;
+    // /// @brief 序列化为 C char*
+    // const std::basic_string<char>::value_type* c_str() const;
 
     void clear();
 

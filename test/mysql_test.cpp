@@ -1,7 +1,7 @@
 #include "models/test_data.h"
 
 #include <mysql/database.h>
-using namespace zel::mysql;
+using mysql = zel::mysql::Database;
 
 #include <utility/ini_file.h>
 #include <utility/logger.h>
@@ -19,7 +19,8 @@ TEST_CASE("testing Class mysql") {
     IniFile ini;
     ini.load("../config/main.ini");
 
-    Database database;
+    // Database database;
+    mysql database;
 
     database.connect(ini["mysql"]["ip"],
                      ini["mysql"]["port"],
@@ -29,14 +30,19 @@ TEST_CASE("testing Class mysql") {
                      ini["mysql"]["charset"],
                      true);
 
-    TestData test_data;
-    test_data["state"] = 1;
+    // TestData test_data;
+    // test_data["state"] = 1;
 
-    TestData(database)
-        .where("state", 0)
-        .order(ini["mysql"]["primary_key"].str() + " asc")
-        .one()
-        .update(test_data);
+    // TestData(database)
+    //     .where("state", 0)
+    //     .order(ini["mysql"]["primary_key"].str() + " asc")
+    //     .one()
+    //     .update(test_data);
+
+    auto table = TestData(database).column("data_id");
+    for (auto one : table) {
+        cout << one.str() << endl;
+    }
 
     // cout << one("ICCID").str() << endl;
 

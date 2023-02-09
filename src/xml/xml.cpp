@@ -123,8 +123,6 @@ std::string Xml::str() const {
     return ss.str();
 }
 
-const std::basic_string<char>::value_type* Xml::c_str() const { return str().c_str(); }
-
 void Xml::clear() {
     if (name_ != nullptr) {
         delete name_;
