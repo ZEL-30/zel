@@ -27,6 +27,8 @@ class Token {
 
         COMMA, // ,
 
+        COMMENT, // 注释
+
         ERRORS, // 错误
 
         END_OF_SOURCE, // EOF

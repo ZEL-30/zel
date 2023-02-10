@@ -21,13 +21,13 @@ class Lexer {
 
   private:
     char advance();
-
-    void skipWhiteSpace();
+    char currentChar();
 
     bool isLetter(char ch);
     bool isNumber(char ch);
 
-    Token string();
+    Token identifierOrKeywords();
+    Token comment();
 
   private:
     std::string source_;

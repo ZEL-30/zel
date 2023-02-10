@@ -1,6 +1,5 @@
 #include "token.h"
 
-
 namespace zel {
 
 namespace interpreter {
@@ -19,21 +18,57 @@ std::string Token::str() const {
     switch (type_) {
 
     case STRING:
+        str = "STRING: " + value_;
         break;
 
     case IDENTIFIER:
+        str = "IDENTIFIER: " + value_;
+        break;
+
     case KEYWORDS:
+        str = "KEYWORDS: " + value_;
+        break;
     case LPAREN:
+        str = "LPAREN";
+        break;
+
     case RPAREN:
+        str = "RPAREN";
+        break;
+
     case PLUS:
+        str = "PLUS";
+        break;
+
     case LBRACKET:
+        str = "LBRACKET";
+        break;
+
     case RBRACKET:
+        str = "RBRACKET";
+        break;
+
     case EQUAL:
         str = "EQUAL";
         break;
+
     case COMMA:
+        str = "COMMA";
+        break;
+
+    case COMMENT:
+        str = "COMMENT: " + value_;
+        break;
+
     case ERRORS:
+        str = "ERRORS";
+        break;
+
     case END_OF_SOURCE:
+        str = "EOF";
+        break;
+
+    default:
         break;
     }
 

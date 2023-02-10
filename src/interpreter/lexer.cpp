@@ -1,5 +1,6 @@
 #include "lexer.h"
 
+#include <cassert>
 #include <vector>
 
 namespace zel {
@@ -17,24 +18,26 @@ std::vector<Token> Lexer::Tokenize() {
 
     std::vector<Token> v_tokens;
 
-    if (source_ == "====")
+    if (source_ == "")
         return {};
 
-    while (source_[index_] != NULL) {
+    while (source_[index_] != '\0') {
 
         switch (source_[index_]) {
 
         // 识别注释
         case ';':
-        case '/':
-
+        case '/': {
+            v_tokens.push_back(comment());
             break;
+        }
 
         case ' ':
         case '.':
         case '\n':
         case '\t':
         case '\r': {
+            advance();
             break;
         }
 
@@ -45,7 +48,7 @@ std::vector<Token> Lexer::Tokenize() {
             break;
         }
 
-        // 字符串
+        // 识别字符串、标识符或关键字
         case '0':
         case '1':
         case '2':
@@ -57,9 +60,6 @@ std::vector<Token> Lexer::Tokenize() {
         case '8':
         case '9':
         case '*':
-            break;
-
-        // 识别标识符
         case 'a':
         case 'A':
         case 'b':
@@ -111,38 +111,46 @@ std::vector<Token> Lexer::Tokenize() {
         case 'y':
         case 'Y':
         case 'z':
-        case 'Z':
+        case 'Z': {
+            v_tokens.push_back(identifierOrKeywords());
             break;
+        }
 
         // 识别圆括号
         case '(': {
-
+            v_tokens.push_back(Token("(", Token::LPAREN));
+            advance();
             break;
         }
         case ')': {
-
+            v_tokens.push_back(Token(")", Token::RPAREN));
+            advance();
             break;
         }
 
         // 识别中括号
         case '[': {
-
+            v_tokens.push_back(Token(")", Token::LBRACKET));
+            advance();
             break;
         }
         case ']': {
-
+            v_tokens.push_back(Token(")", Token::RBRACKET));
+            advance();
             break;
         }
 
         // 识别逗号
         case ',': {
-
+            v_tokens.push_back(Token(",", Token::COMMA));
+            advance();
             break;
         }
 
         // 没有匹配到， 非法字符错误
         default: {
-
+            printf("unexpected char '%c'\n", currentChar());
+            advance();
             break;
         }
         }
@@ -151,16 +159,39 @@ std::vector<Token> Lexer::Tokenize() {
     return v_tokens;
 }
 
-char Lexer::advance() { return source_[index_++]; }
+Token Lexer::identifierOrKeywords() {
+    std::string temp;
 
-void Lexer::skipWhiteSpace() {
-    while (source_[index_] == ' ' || source_[index_] == '\r' || source_[index_] == '\t' ||
-           source_[index_] == '\n') {
-        index_++;
+    while (isLetter(currentChar()) || isNumber(currentChar()) || currentChar() == '_' ||
+           currentChar() == '.' || currentChar() == '*' || currentChar() == '-') {
+        temp += currentChar();
+        advance();
     }
+
+    if (temp.length() <= 10) {
+        return Token(temp, Token::IDENTIFIER);
+    }
+
+    return Token(temp, Token::STRING);
 }
 
-bool Lexer::isLetter(char ch) { return (ch >= 'a' && ch <= 'Z'); }
+Token Lexer::comment() {
+
+    std::string temp;
+
+    while (currentChar() != '\n' && currentChar() != '\0') {
+        temp += currentChar();
+        advance();
+    }
+
+    return Token(temp, Token::COMMENT);
+}
+
+char Lexer::currentChar() { return source_[index_]; }
+
+char Lexer::advance() { return source_[index_++]; }
+
+bool Lexer::isLetter(char ch) { return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'); }
 
 bool Lexer::isNumber(char ch) { return (ch >= '0' && ch <= '9'); }
 

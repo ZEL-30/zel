@@ -3,30 +3,52 @@ using namespace zel::interpreter;
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 using namespace std;
 
-TEST_CASE("测试 Lexer 类") {
+// TEST_CASE("字符串 测试 Lexer 类") {
 
-    // ifstream fin;
+//     string source = R"(
+// *9000)
+
+//     )";
+
+//     Lexer lexer(source);
+//     auto v_tokens = lexer.Tokenize();
+
+//     cout << "[";
+//     for (int i = 0; i < v_tokens.size(); i++) {
+//         if (i != 0)
+//             cout << ", ";
+//         cout << v_tokens[i].str();
+//     }
+//     cout << "]" << endl;
+
+// }
+
+TEST_CASE("文件 测试 Lexer 类") {
+
+    ifstream fin;
     // fin.open("../script/test.txt");
-    // if (fin.fail()) {
-    //     throw std::logic_error("open script failed.");
-    // }
+    fin.open("/Users/zel/Workspaces/C++/zel/script/test.txt");
+    if (fin.fail()) {
+        throw std::logic_error("open script failed.");
+    }
 
-    // stringstream ss;
-    // ss << fin.rdbuf();
-    // string source = ss.str();
-
-    string source = "==";
+    stringstream ss;
+    ss << fin.rdbuf();
+    string source = ss.str();
 
     Lexer lexer(source);
-    auto v_tokens = lexer.Tokenize(); 
+    auto v_tokens = lexer.Tokenize();
 
-    cout << v_tokens[0].str() << endl;
-
-
-
+    cout << "[";
+    for (int i = 0; i < v_tokens.size(); i++) {
+        if (i != 0)
+            cout << ", ";
+        cout << v_tokens[i].str();
+    }
+    cout << "]" << endl;
 }
