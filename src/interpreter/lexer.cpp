@@ -25,16 +25,21 @@ std::vector<Token> Lexer::Tokenize() {
 
         switch (source_[index_]) {
 
+        case '\n':{
+            v_tokens.push_back(Token("EOL", Token::END_OF_LINE));
+            advance();
+            break;
+        }
+
+
         // 识别注释
         case ';':
         case '/': {
             v_tokens.push_back(comment());
             break;
         }
-
         case ' ':
         case '.':
-        case '\n':
         case '\t':
         case '\r': {
             advance();
@@ -155,6 +160,8 @@ std::vector<Token> Lexer::Tokenize() {
         }
         }
     }
+
+    v_tokens.push_back(Token("EOS", Token::END_OF_SOURCE));
 
     return v_tokens;
 }

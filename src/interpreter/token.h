@@ -31,7 +31,8 @@ class Token {
 
         ERRORS, // 错误
 
-        END_OF_SOURCE, // EOF
+        END_OF_SOURCE, // EOS
+        END_OF_LINE,   // EOL
     };
 
     Token();
@@ -40,6 +41,8 @@ class Token {
 
     /// @brief 节点序列化 C++ string
     std::string str() const;
+
+    Type type();
 
   private:
     Type type_;

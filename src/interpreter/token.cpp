@@ -11,6 +11,8 @@ Token::Token(const std::string& value, Type type) {
     type_ = type;
 }
 
+Token::~Token() {}
+
 std::string Token::str() const {
 
     std::string str;
@@ -65,8 +67,13 @@ std::string Token::str() const {
         break;
 
     case END_OF_SOURCE:
-        str = "EOF";
+        str = "EOS";
         break;
+
+    case END_OF_LINE:
+        str = "EOL";
+        break;
+
 
     default:
         break;
@@ -75,7 +82,9 @@ std::string Token::str() const {
     return str;
 }
 
-Token::~Token() {}
+Token::Type Token::type()  {
+    return type_;
+}
 
 } // namespace interpreter
 
