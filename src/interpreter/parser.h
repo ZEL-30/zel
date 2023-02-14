@@ -1,49 +1,57 @@
-// #pragma once
-// #include "ast_node.h"
-// #include "lexer.h"
-// #include "token.h"
+#pragma once
+#include "ast_node.h"
+#include "lexer.h"
+#include "token.h"
 
-// #include <vector>
+#include <vector>
 
-// namespace zel {
+namespace zel {
 
-// namespace interpreter {
+namespace interpreter {
 
-// class Parser {
+// @brief 语法解析器
+class Parser {
 
-//   public:
-//     Parser(const std::string source);
-//     ~Parser();
+  public:
+    Parser(const std::string source);
 
-//     std::vector<AstNode*> parse();
+    // std::vector<AstNode*> AstNodesList();
 
-//   private:
-//     Token* currentToken();
+    std::vector<AstNode*> parse();
 
-//     AstNode* Parse();
+    ~Parser();
 
-//     AstNode* parseExpr();
+  private:
+    AstNode* parseExpr();
 
-//     /// @brief 函数调用
-//     AstNode* parseCall(char* keywords);
+    /// @brief 函数调用
+    AstNode* parseCall(char* keywords);
 
-//     AstNode* parseApdu();
+    AstNode* parseApdu();
 
-//     AstNode* parseTerm();
+    AstNode* parseTerm();
 
-//     AstNode* parseFactor();
+    AstNode* parseFactor();
 
-//     Token* advance();
+    Token* advance();
 
-//     Token* rollback();
+    Token* rollback();
 
-//   private:
-//     std::string source_;
-//     int token_index_;
-//     std::vector<Token> v_tokens_;
-//     Token* current_token_;
-// };
+    AstNode* BinOp(AstNode* (Parser::*func_a)(),
+                   std::vector<Token::Type>& ops,
+                   AstNode* (Parser::*func_b)() = NULL);
 
-// } // namespace interpreter
+  private:
+    int token_idx_;
+    Token* current_token_;
+    std::string source_; // 原文
 
-// } // namespace zel
+
+    std::vector<Token> v_tokens_;
+    std::vector<AstNode*> v_ats_nodes_;
+    std::vector<std::vector<Token*>> v_tokens_list_; // 词法单元容器列表
+};
+
+} // namespace interpreter
+
+} // namespace zel

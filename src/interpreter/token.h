@@ -42,6 +42,10 @@ class Token {
     /// @brief 节点序列化 C++ string
     std::string str() const;
 
+    std::string value() const;
+
+    bool matches(Type type, std::string keywords);
+
     Type type();
 
   private:

@@ -1,262 +1,276 @@
-// #include "parser.h"
-// #include "interpreter/ast_node.h"
-// #include <vector>
+#include "parser.h"
 
+#include "ast_node.h"
 
+#include <vector>
 
-// namespace zel {
+namespace zel {
 
-// namespace interpreter {
+namespace interpreter {
 
-// Parser::Parser(const std::string source) {
-//     source_ = source;
+Parser::Parser(const std::string source) { source_ = source; }
 
-//     v_tokens_.clear();
+Token* Parser::advance() {
+    token_idx_ += 1;
+    if (token_idx_ < v_tokens_.size()) {
+        current_token_ = &v_tokens_[token_idx_];
+    }
 
+    return current_token_;
+}
+
+Token* Parser::rollback() {
+    token_idx_ -= 1;
+    if (token_idx_ < v_tokens_.size()) {
+        current_token_ = &v_tokens_[token_idx_];
+    }
+
+    return current_token_;
+}
+
+// std::vector<AstNode*> Parser::AstNodesList() {
+
+//     // CLexer Lexer(file_name_, source_);
+//     CLexer* Lexer = new CLexer(file_name_, source_);
+
+//     v_tokens_list_ = Lexer->MakeTokensList();
+
+//     for (int i = 0; i < v_tokens_list_.size(); i++) {
+
+//         v_tokens_ = v_tokens_list_[i];
+
+//         v_ats_nodes_.push_back(Parse());
+//     }
+
+//     delete Lexer;
+
+//     return v_ats_nodes_;
 // }
 
-// Parser::~Parser() {}
+std::vector<AstNode*> Parser::parse() {
 
-// std::vector<AstNode*> Parser::parse() {
-//     Lexer lexer(source_);
-//     v_tokens_ = lexer.Tokenize();
+    Lexer lexer(source_);
 
-//     std::vector<AstNode*> v_astnodes_;    
+    v_tokens_ = lexer.Tokenize();
 
-//     token_index_ = -1;
-//     advance();
-//     v_astnodes_.push_back(parseFactor());
+    token_idx_ = -1;
+    advance();
 
-//     // while (current_token_->type() != Token::END_OF_SOURCE) {
-//     //     // throw std::logic_error("end of source error");
-//     // }
-//     return v_astnodes_;
-// }
+    std::vector<AstNode*> v_ats_nodes_;
+    AstNode* res = NULL;
+    while (current_token_->type() != Token::END_OF_SOURCE) {
 
-// AstNode* Parser::parseExpr() {
+        if (current_token_->type() == Token::END_OF_LINE) {
+            advance();
+            continue;
+        }
 
-//     /*
-//      * expr -> IDENTIFIER EQ expr
-//      *      -> IDENTIFIER L
-//      *      -> call ((STRING | LBRACKET) call)*
-//      */
+        res = parseExpr();
 
-//     AstNode* res = new AstNode();
+        v_ats_nodes_.push_back(res);
+    }
 
-//     switch (current_token_->type_) {
+    return v_ats_nodes_;
+}
 
-//     case CToken::ScriptTokenType::IDENTIFIER: {
-//         CToken* var_name = current_token_;
-//         advance();
+AstNode* Parser::parseExpr() {
 
-//         if (current_token_->type_ == CToken::ScriptTokenType::EQUAL) {
-//             advance();
+    /*
+     * expr -> IDENTIFIER EQ expr
+     *      -> IDENTIFIER L
+     *      -> call ((STRING | LBRACKET) call)*
+     */
 
-//             AstNode* expr = res->Register(Expr());
+    switch (current_token_->type()) {
 
-//             if (res->error_ != NULL)
-//                 return res;
+    case Token::IDENTIFIER: {
+        Token* var_name = current_token_;
+        advance();
 
-//             return res->Success(new CVarAssignNode(var_name, expr));
-//         } else {
-//             rollback();
-//             return Apdu();
-//         }
-//     }
+        if (current_token_->type() == Token::EQUAL) {
+            advance();
 
-//     case CToken::ScriptTokenType::KEYWORDS: {
-//         if (current_token_->Matches(CToken::ScriptTokenType::KEYWORDS, "crypto")) {
-//             return Call("crypto");
-//         } else if (current_token_->Matches(CToken::ScriptTokenType::KEYWORDS, "string")) {
-//             return Call("string");
-//         } else {
-//         }
-//     }
+            AstNode* expr = parseExpr();
 
-//     // apdu
-//     default: {
-//         return Apdu();
-//     }
-//     }
-// }
+            return new VarAssignNode(var_name, expr);
+        } else {
+            rollback();
+            return parseApdu();
+        }
+    }
 
-// AstNode* Parser::parseCall(char* keywords) {
+    case Token::KEYWORDS: {
+        if (current_token_->matches(Token::KEYWORDS, "crypto")) {
+            return parseCall("crypto");
+        } else if (current_token_->matches(Token::KEYWORDS, "string")) {
+            return parseCall("string");
+        } else {
+        }
+    }
 
-//     /*
-//      * call -> (KEYWORDS:crypto | KEYWORDS:string) factor (LPAREN (expr (COMMA expr)*)? RPAREN)
-//      *      -> expr (LPAREN (expr (COMMA expr)*)? RPAREN)
-//      *      -> factor
-//      */
+    // apdu
+    default: {
+        return parseApdu();
+    }
+    }
+}
 
-//     AstNode* res = new AstNode();
+AstNode* Parser::parseCall(char* keywords) {
 
-//     advance();
+    /*
+     * call -> (KEYWORDS:crypto | KEYWORDS:string) factor (LPAREN (expr (COMMA expr)*)? RPAREN)
+     *      -> expr (LPAREN (expr (COMMA expr)*)? RPAREN)
+     *      -> factor
+     */
 
-//     AstNode* factor = res->Register(Factor());
+    advance();
 
-//     if (current_token_->type_ == CToken::ScriptTokenType::LPAREN) {
+    AstNode* factor = parseFactor();
 
-//         advance();
+    if (current_token_->type() == Token::LPAREN) {
 
-//         std::vector<AstNode*> v_arg_nodes;
+        advance();
 
-//         // add()
-//         if (current_token_->type_ == CToken::ScriptTokenType::RPAREN) {
-//             advance();
-//         } else {
-//             v_arg_nodes.push_back(res->Register(Expr()));
-//             if (res->error_ != NULL) {
-//                 return res;
-//             }
+        std::vector<AstNode*> v_arg_nodes;
 
-//             while (current_token_->type_ == CToken::ScriptTokenType::COMMA) {
-//                 advance();
+        // add()
+        if (current_token_->type() == Token::RPAREN) {
+            advance();
+        } else {
+            v_arg_nodes.push_back(parseExpr());
+        }
 
-//                 v_arg_nodes.push_back(res->Register(Expr()));
-//                 if (res->error_ != NULL)
-//                     return res;
-//             }
+        while (current_token_->type() == Token::COMMA) {
+            advance();
 
-//             if (current_token_->type_ != CToken::ScriptTokenType::RPAREN) {
-//                 return res->Failure(new CInvalidSyntaxError(
-//                     current_token_->pos_start_, current_token_->pos_end_, "Expected ',' or ')'"));
-//             }
+            v_arg_nodes.push_back(parseExpr());
+        }
 
-//             advance();
-//         }
+        if (current_token_->type() != Token::RPAREN) {
+        }
 
-//         if (strcmp(keywords, "crypto") == 0)
-//             return res->Success(new CCryptoClassNode(factor, v_arg_nodes));
-//         else if (strcmp(keywords, "string") == 0)
-//             return res->Success(new CStringClassNode(factor, v_arg_nodes));
-//     }
+        advance();
+        if (strcmp(keywords, "crypto") == 0)
+            return new CryptoClassNode(factor, v_arg_nodes);
+        else if (strcmp(keywords, "string") == 0)
+            return new StringClassNode(factor, v_arg_nodes);
+    }
 
-//     return res->Success(factor);
-// }
+    return factor;
+}
 
-// AstNode* Parser::parseApdu() {
-//     // apdu -> term (LPAREN (term (COMMA term)*)? RPAREN)
+AstNode* Parser::parseApdu() {
+    // apdu -> term (LPAREN (term (COMMA term)*)? RPAREN)
 
-//     AstNode* res = new AstNode();
+    AstNode* term = parseTerm();
 
-//     AstNode* term = res->Register(Term());
+    if (current_token_->type() == Token::LPAREN) {
 
-//     if (current_token_->type_ == CToken::ScriptTokenType::LPAREN) {
+        advance();
 
-//         advance();
+        std::vector<AstNode*> v_arg_nodes;
 
-//         std::vector<AstNode*> v_arg_nodes;
+        // add()
+        if (current_token_->type() == Token::RPAREN) {
+            advance();
+        } else {
+            AstNode* factor = parseFactor();
+            // ([divbuf]9000)
+            if (current_token_->type() == Token::STRING) {
+                AstNode* factor_end = parseFactor();
+                factor = new ApduResultNode(factor->var_name_token_, factor_end);
+            }
 
-//         // add()
-//         if (current_token_->type_ == CToken::ScriptTokenType::RPAREN) {
-//             advance();
-//         } else {
-//             AstNode* factor = res->Register(Factor());
-//             if (res->error_ != NULL) {
-//                 return res;
-//             }
-//             // ([divbuf]9000)
-//             if (current_token_->type_ == CToken::ScriptTokenType::STRING) {
-//                 AstNode* factor_end = res->Register(Factor());
-//                 factor = new CApduResultNode(factor->var_name_token_, factor_end);
-//             }
+            v_arg_nodes.push_back(factor);
 
-//             v_arg_nodes.push_back(factor);
+            while (current_token_->type() == Token::COMMA) {
+                advance();
 
-//             while (current_token_->type_ == CToken::ScriptTokenType::COMMA) {
-//                 advance();
+                v_arg_nodes.push_back(parseFactor());
+            }
 
-//                 v_arg_nodes.push_back(res->Register(Factor()));
-//                 if (res->error_ != NULL)
-//                     return res;
-//             }
+            if (current_token_->type() != Token::RPAREN) {
+            }
 
-//             if (current_token_->type_ != CToken::ScriptTokenType::RPAREN) {
+            advance();
+        }
+        return new ApduNode(term, v_arg_nodes);
+    }
+    return term;
+}
 
-//                 return res->Failure(new CInvalidSyntaxError(
-//                     current_token_->pos_start_, current_token_->pos_end_, "Expected ',' or ')'"));
-//             }
+AstNode* Parser::parseTerm() {
+    // factor ((STRING | LBRACKET) factor)*
+    std::vector<Token::Type> ops = {Token::STRING, Token::LBRACKET};
+    return BinOp(&Parser::parseFactor, ops);
+}
 
-//             advance();
-//         }
-//         return res->Success(new CApduNode(term, v_arg_nodes));
-//     }
+AstNode* Parser::parseFactor() {
+    /*
+     * atom -> STRING | IDENTIFIER
+     *      -> LBRACKET IDENTIFIER RBRACKET
+     */
 
-//     return res->Success(term);
-// }
+    Token* token = current_token_;
+    switch (token->type()) {
 
-// AstNode* Parser::parseTerm() {
-//     // factor ((STRING | LBRACKET) factor)*
-//     std::vector<CToken::ScriptTokenType> ops = {CToken::ScriptTokenType::STRING,
-//                                                 CToken::ScriptTokenType::LBRACKET};
-//     return BinOp(&Parser::Factor, ops);
-// }
+    // STRING | IDENTIFIER
+    case Token::IDENTIFIER: {
 
+        advance();
+        return new VarAccessNode(token);
+    }
+    case Token::STRING: {
+        advance();
+        return new StringNode(token);
+    }
 
-// AstNode* Parser::parseFactor() {
-//     /*
-//      * atom -> STRING | IDENTIFIER
-//      *      -> LBRACKET IDENTIFIER RBRACKET
-//      */
+    // LBRACKET IDENTIFIER RBRACKET
+    case Token::LBRACKET: {
+        advance();
 
-//     Token* token = current_token_;
-//     switch (token->type()) {
+        AstNode* identifier = new VarAccessNode(current_token_);
+        advance();
 
-//     // STRING | IDENTIFIER
-//     case Token::Type::IDENTIFIER: {
-//         advance();
-//         return new VarAccessNode(token);
-//         break;
-//     }
-//     case Token::Type::STRING: {
-//         advance();
-//         return new StringNode(*token);
-//     }
+        if (current_token_->type() == Token::RBRACKET) {
+            advance();
+            return identifier;
+        } else {
+            // 返回报错
+        }
+    }
 
-//     // LBRACKET IDENTIFIER RBRACKET
-//     case Token::Type::LBRACKET: {
-//         // advance();
+    default:
+        break;
+    }
+}
 
-//         // AstNode* identifier = new CVarAccessNode(current_token_);
-//         // advance();
+AstNode* Parser::BinOp(AstNode* (Parser::*func_a)(),
+                       std::vector<Token::Type>& ops,
+                       AstNode* (Parser::*func_b)()) {
 
-//         // if (current_token_->type_ == Token::Type::RBRACKET) {
-//         //     advance();
-//         //     return res->Success(identifier);
-//         // } else {
-//         //     // 返回报错
-//         //     return res->Failure(new CInvalidSyntaxError(
-//         //         current_token_->pos_start_, current_token_->pos_end_, "Expected ']' "));
-//         // }
-//         break;
-//     }
+    if (func_b == NULL)
+        func_b = func_a;
 
-//     default:
-//         advance();
-//         break;
-//     }
-// }
+    // 递归调用， 构建AST
 
-// Token* Parser::currentToken() { return &v_tokens_[token_index_]; }
+    AstNode* left = (this->*func_a)();
 
-// Token* Parser::advance() {
-//     token_index_ += 1;
-//     if (token_index_ < v_tokens_.size()) {
-//         current_token_ = &v_tokens_[token_index_];
-//     }
+    while (current_token_->type() == ops[0] || current_token_->type() == ops[1]) {
+        // Token *op_token = current_token_;
+        // advance();
 
-//     return current_token_;
-// }
+        Token* op_token = new Token("+", Token::PLUS);
+        AstNode* right = (this->*func_b)();
 
-// Token* Parser::rollback() {
-//     token_index_ -= 1;
-//     if (token_index_ < v_tokens_.size()) {
-//         current_token_ = &v_tokens_[token_index_];
-//     }
+        left = new BinOpNode(left, op_token, right);
+    }
 
-//     return current_token_;
-// }
+    return left;
+}
 
-// } // namespace interpreter
+Parser::~Parser() {}
 
-// } // namespace zel
+} // namespace interpreter
+
+} // namespace zel

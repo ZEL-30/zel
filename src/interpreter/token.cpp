@@ -82,9 +82,20 @@ std::string Token::str() const {
     return str;
 }
 
+
+std::string Token::value() const {
+    return value_;
+}
+
 Token::Type Token::type()  {
     return type_;
 }
+
+
+bool Token::matches(Type type, std::string keywords) {
+    return true;
+}
+
 
 } // namespace interpreter
 

@@ -10,7 +10,9 @@ using namespace std;
 
 TEST_CASE("字符串 测试 Lexer 类") {
 
-    string source = R"(404142434445464748494A4B4C4D4E4F
+    string source = R"(
+        KEY = 404142434445464748494A4B4C4D4E4F
+        abc = 345LKSDJV3r4
 
     )";
 
