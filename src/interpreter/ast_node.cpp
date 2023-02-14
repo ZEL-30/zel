@@ -1,40 +1,40 @@
-#include "ast_node.h"
+// #include "ast_node.h"
 
-#include <string>
+// #include <string>
 
-namespace zel {
+// namespace zel {
 
-namespace interpreter {
+// namespace interpreter {
 
-// std::string AstNode::str() const {
-//     // std::string str;
+// // std::string AstNode::str() const {
+// //     // std::string str;
 
-//     // switch (type_) {
+// //     // switch (type_) {
 
-//     // case APDU:
-//     // case STRING:
-//     // case APPEND:
-//     // case VARACCESS:
-//     // case VARASSIGN:
-//     // case FUNCTION:
-//     //     break;
-//     // }
-// };
+// //     // case APDU:
+// //     // case STRING:
+// //     // case APPEND:
+// //     // case VARACCESS:
+// //     // case VARASSIGN:
+// //     // case FUNCTION:
+// //     //     break;
+// //     // }
+// // };
 
-StringNode::StringNode(Token& token) {
-    token_ = token;
-}
+// StringNode::StringNode(Token& token) {
+//     token_ = token;
+// }
 
-// AstNode StringNode::value() {}
+// // AstNode StringNode::value() {}
 
-std::string StringNode::str() const {
-    std::string str;
-    str = "(" + token_.str() + ")";
-    return str;
-}
+// std::string StringNode::str() const {
+//     std::string str;
+//     str = "(" + token_.str() + ")";
+//     return str;
+// }
 
-StringNode::~StringNode() {}
+// StringNode::~StringNode() {}
 
-} // namespace interpreter
+// } // namespace interpreter
 
-} // namespace zel
+// } // namespace zel

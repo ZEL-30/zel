@@ -46,7 +46,6 @@ TEST_CASE("testing Class mysql") {
 
     // cout << one("ICCID").str() << endl;
 
-
     // // 原地修改
     // TestData(database)
     //     .where("state", 1)

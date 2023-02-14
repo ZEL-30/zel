@@ -27,12 +27,17 @@ PUBLIC
 )
 
 
+
 add_executable(mysql_test mysql_test.cpp models/test_data.h)
-target_include_directories(mysql_test PUBLIC ${CMAKE_SOURCE_DIR}/vendor)
+target_include_directories(mysql_test 
+PUBLIC 
+    ${CMAKE_SOURCE_DIR}/vendor
+)
 target_link_libraries(mysql_test
 PUBLIC
     zel
 )
+
 
 add_executable(deep_copy deep_copy.cpp models/test_data.h)
 target_include_directories(deep_copy PUBLIC ${CMAKE_SOURCE_DIR}/vendor)

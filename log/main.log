@@ -9,3 +9,42 @@
 2023-02-09 11:26:18 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
 2023-02-09 11:26:18 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
 2023-02-09 11:26:18 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:43:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:43:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 09:43:53 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:44:41 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:44:41 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 09:44:41 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:45:49 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:45:49 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 09:45:49 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:46:47 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:46:47 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 09:46:47 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:47:45 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 09:47:45 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 09:47:45 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:55:55 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:55:55 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 10:55:55 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:56:11 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:56:11 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 10:56:11 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:56:12 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:56:12 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 10:56:12 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:56:58 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:56:58 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 10:56:58 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:58:43 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:58:43 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 10:58:43 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:58:44 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 10:58:44 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 10:58:44 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 11:00:02 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 11:00:02 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 11:00:02 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 13:45:02 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:62 mysql connect success: host=127.0.0.1 port=3305 username=root database=data
+2023-02-13 13:45:02 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:259 sql: select `data_id` from `test_data`
+2023-02-13 13:45:02 DEBUG D:\Workspaces\C++\zel\src\mysql\connection.cpp:80 mysql close: host=127.0.0.1 port=3305 username=root database=data
