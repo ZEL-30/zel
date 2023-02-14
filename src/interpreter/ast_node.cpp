@@ -61,7 +61,7 @@ StringNode::StringNode(Token* token) {
 }
 std::string StringNode::str() const { 
     std::stringstream ss;
-    ss << "(" << token_->value() << ")";
+    ss << "(" << token_->str() << ")";
 
     return ss.str(); 
 }
@@ -89,7 +89,7 @@ VarAssignNode::~VarAssignNode() {}
 std::string VarAssignNode::str() const { 
     std::stringstream ss;
 
-    ss << "(" << var_name_token_->value() << ": " << value_node_->str() << ")";
+    ss << "(" << var_name_token_->str() << ", " << value_node_->str() << ")";
 
 
     return ss.str(); 

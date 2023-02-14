@@ -19,13 +19,9 @@ TEST_CASE("字符串 测试 Lexer 类") {
     Parser parser(source);
     auto v_astnodes = parser.parse();
 
-    cout << "[";
     for (int i = 0; i < v_astnodes.size(); i++) {
-        if (i != 0)
-            cout << ", ";
-        cout << v_astnodes[i]->str();
+        cout << v_astnodes[i]->str() << endl;
     }
-    cout << "]" << endl;
 
 }
 
