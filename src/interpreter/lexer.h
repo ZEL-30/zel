@@ -2,6 +2,7 @@
 
 #include "token.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -17,7 +18,7 @@ class Lexer {
 
     /// @brief 进行词法分析，获取所有 tokens.
     /// @return 所有 tokens.
-    std::vector<Token> Tokenize();
+    std::vector<std::shared_ptr<Token>> Tokenize();
 
   private:
     char advance();
@@ -26,8 +27,8 @@ class Lexer {
     bool isLetter(char ch);
     bool isNumber(char ch);
 
-    Token identifierOrKeywords();
-    Token comment();
+    std::shared_ptr<Token> identifierOrKeywords();
+    std::shared_ptr<Token> comment();
 
   private:
     std::string source_;

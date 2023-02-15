@@ -3,6 +3,7 @@
 #include "lexer.h"
 #include "token.h"
 
+#include <memory>
 #include <vector>
 
 namespace zel {
@@ -13,43 +14,38 @@ namespace interpreter {
 class Parser {
 
   public:
-    Parser(const std::string source);
+    Parser(const std::string& source);
 
-    // std::vector<AstNode*> AstNodesList();
-
-    std::vector<AstNode*> parse();
+    std::vector<std::shared_ptr<AstNode>> parse();
 
     ~Parser();
 
   private:
-    AstNode* parseExpr();
+    std::shared_ptr<AstNode> parseExpr();
 
     /// @brief 函数调用
-    AstNode* parseCall(char* keywords);
+    std::shared_ptr<AstNode> parseCall(char* keywords);
 
-    AstNode* parseApdu();
+    std::shared_ptr<AstNode> parseApdu();
 
-    AstNode* parseTerm();
+    std::shared_ptr<AstNode> parseTerm();
 
-    AstNode* parseFactor();
+    std::shared_ptr<AstNode> parseFactor();
 
-    Token* advance();
+    std::shared_ptr<Token> advance();
 
-    Token* rollback();
+    std::shared_ptr<Token> rollback();
 
-    AstNode* BinOp(AstNode* (Parser::*func_a)(),
+    std::shared_ptr<AstNode> binOp(std::shared_ptr<AstNode> (Parser::*func_a)(),
                    std::vector<Token::Type>& ops,
-                   AstNode* (Parser::*func_b)() = NULL);
+                   std::shared_ptr<AstNode> (Parser::*func_b)() = NULL);
 
   private:
     int token_idx_;
-    Token* current_token_;
+    std::shared_ptr<Token> current_token_;
     std::string source_; // 原文
 
-
-    std::vector<Token> v_tokens_;
-    std::vector<AstNode*> v_ats_nodes_;
-    std::vector<std::vector<Token*>> v_tokens_list_; // 词法单元容器列表
+    std::vector<std::shared_ptr<Token>> v_tokens_;
 };
 
 } // namespace interpreter

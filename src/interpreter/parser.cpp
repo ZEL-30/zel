@@ -2,52 +2,20 @@
 
 #include "ast_node.h"
 
+#include <memory>
+#include <processthreadsapi.h>
+#include <string.h>
 #include <vector>
 
 namespace zel {
 
 namespace interpreter {
 
-Parser::Parser(const std::string source) { source_ = source; }
+Parser::Parser(const std::string& source) { source_ = source; }
 
-Token* Parser::advance() {
-    token_idx_ += 1;
-    if (token_idx_ < v_tokens_.size()) {
-        current_token_ = &v_tokens_[token_idx_];
-    }
+Parser::~Parser() {}
 
-    return current_token_;
-}
-
-Token* Parser::rollback() {
-    token_idx_ -= 1;
-    if (token_idx_ < v_tokens_.size()) {
-        current_token_ = &v_tokens_[token_idx_];
-    }
-
-    return current_token_;
-}
-
-// std::vector<AstNode*> Parser::AstNodesList() {
-
-//     // CLexer Lexer(file_name_, source_);
-//     CLexer* Lexer = new CLexer(file_name_, source_);
-
-//     v_tokens_list_ = Lexer->MakeTokensList();
-
-//     for (int i = 0; i < v_tokens_list_.size(); i++) {
-
-//         v_tokens_ = v_tokens_list_[i];
-
-//         v_ats_nodes_.push_back(Parse());
-//     }
-
-//     delete Lexer;
-
-//     return v_ats_nodes_;
-// }
-
-std::vector<AstNode*> Parser::parse() {
+std::vector<std::shared_ptr<AstNode>> Parser::parse() {
 
     Lexer lexer(source_);
 
@@ -55,25 +23,23 @@ std::vector<AstNode*> Parser::parse() {
 
     token_idx_ = -1;
     advance();
+    std::vector<std::shared_ptr<AstNode>> v_ats_nodes_;
 
-    std::vector<AstNode*> v_ats_nodes_;
-    AstNode* res = NULL;
     while (current_token_->type() != Token::END_OF_SOURCE) {
 
-        if (current_token_->type() == Token::END_OF_LINE) {
-            advance();
-            continue;
+        if (current_token_->type() != Token::END_OF_LINE) {
+            auto res = parseExpr();
+
+            v_ats_nodes_.push_back(res);
         }
 
-        res = parseExpr();
-
-        v_ats_nodes_.push_back(res);
+        advance();
     }
 
     return v_ats_nodes_;
 }
 
-AstNode* Parser::parseExpr() {
+std::shared_ptr<AstNode> Parser::parseExpr() {
 
     /*
      * expr -> IDENTIFIER EQ expr
@@ -84,15 +50,16 @@ AstNode* Parser::parseExpr() {
     switch (current_token_->type()) {
 
     case Token::IDENTIFIER: {
-        Token* var_name = current_token_;
+        std::shared_ptr<Token> var_name = current_token_;
         advance();
 
         if (current_token_->type() == Token::EQUAL) {
             advance();
 
-            AstNode* expr = parseExpr();
+            std::shared_ptr<AstNode> expr = parseExpr();
 
-            return new VarAssignNode(var_name, expr);
+            // return new VarAssignNode(var_name, expr);
+            return std::make_shared<VarAssignNode>(var_name, expr);
         } else {
             rollback();
             return parseApdu();
@@ -115,7 +82,7 @@ AstNode* Parser::parseExpr() {
     }
 }
 
-AstNode* Parser::parseCall(char* keywords) {
+std::shared_ptr<AstNode> Parser::parseCall(char* keywords) {
 
     /*
      * call -> (KEYWORDS:crypto | KEYWORDS:string) factor (LPAREN (expr (COMMA expr)*)? RPAREN)
@@ -125,13 +92,13 @@ AstNode* Parser::parseCall(char* keywords) {
 
     advance();
 
-    AstNode* factor = parseFactor();
+    std::shared_ptr<AstNode> factor = parseFactor();
 
     if (current_token_->type() == Token::LPAREN) {
 
         advance();
 
-        std::vector<AstNode*> v_arg_nodes;
+        std::vector<std::shared_ptr<AstNode>> v_arg_nodes;
 
         // add()
         if (current_token_->type() == Token::RPAREN) {
@@ -151,34 +118,34 @@ AstNode* Parser::parseCall(char* keywords) {
 
         advance();
         if (strcmp(keywords, "crypto") == 0)
-            return new CryptoClassNode(factor, v_arg_nodes);
+            return std::make_shared<CryptoClassNode>(factor, v_arg_nodes);
         else if (strcmp(keywords, "string") == 0)
-            return new StringClassNode(factor, v_arg_nodes);
+            return std::make_shared<StringClassNode>(factor, v_arg_nodes);
     }
 
     return factor;
 }
 
-AstNode* Parser::parseApdu() {
+std::shared_ptr<AstNode> Parser::parseApdu() {
     // apdu -> term (LPAREN (term (COMMA term)*)? RPAREN)
 
-    AstNode* term = parseTerm();
+    std::shared_ptr<AstNode> term = parseTerm();
 
     if (current_token_->type() == Token::LPAREN) {
 
         advance();
 
-        std::vector<AstNode*> v_arg_nodes;
+        std::vector<std::shared_ptr<AstNode>> v_arg_nodes;
 
         // add()
         if (current_token_->type() == Token::RPAREN) {
             advance();
         } else {
-            AstNode* factor = parseFactor();
+            std::shared_ptr<AstNode> factor = parseFactor();
             // ([divbuf]9000)
             if (current_token_->type() == Token::STRING) {
-                AstNode* factor_end = parseFactor();
-                factor = new ApduResultNode(factor->var_name_token_, factor_end);
+                std::shared_ptr<AstNode> factor_end = parseFactor();
+                factor = std::make_shared<ApduResultNode>(factor->var_name_token_, factor_end);
             }
 
             v_arg_nodes.push_back(factor);
@@ -194,42 +161,42 @@ AstNode* Parser::parseApdu() {
 
             advance();
         }
-        return new ApduNode(term, v_arg_nodes);
+        return std::make_shared<ApduNode>(term, v_arg_nodes);
     }
     return term;
 }
 
-AstNode* Parser::parseTerm() {
+std::shared_ptr<AstNode> Parser::parseTerm() {
     // factor ((STRING | LBRACKET) factor)*
     std::vector<Token::Type> ops = {Token::STRING, Token::LBRACKET};
-    return BinOp(&Parser::parseFactor, ops);
+    return binOp(&Parser::parseFactor, ops);
 }
 
-AstNode* Parser::parseFactor() {
+std::shared_ptr<AstNode> Parser::parseFactor() {
     /*
      * atom -> STRING | IDENTIFIER
      *      -> LBRACKET IDENTIFIER RBRACKET
      */
 
-    Token* token = current_token_;
+    std::shared_ptr<Token> token = current_token_;
     switch (token->type()) {
 
     // STRING | IDENTIFIER
     case Token::IDENTIFIER: {
 
         advance();
-        return new VarAccessNode(token);
+        return std::make_shared<VarAccessNode>(token);
     }
     case Token::STRING: {
         advance();
-        return new StringNode(token);
+        return std::make_shared<StringNode>(token);
     }
 
     // LBRACKET IDENTIFIER RBRACKET
     case Token::LBRACKET: {
         advance();
 
-        AstNode* identifier = new VarAccessNode(current_token_);
+        std::shared_ptr<AstNode> identifier = std::make_shared<VarAccessNode>(current_token_);
         advance();
 
         if (current_token_->type() == Token::RBRACKET) {
@@ -245,31 +212,47 @@ AstNode* Parser::parseFactor() {
     }
 }
 
-AstNode* Parser::BinOp(AstNode* (Parser::*func_a)(),
+std::shared_ptr<AstNode> Parser::binOp(std::shared_ptr<AstNode> (Parser::*func_a)(),
                        std::vector<Token::Type>& ops,
-                       AstNode* (Parser::*func_b)()) {
+                       std::shared_ptr<AstNode> (Parser::*func_b)()) {
 
     if (func_b == NULL)
         func_b = func_a;
 
     // 递归调用， 构建AST
 
-    AstNode* left = (this->*func_a)();
+    std::shared_ptr<AstNode> left = (this->*func_a)();
 
     while (current_token_->type() == ops[0] || current_token_->type() == ops[1]) {
         // Token *op_token = current_token_;
         // advance();
 
-        Token* op_token = new Token("+", Token::PLUS);
-        AstNode* right = (this->*func_b)();
+        std::shared_ptr<Token> op_token = std::make_shared<Token>("+", Token::PLUS);
+        std::shared_ptr<AstNode> right = (this->*func_b)();
 
-        left = new BinOpNode(left, op_token, right);
+        left = std::make_shared<BinOpNode>(left, op_token, right);
     }
 
     return left;
 }
 
-Parser::~Parser() {}
+std::shared_ptr<Token> Parser::advance() {
+    token_idx_ += 1;
+    if (token_idx_ < v_tokens_.size()) {
+        current_token_ = v_tokens_[token_idx_];
+    }
+
+    return current_token_;
+}
+
+std::shared_ptr<Token> Parser::rollback() {
+    token_idx_ -= 1;
+    if (token_idx_ < v_tokens_.size()) {
+        current_token_ = v_tokens_[token_idx_];
+    }
+
+    return current_token_;
+}
 
 } // namespace interpreter
 

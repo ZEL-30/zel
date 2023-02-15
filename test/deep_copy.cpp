@@ -1,12 +1,14 @@
 #include <algorithm>
+#include <memory>
 #include <stdio.h>
 #include <string.h>
 
+
 namespace zel {
 
-class string {
+class String {
   public:
-    string(const char* str = "") // 和传统方法相同
+    String(const char* str = "") // 和传统方法相同
     {
         if (str == nullptr)
             str = "";
@@ -15,12 +17,12 @@ class string {
         strcpy(str_, str);
     }
     // 拷贝构造函数
-    string(const string& other) : str_(nullptr) {
-        string temp(other.str_);    // 函数调用结束时会被析构
+    String(const String& other) : str_(nullptr) {
+        String temp(other.str_);    // 函数调用结束时会被析构
         std::swap(str_, temp.str_); // 交换
     }
     // 赋值运算符重载
-    string& operator=(string s) // s对象此时为临时拷贝的一份资源，函数返回时会析构掉
+    String& operator=(String s) // s对象此时为临时拷贝的一份资源，函数返回时会析构掉
     {
         if (this != &s) {
             std::swap(str_, s.str_); // 交换
@@ -30,7 +32,7 @@ class string {
 
     char* str() { return str_; }
 
-    ~string() // 和传统方法相同
+    ~String() // 和传统方法相同
     {
 
         printf("析构函数：%s\n", str_);
@@ -47,11 +49,26 @@ class string {
 
 int main() {
 
-    zel::string string = "勇士总冠军";
+    // zel::String string = "勇士总冠军";
 
-    zel::string aa = string;
+    // zel::String aa = string;
 
-    printf("%s\n", aa.str());
+    // printf("%s\n", aa.str());
+
+    // 智能指针
+    // 方法一
+    std::shared_ptr<zel::String> str1(new zel::String("勇士"));
+
+    auto str2 = std::make_shared<zel::String>("总冠军");
+
+    auto str3 = str1;
+    auto str4 = str1;
+
+    printf("%s%s\n", str3->str(), str2->str());
+
+    zel::String *str5 = new zel::String("是的");
+
+    printf("%s\n", str5->str());
 
     return 0;
 }

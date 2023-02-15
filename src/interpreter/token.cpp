@@ -74,7 +74,6 @@ std::string Token::str() const {
         str = "EOL";
         break;
 
-
     default:
         break;
     }
@@ -82,20 +81,9 @@ std::string Token::str() const {
     return str;
 }
 
+Token::Type Token::type() { return type_; }
 
-std::string Token::value() const {
-    return value_;
-}
-
-Token::Type Token::type()  {
-    return type_;
-}
-
-
-bool Token::matches(Type type, std::string keywords) {
-    return true;
-}
-
+bool Token::matches(Type type, std::string keywords) { return true; }
 
 } // namespace interpreter
 

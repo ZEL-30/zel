@@ -1,7 +1,10 @@
 #include "lexer.h"
 
+
 #include <cassert>
+#include <memory>
 #include <vector>
+
 
 namespace zel {
 
@@ -14,9 +17,9 @@ Lexer::Lexer(const std::string& source) {
 
 Lexer::~Lexer() {}
 
-std::vector<Token> Lexer::Tokenize() {
+std::vector<std::shared_ptr<Token>> Lexer::Tokenize() {
 
-    std::vector<Token> v_tokens;
+    std::vector<std::shared_ptr<Token>> v_tokens;
 
     if (source_ == "")
         return {};
@@ -25,12 +28,11 @@ std::vector<Token> Lexer::Tokenize() {
 
         switch (source_[index_]) {
 
-        case '\n':{
-            v_tokens.push_back(Token("EOL", Token::END_OF_LINE));
+        case '\n': {
+            v_tokens.push_back(std::make_shared<Token>("EOL", Token::END_OF_LINE));
             advance();
             break;
         }
-
 
         // 识别注释
         case ';':
@@ -48,7 +50,7 @@ std::vector<Token> Lexer::Tokenize() {
 
         // 识别等号
         case '=': {
-            v_tokens.push_back(Token("=", Token::EQUAL));
+            v_tokens.push_back(std::make_shared<Token>("=", Token::EQUAL));
             advance();
             break;
         }
@@ -123,31 +125,31 @@ std::vector<Token> Lexer::Tokenize() {
 
         // 识别圆括号
         case '(': {
-            v_tokens.push_back(Token("(", Token::LPAREN));
+            v_tokens.push_back(std::make_shared<Token>("(", Token::LPAREN));
             advance();
             break;
         }
         case ')': {
-            v_tokens.push_back(Token(")", Token::RPAREN));
+            v_tokens.push_back(std::make_shared<Token>(")", Token::RPAREN));
             advance();
             break;
         }
 
         // 识别中括号
         case '[': {
-            v_tokens.push_back(Token(")", Token::LBRACKET));
+            v_tokens.push_back(std::make_shared<Token>(")", Token::LBRACKET));
             advance();
             break;
         }
         case ']': {
-            v_tokens.push_back(Token(")", Token::RBRACKET));
+            v_tokens.push_back(std::make_shared<Token>(")", Token::RBRACKET));
             advance();
             break;
         }
 
         // 识别逗号
         case ',': {
-            v_tokens.push_back(Token(",", Token::COMMA));
+            v_tokens.push_back(std::make_shared<Token>(",", Token::COMMA));
             advance();
             break;
         }
@@ -161,12 +163,12 @@ std::vector<Token> Lexer::Tokenize() {
         }
     }
 
-    v_tokens.push_back(Token("EOS", Token::END_OF_SOURCE));
+    v_tokens.push_back(std::make_shared<Token>("EOS", Token::END_OF_SOURCE));
 
     return v_tokens;
 }
 
-Token Lexer::identifierOrKeywords() {
+std::shared_ptr<Token> Lexer::identifierOrKeywords() {
     std::string temp;
 
     while (isLetter(currentChar()) || isNumber(currentChar()) || currentChar() == '_' ||
@@ -176,13 +178,13 @@ Token Lexer::identifierOrKeywords() {
     }
 
     if (temp.length() <= 10) {
-        return Token(temp, Token::IDENTIFIER);
+        return std::make_shared<Token>(temp, Token::IDENTIFIER);
     }
 
-    return Token(temp, Token::STRING);
+    return std::make_shared<Token>(temp, Token::STRING);
 }
 
-Token Lexer::comment() {
+std::shared_ptr<Token> Lexer::comment() {
 
     std::string temp;
 
@@ -191,7 +193,7 @@ Token Lexer::comment() {
         advance();
     }
 
-    return Token(temp, Token::COMMENT);
+    return std::make_shared<Token>(temp, Token::COMMENT);
 }
 
 char Lexer::currentChar() { return source_[index_]; }
