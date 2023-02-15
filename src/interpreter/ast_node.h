@@ -29,7 +29,7 @@ class ApduNode : public AstNode {
     ApduNode(std::shared_ptr<AstNode> apdu_node,
              std::vector<std::shared_ptr<AstNode>> v_expect_nodes);
 
-    std::string str() const { return ""; }
+    std::string str() const;
 
     ~ApduNode();
 
@@ -48,7 +48,7 @@ class ApduResultNode : public AstNode {
                    std::shared_ptr<AstNode> apdu_expect_node);
     ~ApduResultNode();
 
-    std::string str() const { return ""; }
+    std::string str() const;
 
   private:
     std::shared_ptr<Token> apdu_result_token_;  // apdu执行结果  ([divbuf]9000) -> divbuf
@@ -68,7 +68,7 @@ class BinOpNode : public AstNode {
               std::shared_ptr<AstNode> right_node);
     ~BinOpNode();
 
-    std::string str() const { return ""; }
+    std::string str() const;
 
   private:
     std::shared_ptr<AstNode> left_node_;
@@ -86,7 +86,7 @@ class CryptoClassNode : public AstNode {
                     std::vector<std::shared_ptr<AstNode>> v_arg_nodes);
     ~CryptoClassNode();
 
-    std::string str() const { return ""; }
+    std::string str() const;
 
   private:
     std::shared_ptr<AstNode> node_to_call_;             // 函数调用对象
@@ -103,7 +103,7 @@ class StringClassNode : public AstNode {
                     std::vector<std::shared_ptr<AstNode>> v_arg_nodes);
     ~StringClassNode();
 
-    std::string str() const { return ""; }
+    std::string str() const;
 
   private:
     std::shared_ptr<AstNode> node_to_call_;             // 函数调用对象
@@ -130,7 +130,7 @@ class VarAccessNode : public AstNode {
     VarAccessNode(std::shared_ptr<Token> var_name_token);
     ~VarAccessNode();
 
-    std::string str() const { return ""; }
+    std::string str() const;
 
   private:
     std::shared_ptr<Token> var_name_token_;

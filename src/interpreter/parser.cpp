@@ -3,7 +3,6 @@
 #include "ast_node.h"
 
 #include <memory>
-#include <processthreadsapi.h>
 #include <string.h>
 #include <vector>
 
@@ -27,7 +26,8 @@ std::vector<std::shared_ptr<AstNode>> Parser::parse() {
 
     while (current_token_->type() != Token::END_OF_SOURCE) {
 
-        if (current_token_->type() != Token::END_OF_LINE) {
+        if (current_token_->type() != Token::END_OF_LINE &&
+            current_token_->type() != Token::COMMENT) {
             auto res = parseExpr();
 
             v_ats_nodes_.push_back(res);
@@ -213,8 +213,8 @@ std::shared_ptr<AstNode> Parser::parseFactor() {
 }
 
 std::shared_ptr<AstNode> Parser::binOp(std::shared_ptr<AstNode> (Parser::*func_a)(),
-                       std::vector<Token::Type>& ops,
-                       std::shared_ptr<AstNode> (Parser::*func_b)()) {
+                                       std::vector<Token::Type>& ops,
+                                       std::shared_ptr<AstNode> (Parser::*func_b)()) {
 
     if (func_b == NULL)
         func_b = func_a;
@@ -226,7 +226,6 @@ std::shared_ptr<AstNode> Parser::binOp(std::shared_ptr<AstNode> (Parser::*func_a
     while (current_token_->type() == ops[0] || current_token_->type() == ops[1]) {
         // Token *op_token = current_token_;
         // advance();
-
         std::shared_ptr<Token> op_token = std::make_shared<Token>("+", Token::PLUS);
         std::shared_ptr<AstNode> right = (this->*func_b)();
 

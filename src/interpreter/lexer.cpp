@@ -1,10 +1,8 @@
 #include "lexer.h"
 
-
 #include <cassert>
 #include <memory>
 #include <vector>
-
 
 namespace zel {
 
@@ -172,12 +170,15 @@ std::shared_ptr<Token> Lexer::identifierOrKeywords() {
     std::string temp;
 
     while (isLetter(currentChar()) || isNumber(currentChar()) || currentChar() == '_' ||
-           currentChar() == '.' || currentChar() == '*' || currentChar() == '-') {
+           currentChar() == '.' || currentChar() == '*' || currentChar() == '-' ||
+           currentChar() == ' ') {
         temp += currentChar();
+
         advance();
+        skipWhiteSpace();
     }
 
-    if (temp.length() <= 10) {
+    if (temp.length() <= 10 && currentChar() == '=' || currentChar() == '(') {
         return std::make_shared<Token>(temp, Token::IDENTIFIER);
     }
 
@@ -203,6 +204,12 @@ char Lexer::advance() { return source_[index_++]; }
 bool Lexer::isLetter(char ch) { return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'); }
 
 bool Lexer::isNumber(char ch) { return (ch >= '0' && ch <= '9'); }
+
+void Lexer::skipWhiteSpace() {
+    while (source_[index_] == ' ') {
+        index_++;
+    }
+}
 
 } // namespace interpreter
 

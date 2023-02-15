@@ -1,0 +1,36 @@
+KMC = 404142434445464748494A4B4C4D4E4F
+
+;GP认证
+;RST(3B8880010073C8401300900071)
+00A40400 08 A000000003000000(*9000)
+
+80CA0066(*9000)
+
+;Initialize Update:
+rnd = crypto.randomHex(16)
+80500000 08 [rnd] ([divbuf]9000)
+
+;KMC分散
+divdata = string.mid([divbuf], 8, 12)
+KMCenc = crypto.cipher(des-ede, [divdata]F001[divdata]0F01, [KMC], NULL, 1)
+KMCmac = crypto.cipher(des-ede, [divdata]F002[divdata]0F02, [KMC], NULL, 1)
+KMCdek = crypto.cipher(des-ede, [divdata]F003[divdata]0F03, [KMC], NULL, 1)
+
+;sequenceCounter
+seq = string.mid([divbuf],24,4)
+;cardChallenge
+cal = string.mid([divbuf],28,12)
+
+;Derived Keys
+
+;Session -- scp02 session keys
+Session_EncKey = crypto.cipher(des-ede-cbc,0182[seq]000000000000000000000000,[KMCenc],0000000000000000,1)
+Session_MacKey = crypto.cipher(des-ede-cbc,0101[seq]000000000000000000000000,[KMCmac],0000000000000000,1)
+Session_DekKey = crypto.cipher(des-ede-cbc,0181[seq]000000000000000000000000,[KMCdek],0000000000000000,1)
+
+;EXTERNAL AUTHENTICATION
+encTmp1 = crypto.cipher(des-ede-cbc,[seq][cal][rnd]8000000000000000,[Session_EncKey],0000000000000000,1)
+extMac1 = string.mid([encTmp1],32,16)
+extMac2 = crypto.TDesMac(8482010010[extMac1],[Session_MacKey],0000000000000000)
+
+84820100 10 [extMac1][extMac2](9000)

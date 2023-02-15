@@ -27,6 +27,8 @@ class Lexer {
     bool isLetter(char ch);
     bool isNumber(char ch);
 
+    void skipWhiteSpace();
+
     std::shared_ptr<Token> identifierOrKeywords();
     std::shared_ptr<Token> comment();
 
