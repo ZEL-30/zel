@@ -28,8 +28,8 @@ using namespace std;
 TEST_CASE("文件 测试 Lexer 类") {
 
     ifstream fin;
-    // fin.open("../script/Authenticate212.txt");
-    fin.open("../script/test.txt");
+    fin.open("../script/Authenticate212.txt");
+    // fin.open("../script/test.txt");
     // fin.open("/Users/zel/Workspaces/C++/zel/script/test.txt");
     if (fin.fail()) {
         throw std::logic_error("open script failed.");

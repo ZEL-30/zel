@@ -77,36 +77,22 @@ class BinOpNode : public AstNode {
 };
 
 /// @brief 抽象语法树 - 调用算法类型函数节点
-class CryptoClassNode : public AstNode {
+class FuncCallNode : public AstNode {
 
   public:
-    /// @param node_to_call 函数调用对象 ->
+    /// @param class_name 类名
+    /// @param func_name  函数名
     /// @param v_arg_nodes 调用函数时传入的参数
-    CryptoClassNode(std::shared_ptr<AstNode> node_to_call,
-                    std::vector<std::shared_ptr<AstNode>> v_arg_nodes);
-    ~CryptoClassNode();
+    FuncCallNode(std::shared_ptr<Token> class_name,
+                 std::shared_ptr<AstNode> func_name,
+                 std::vector<std::shared_ptr<AstNode>> v_arg_nodes);
+    ~FuncCallNode();
 
     std::string str() const;
 
   private:
-    std::shared_ptr<AstNode> node_to_call_;             // 函数调用对象
-    std::vector<std::shared_ptr<AstNode>> v_arg_nodes_; // 调用函数时传入的参数
-};
-
-/// @brief 抽象语法树 - 调用算法类型函数节点
-class StringClassNode : public AstNode {
-
-  public:
-    /// @param node_to_call 函数调用对象 ->
-    /// @param v_arg_nodes 调用函数时传入的参数
-    StringClassNode(std::shared_ptr<AstNode> node_to_call,
-                    std::vector<std::shared_ptr<AstNode>> v_arg_nodes);
-    ~StringClassNode();
-
-    std::string str() const;
-
-  private:
-    std::shared_ptr<AstNode> node_to_call_;             // 函数调用对象
+    std::shared_ptr<Token> class_name_;                 // 类名
+    std::shared_ptr<AstNode> func_name_;                // 函数名
     std::vector<std::shared_ptr<AstNode>> v_arg_nodes_; // 调用函数时传入的参数
 };
 

@@ -3,7 +3,6 @@
 #include <memory>
 #include <sstream>
 
-
 namespace zel {
 
 namespace interpreter {
@@ -65,38 +64,19 @@ std::string BinOpNode::str() const {
     return ss.str();
 }
 
-CryptoClassNode::CryptoClassNode(std::shared_ptr<AstNode> node_to_call,
-                                 std::vector<std::shared_ptr<AstNode>> v_arg_nodes) {
-    node_to_call_ = node_to_call;
+FuncCallNode::FuncCallNode(std::shared_ptr<Token> class_name,
+                           std::shared_ptr<AstNode> func_name,
+                           std::vector<std::shared_ptr<AstNode>> v_arg_nodes) {
+    class_name_ = class_name;
+    func_name_ = func_name;
     v_arg_nodes_ = v_arg_nodes;
 }
 
-CryptoClassNode::~CryptoClassNode() {}
+FuncCallNode::~FuncCallNode() {}
 
-std::string CryptoClassNode::str() const {
+std::string FuncCallNode::str() const {
     std::stringstream ss;
-    ss << "(" << node_to_call_->str() << ", [";
-    for (int i = 0; i < v_arg_nodes_.size(); i++) {
-        if (i != 0)
-            ss << ", ";
-        ss << v_arg_nodes_[i]->str();
-    }
-    ss << "])";
-
-    return ss.str();
-}
-
-StringClassNode::StringClassNode(std::shared_ptr<AstNode> node_to_call,
-                                 std::vector<std::shared_ptr<AstNode>> v_arg_nodes) {
-    node_to_call_ = node_to_call;
-    v_arg_nodes_ = v_arg_nodes;
-}
-
-StringClassNode::~StringClassNode() {}
-
-std::string StringClassNode::str() const {
-    std::stringstream ss;
-    ss << "(" << node_to_call_->str() << ", [";
+    ss << "(" << class_name_->str() << ", " << func_name_->str() << ", [";
     for (int i = 0; i < v_arg_nodes_.size(); i++) {
         if (i != 0)
             ss << ", ";

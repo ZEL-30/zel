@@ -1,6 +1,5 @@
 #include "lexer.h"
 
-#include <cassert>
 #include <memory>
 #include <vector>
 
@@ -11,6 +10,8 @@ namespace interpreter {
 Lexer::Lexer(const std::string& source) {
     source_ = source;
     index_ = 0;
+
+    initKeywords();
 }
 
 Lexer::~Lexer() {}
@@ -117,7 +118,7 @@ std::vector<std::shared_ptr<Token>> Lexer::Tokenize() {
         case 'Y':
         case 'z':
         case 'Z': {
-            v_tokens.push_back(identifierOrKeywords());
+            v_tokens.push_back(stringOrIdentifier());
             break;
         }
 
@@ -135,12 +136,12 @@ std::vector<std::shared_ptr<Token>> Lexer::Tokenize() {
 
         // 识别中括号
         case '[': {
-            v_tokens.push_back(std::make_shared<Token>(")", Token::LBRACKET));
+            v_tokens.push_back(std::make_shared<Token>("[", Token::LBRACKET));
             advance();
             break;
         }
         case ']': {
-            v_tokens.push_back(std::make_shared<Token>(")", Token::RBRACKET));
+            v_tokens.push_back(std::make_shared<Token>("]", Token::RBRACKET));
             advance();
             break;
         }
@@ -166,16 +167,24 @@ std::vector<std::shared_ptr<Token>> Lexer::Tokenize() {
     return v_tokens;
 }
 
-std::shared_ptr<Token> Lexer::identifierOrKeywords() {
+void Lexer::initKeywords() { v_keywords_ = {"crypto", "string"}; }
+
+std::shared_ptr<Token> Lexer::stringOrIdentifier() {
     std::string temp;
 
     while (isLetter(currentChar()) || isNumber(currentChar()) || currentChar() == '_' ||
-           currentChar() == '.' || currentChar() == '*' || currentChar() == '-' ||
-           currentChar() == ' ') {
+           currentChar() == '-' || currentChar() == ' ' || currentChar() == '*') {
         temp += currentChar();
 
         advance();
         skipWhiteSpace();
+    }
+
+    // 如果字符串在 v_keywords中，表示它是关键字，否则是变量名
+    for (int i = 0; i < v_keywords_.size(); i++) {
+        if (temp == v_keywords_[i]) {
+            return std::make_shared<Token>(temp, Token::KEYWORDS);
+        }
     }
 
     if (temp.length() <= 10 && currentChar() == '=' || currentChar() == '(') {

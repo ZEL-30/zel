@@ -15,30 +15,23 @@ class Parser {
 
   public:
     Parser(const std::string& source);
+    ~Parser();
 
     std::vector<std::shared_ptr<AstNode>> parse();
 
-    ~Parser();
-
   private:
     std::shared_ptr<AstNode> parseExpr();
-
-    /// @brief 函数调用
-    std::shared_ptr<AstNode> parseCall(char* keywords);
-
+    std::shared_ptr<AstNode> parseCall();
     std::shared_ptr<AstNode> parseApdu();
-
     std::shared_ptr<AstNode> parseTerm();
-
     std::shared_ptr<AstNode> parseFactor();
 
     std::shared_ptr<Token> advance();
-
     std::shared_ptr<Token> rollback();
 
     std::shared_ptr<AstNode> binOp(std::shared_ptr<AstNode> (Parser::*func_a)(),
-                   std::vector<Token::Type>& ops,
-                   std::shared_ptr<AstNode> (Parser::*func_b)() = NULL);
+                                   std::vector<Token::Type>& ops,
+                                   std::shared_ptr<AstNode> (Parser::*func_b)() = NULL);
 
   private:
     int token_idx_;

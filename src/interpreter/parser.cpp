@@ -3,6 +3,7 @@
 #include "ast_node.h"
 
 #include <memory>
+#include <stdexcept>
 #include <string.h>
 #include <vector>
 
@@ -55,10 +56,8 @@ std::shared_ptr<AstNode> Parser::parseExpr() {
 
         if (current_token_->type() == Token::EQUAL) {
             advance();
-
             std::shared_ptr<AstNode> expr = parseExpr();
 
-            // return new VarAssignNode(var_name, expr);
             return std::make_shared<VarAssignNode>(var_name, expr);
         } else {
             rollback();
@@ -67,12 +66,7 @@ std::shared_ptr<AstNode> Parser::parseExpr() {
     }
 
     case Token::KEYWORDS: {
-        if (current_token_->matches(Token::KEYWORDS, "crypto")) {
-            return parseCall("crypto");
-        } else if (current_token_->matches(Token::KEYWORDS, "string")) {
-            return parseCall("string");
-        } else {
-        }
+        return parseCall();
     }
 
     // apdu
@@ -82,7 +76,7 @@ std::shared_ptr<AstNode> Parser::parseExpr() {
     }
 }
 
-std::shared_ptr<AstNode> Parser::parseCall(char* keywords) {
+std::shared_ptr<AstNode> Parser::parseCall() {
 
     /*
      * call -> (KEYWORDS:crypto | KEYWORDS:string) factor (LPAREN (expr (COMMA expr)*)? RPAREN)
@@ -90,12 +84,11 @@ std::shared_ptr<AstNode> Parser::parseCall(char* keywords) {
      *      -> factor
      */
 
+    auto class_name = current_token_;
     advance();
 
     std::shared_ptr<AstNode> factor = parseFactor();
-
     if (current_token_->type() == Token::LPAREN) {
-
         advance();
 
         std::vector<std::shared_ptr<AstNode>> v_arg_nodes;
@@ -109,18 +102,14 @@ std::shared_ptr<AstNode> Parser::parseCall(char* keywords) {
 
         while (current_token_->type() == Token::COMMA) {
             advance();
-
             v_arg_nodes.push_back(parseExpr());
         }
 
         if (current_token_->type() != Token::RPAREN) {
         }
-
         advance();
-        if (strcmp(keywords, "crypto") == 0)
-            return std::make_shared<CryptoClassNode>(factor, v_arg_nodes);
-        else if (strcmp(keywords, "string") == 0)
-            return std::make_shared<StringClassNode>(factor, v_arg_nodes);
+
+        return std::make_shared<FuncCallNode>(class_name, factor, v_arg_nodes);
     }
 
     return factor;
@@ -141,22 +130,18 @@ std::shared_ptr<AstNode> Parser::parseApdu() {
         if (current_token_->type() == Token::RPAREN) {
             advance();
         } else {
-            std::shared_ptr<AstNode> factor = parseFactor();
-            // ([divbuf]9000)
-            if (current_token_->type() == Token::STRING) {
-                std::shared_ptr<AstNode> factor_end = parseFactor();
-                factor = std::make_shared<ApduResultNode>(factor->var_name_token_, factor_end);
-            }
-
-            v_arg_nodes.push_back(factor);
+            std::shared_ptr<AstNode> term = parseTerm();
+          
+            v_arg_nodes.push_back(term);
 
             while (current_token_->type() == Token::COMMA) {
                 advance();
 
-                v_arg_nodes.push_back(parseFactor());
+                v_arg_nodes.push_back(parseTerm());
             }
 
             if (current_token_->type() != Token::RPAREN) {
+                throw std::logic_error("expected ')'");
             }
 
             advance();
@@ -183,10 +168,10 @@ std::shared_ptr<AstNode> Parser::parseFactor() {
 
     // STRING | IDENTIFIER
     case Token::IDENTIFIER: {
-
         advance();
         return std::make_shared<VarAccessNode>(token);
     }
+
     case Token::STRING: {
         advance();
         return std::make_shared<StringNode>(token);

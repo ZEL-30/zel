@@ -21,6 +21,9 @@ class Lexer {
     std::vector<std::shared_ptr<Token>> Tokenize();
 
   private:
+
+    void initKeywords();
+
     char advance();
     char currentChar();
 
@@ -29,12 +32,13 @@ class Lexer {
 
     void skipWhiteSpace();
 
-    std::shared_ptr<Token> identifierOrKeywords();
+    std::shared_ptr<Token> stringOrIdentifier();
     std::shared_ptr<Token> comment();
 
   private:
     std::string source_;
     int index_;
+    std::vector<std::string> v_keywords_; // 关键字容器
 };
 
 } // namespace interpreter

@@ -13,6 +13,8 @@ Token::Token(const std::string& value, Type type) {
 
 Token::~Token() {}
 
+Token::Type Token::type() { return type_; }
+
 std::string Token::str() const {
 
     std::string str;
@@ -30,6 +32,7 @@ std::string Token::str() const {
     case KEYWORDS:
         str = "KEYWORDS: " + value_;
         break;
+
     case LPAREN:
         str = "LPAREN";
         break;
@@ -81,9 +84,7 @@ std::string Token::str() const {
     return str;
 }
 
-Token::Type Token::type() { return type_; }
-
-bool Token::matches(Type type, std::string keywords) { return true; }
+bool Token::matches(Type type, std::string value) { return type_ == type && value_ == value; }
 
 } // namespace interpreter
 
