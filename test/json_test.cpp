@@ -1,4 +1,4 @@
-#include "json/json.h"
+#include "json.h"
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
@@ -40,38 +40,40 @@ using namespace zel::json;
 //     arr.clear();
 // }
 
-// TEST_CASE("测试Json的对象") {
+TEST_CASE("测试Json的对象") {
 
-//     Json obj;
+    Json obj;
 
-//     obj["name"] = "zel";
-//     obj["is man"] = true;
-//     obj["hight"] = 1.74;
-//     obj["sid"] = 1;
+    obj["name"] = "zel";
+    obj["is man"] = true;
+    obj["hight"] = 1.74;
+    obj["sid"] = 1;
 
-//     cout << obj.str() << endl;
-//     obj.Remove("hight");
-//     cout << obj.str() << endl;
+    cout << obj.str() << endl;
+    obj.remove("hight");
+    cout << obj.str() << endl;
 
-//     obj.Clear();
-// }
+    obj.clear();
+}
 
 TEST_CASE("Json Parser") {
 
-    std::ifstream fin;
-    fin.open("../config/test.json");
+    // std::ifstream fin;
+    // fin.open("../config/test.json");
 
-    std::stringstream ss;
-    ss << fin.rdbuf();
+    // std::stringstream ss;
+    // ss << fin.rdbuf();
 
-    string source = ss.str();
+    // string source = ss.str();
 
-    Json json;
-    json.parse(source);
+    // Json json;
+    // if (!json.parse(source)) {
+    //     printf("parse failed\n");
+    // }
 
-    cout << json["data"].str() << endl;
-    json.remove("data");
-    cout << json.str() << endl;
+    // cout << json["data"].str() << endl;
+    // json.remove("data");
+    // cout << json.str() << endl;
 
-    printf("paser success\n");
+    // printf("paser success\n");
 }

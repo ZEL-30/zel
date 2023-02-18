@@ -15,7 +15,7 @@ class AstNode {
     AstNode();
     ~AstNode();
 
-    virtual std::string str() const { return ""; }
+    virtual std::string str() const = 0;
 
     std::shared_ptr<Token> var_name_token_;
 };
@@ -36,23 +36,6 @@ class ApduNode : public AstNode {
   private:
     std::shared_ptr<AstNode> apdu_node_;                   // apdu指令
     std::vector<std::shared_ptr<AstNode>> v_expect_nodes_; // 期望值容器
-};
-
-/// @brief 抽象语法树 - 获取APDU执行结果节点
-class ApduResultNode : public AstNode {
-
-  public:
-    /// @param apdu_result_node apdu执行结果  ([divbuf]9000) -> divbuf
-    /// @param apdu_expect_node apdu执行结果  ([divbuf]9000) -> 9000
-    ApduResultNode(std::shared_ptr<Token> apdu_result_token,
-                   std::shared_ptr<AstNode> apdu_expect_node);
-    ~ApduResultNode();
-
-    std::string str() const;
-
-  private:
-    std::shared_ptr<Token> apdu_result_token_;  // apdu执行结果  ([divbuf]9000) -> divbuf
-    std::shared_ptr<AstNode> apdu_expect_node_; // apdu执行结果  ([divbuf]9000) -> 9000
 };
 
 /// @brief 抽象语法树 - 二元操作节点

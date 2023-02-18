@@ -32,21 +32,6 @@ std::string ApduNode::str() const {
     return ss.str();
 }
 
-ApduResultNode::ApduResultNode(std::shared_ptr<Token> apdu_result_token,
-                               std::shared_ptr<AstNode> apdu_expect_node) {
-    apdu_result_token_ = apdu_result_token;
-    apdu_expect_node_ = apdu_expect_node;
-}
-
-ApduResultNode::~ApduResultNode() {}
-
-std::string ApduResultNode::str() const {
-    std::stringstream ss;
-    ss << "(" << apdu_result_token_->str() << ", " << apdu_expect_node_ << ")";
-
-    return ss.str();
-}
-
 BinOpNode::BinOpNode(std::shared_ptr<AstNode> left_node,
                      std::shared_ptr<Token> op_token,
                      std::shared_ptr<AstNode> right_node) {

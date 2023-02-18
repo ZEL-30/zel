@@ -34,31 +34,31 @@ std::string Token::str() const {
         break;
 
     case LPAREN:
-        str = "LPAREN";
+        str = "LPAREN: " + value_;
         break;
 
     case RPAREN:
-        str = "RPAREN";
+        str = "RPAREN: " + value_;
         break;
 
     case PLUS:
-        str = "PLUS";
+        str = "PLUS: " + value_;
         break;
 
     case LBRACKET:
-        str = "LBRACKET";
+        str = "LBRACKET: " + value_;
         break;
 
     case RBRACKET:
-        str = "RBRACKET";
+        str = "RBRACKET: " + value_;
         break;
 
     case EQUAL:
-        str = "EQUAL";
+        str = "EQUAL: " + value_;
         break;
 
     case COMMA:
-        str = "COMMA";
+        str = "COMMA: " + value_;
         break;
 
     case COMMENT:
@@ -66,15 +66,15 @@ std::string Token::str() const {
         break;
 
     case ERRORS:
-        str = "ERRORS";
+        str = "ERRORS: " + value_;
         break;
 
     case END_OF_SOURCE:
-        str = "EOS";
+        str = "EOS: " + value_;
         break;
 
     case END_OF_LINE:
-        str = "EOL";
+        str = "EOL: " + value_;
         break;
 
     default:

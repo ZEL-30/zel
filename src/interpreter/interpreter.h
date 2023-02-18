@@ -1,0 +1,42 @@
+#pragma once
+
+#include "interpreter/ast_node.h"
+#include "value.h"
+
+#include <map>
+#include <memory>
+#include <string>
+
+namespace zel {
+
+namespace interpreter {
+
+/// @brief  解释器
+class Interpreter {
+
+  public:
+    Interpreter();
+    ~Interpreter();
+
+    /// @brief 递归下降算法 -> ast node
+    /// @param node 起始节点
+    Value visit(std::shared_ptr<AstNode> node);
+
+  private:
+    Value visitString(std::shared_ptr<AstNode> node);
+    Value visitBinOp(std::shared_ptr<AstNode> node);
+    Value visitVarAccess(std::shared_ptr<AstNode> node);
+    Value visitVarAssign(std::shared_ptr<AstNode> node);
+    Value visitApdu(std::shared_ptr<AstNode> node);
+    Value visitFuncCall(std::shared_ptr<AstNode> node);
+
+    void getAstType();
+
+  private:
+    enum AstType { String, BinOp, VarAccess, VarAssign, FuncCall, Apdu };
+    std::map<std::string, AstType> m_ast_node_type_;
+};
+
+} // namespace interpreter
+
+} // namespace zel
