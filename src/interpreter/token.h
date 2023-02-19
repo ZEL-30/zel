@@ -39,10 +39,13 @@ class Token {
     Token(const std::string& value, Type type);
     ~Token();
 
-    Type type();
 
     /// @brief 节点序列化 C++ string
     std::string str() const;
+
+    Type type();
+    std::string value();
+
 
     bool matches(Type type, std::string value);
 

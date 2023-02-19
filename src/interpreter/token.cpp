@@ -15,6 +15,8 @@ Token::~Token() {}
 
 Token::Type Token::type() { return type_; }
 
+std::string Token::value() { return value_; }
+
 std::string Token::str() const {
 
     std::string str;

@@ -17,25 +17,25 @@ class AstNode {
 
     virtual std::string str() const = 0;
 
-    std::shared_ptr<Token> var_name_token_;
+  private:
 };
 
 /// @brief 抽象语法树 - APDU节点
 class ApduNode : public AstNode {
 
   public:
-    /// @param var_name_token apdu指令
-    /// @param v_arg_nodes 期望值容器
-    ApduNode(std::shared_ptr<AstNode> apdu_node,
-             std::vector<std::shared_ptr<AstNode>> v_expect_nodes);
+    /// @param var_name apdu指令
+    /// @param v_args 期望值容器
+    ApduNode(std::shared_ptr<AstNode> apdu,
+             std::vector<std::shared_ptr<AstNode>> v_expects);
 
     std::string str() const;
 
     ~ApduNode();
 
   private:
-    std::shared_ptr<AstNode> apdu_node_;                   // apdu指令
-    std::vector<std::shared_ptr<AstNode>> v_expect_nodes_; // 期望值容器
+    std::shared_ptr<AstNode> apdu_;                   // apdu指令
+    std::vector<std::shared_ptr<AstNode>> v_expects_; // 期望值容器
 };
 
 /// @brief 抽象语法树 - 二元操作节点
@@ -43,20 +43,26 @@ class BinOpNode : public AstNode {
 
   public:
     /// @brief 二元操作， 例： + - * /
-    /// @param left_node  例： 1
-    /// @param op_token   例： -
-    /// @param right_node 例： 3
-    BinOpNode(std::shared_ptr<AstNode> left_node,
-              std::shared_ptr<Token> op_token,
-              std::shared_ptr<AstNode> right_node);
+    /// @param left  例： 1
+    /// @param op   例： -
+    /// @param right 例： 3
+    BinOpNode(std::shared_ptr<AstNode> left,
+              std::shared_ptr<Token> op,
+              std::shared_ptr<AstNode> right);
     ~BinOpNode();
 
     std::string str() const;
 
+
+    std::shared_ptr<AstNode> left();
+    std::shared_ptr<Token> bin_op();
+    std::shared_ptr<AstNode> right();
+
+
   private:
-    std::shared_ptr<AstNode> left_node_;
-    std::shared_ptr<Token> op_token_;
-    std::shared_ptr<AstNode> right_node_;
+    std::shared_ptr<AstNode> left_;
+    std::shared_ptr<Token> bin_op_;
+    std::shared_ptr<AstNode> right_;
 };
 
 /// @brief 抽象语法树 - 调用算法类型函数节点
@@ -65,10 +71,10 @@ class FuncCallNode : public AstNode {
   public:
     /// @param class_name 类名
     /// @param func_name  函数名
-    /// @param v_arg_nodes 调用函数时传入的参数
+    /// @param v_args 调用函数时传入的参数
     FuncCallNode(std::shared_ptr<Token> class_name,
                  std::shared_ptr<AstNode> func_name,
-                 std::vector<std::shared_ptr<AstNode>> v_arg_nodes);
+                 std::vector<std::shared_ptr<AstNode>> v_args);
     ~FuncCallNode();
 
     std::string str() const;
@@ -76,7 +82,7 @@ class FuncCallNode : public AstNode {
   private:
     std::shared_ptr<Token> class_name_;                 // 类名
     std::shared_ptr<AstNode> func_name_;                // 函数名
-    std::vector<std::shared_ptr<AstNode>> v_arg_nodes_; // 调用函数时传入的参数
+    std::vector<std::shared_ptr<AstNode>> v_args_; // 调用函数时传入的参数
 };
 
 /// @brief 抽象语法树 - 字符串节点
@@ -88,35 +94,37 @@ class StringNode : public AstNode {
 
     std::string str() const;
 
+    std::string value();
+
   private:
-    std::shared_ptr<Token> token_; // 字符串
+    std::shared_ptr<Token> value_; // 字符串
 };
 
 /// @brief 抽象语法树 - 访问变量节点
 class VarAccessNode : public AstNode {
 
   public:
-    VarAccessNode(std::shared_ptr<Token> var_name_token);
+    VarAccessNode(std::shared_ptr<Token> var_name);
     ~VarAccessNode();
 
     std::string str() const;
 
   private:
-    std::shared_ptr<Token> var_name_token_;
+    std::shared_ptr<Token> var_name_;
 };
 
 /// @brief 抽象语法树 - 为变量分配值节点
 class VarAssignNode : public AstNode {
 
   public:
-    VarAssignNode(std::shared_ptr<Token> var_name_token, std::shared_ptr<AstNode> value_node);
+    VarAssignNode(std::shared_ptr<Token> var_name, std::shared_ptr<AstNode> value);
     ~VarAssignNode();
 
     std::string str() const;
 
   private:
-    std::shared_ptr<Token> var_name_token_;
-    std::shared_ptr<AstNode> value_node_;
+    std::shared_ptr<Token> var_name_;
+    std::shared_ptr<AstNode> value_;
 };
 
 } // namespace interpreter

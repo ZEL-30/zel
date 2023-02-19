@@ -1,3 +1,5 @@
+#include "interpreter.h"
+#include "value.h"
 #include <parser.h>
 using namespace zel::interpreter;
 
@@ -28,9 +30,9 @@ using namespace std;
 TEST_CASE("文件 测试 Lexer 类") {
 
     ifstream fin;
-    fin.open("../script/Authenticate212.txt");
+    // fin.open("../script/Authenticate212.txt");
     // fin.open("../script/test.txt");
-    // fin.open("/Users/zel/Workspaces/C++/zel/script/test.txt");
+    fin.open("/Users/zel/Workspaces/C++/zel/script/test.txt");
     if (fin.fail()) {
         throw std::logic_error("open script failed.");
     }
@@ -42,8 +44,14 @@ TEST_CASE("文件 测试 Lexer 类") {
     Parser parser(source);
     auto v_ast_nodes = parser.parse();
 
+
+
+    Interpreter interpreter;
     for (int i = 0; i < v_ast_nodes.size(); i++) {
-        cout << v_ast_nodes[i]->str() << endl;
+        auto value = interpreter.visit(v_ast_nodes[i]);
+
+        cout << value->str() << endl;
+
     }
 
 }

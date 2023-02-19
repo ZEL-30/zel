@@ -1,6 +1,6 @@
 #pragma once
 
-#include "interpreter/ast_node.h"
+#include "ast_node.h"
 #include "value.h"
 
 #include <map>
@@ -20,19 +20,23 @@ class Interpreter {
 
     /// @brief 递归下降算法 -> ast node
     /// @param node 起始节点
-    Value visit(std::shared_ptr<AstNode> node);
+    std::shared_ptr<Value> visit(std::shared_ptr<AstNode> node);
 
   private:
-    Value visitString(std::shared_ptr<AstNode> node);
-    Value visitBinOp(std::shared_ptr<AstNode> node);
-    Value visitVarAccess(std::shared_ptr<AstNode> node);
-    Value visitVarAssign(std::shared_ptr<AstNode> node);
-    Value visitApdu(std::shared_ptr<AstNode> node);
-    Value visitFuncCall(std::shared_ptr<AstNode> node);
+    std::shared_ptr<Value> visitString(std::shared_ptr<AstNode> node);
+    std::shared_ptr<Value> visitBinOp(std::shared_ptr<AstNode> node);
+    std::shared_ptr<Value> visitVarAccess(std::shared_ptr<AstNode> node);
+    std::shared_ptr<Value> visitVarAssign(std::shared_ptr<AstNode> node);
+    std::shared_ptr<Value> visitApdu(std::shared_ptr<AstNode> node);
+    std::shared_ptr<Value> visitFuncCall(std::shared_ptr<AstNode> node);
 
     void getAstType();
 
   private:
+
+    
+
+
     enum AstType { String, BinOp, VarAccess, VarAssign, FuncCall, Apdu };
     std::map<std::string, AstType> m_ast_node_type_;
 };
