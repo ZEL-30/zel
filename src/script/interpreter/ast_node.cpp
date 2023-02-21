@@ -3,7 +3,7 @@
 #include <memory>
 #include <sstream>
 
-namespace zel {
+namespace script {
 
 namespace interpreter {
 
@@ -30,6 +30,8 @@ std::string ApduNode::str() const {
 
     return ss.str();
 }
+
+std::shared_ptr<AstNode> ApduNode::apdu() { return apdu_; }
 
 BinOpNode::BinOpNode(std::shared_ptr<AstNode> left,
                      std::shared_ptr<Token> bin_op,
@@ -77,6 +79,12 @@ std::string FuncCallNode::str() const {
     return ss.str();
 }
 
+std::shared_ptr<Token> FuncCallNode::class_name() { return class_name_; }
+
+std::shared_ptr<AstNode> FuncCallNode::func_name() { return func_name_; }
+
+std::vector<std::shared_ptr<AstNode>> FuncCallNode::func_args() { return v_args_; }
+
 StringNode::StringNode(std::shared_ptr<Token> value) { value_ = value; }
 
 StringNode::~StringNode() {}
@@ -101,6 +109,8 @@ std::string VarAccessNode::str() const {
     return ss.str();
 }
 
+std::shared_ptr<Token> VarAccessNode::var_name() { return var_name_; }
+
 VarAssignNode::VarAssignNode(std::shared_ptr<Token> var_name, std::shared_ptr<AstNode> value) {
     var_name_ = var_name;
     value_ = value;
@@ -114,6 +124,10 @@ std::string VarAssignNode::str() const {
 
     return ss.str();
 };
+
+std::shared_ptr<Token> VarAssignNode::var_name() { return var_name_; }
+
+std::shared_ptr<AstNode> VarAssignNode::value() { return value_; }
 
 } // namespace interpreter
 } // namespace zel

@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace zel {
+namespace script {
 
 namespace interpreter {
 

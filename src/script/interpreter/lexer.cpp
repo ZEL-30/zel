@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-namespace zel {
+namespace script {
 
 namespace interpreter {
 

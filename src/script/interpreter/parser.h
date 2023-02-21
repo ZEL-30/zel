@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 
-namespace zel {
+namespace script {
 
 namespace interpreter {
 
@@ -21,7 +21,7 @@ class Parser {
 
   private:
     std::shared_ptr<AstNode> parseExpr();
-    std::shared_ptr<AstNode> parseCall();
+    std::shared_ptr<AstNode> parseFuncCall();
     std::shared_ptr<AstNode> parseApdu();
     std::shared_ptr<AstNode> parseTerm();
     std::shared_ptr<AstNode> parseFactor();

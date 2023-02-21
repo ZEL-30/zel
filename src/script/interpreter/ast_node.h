@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-namespace zel {
+namespace script {
 
 namespace interpreter {
 
@@ -26,12 +26,12 @@ class ApduNode : public AstNode {
   public:
     /// @param var_name apdu指令
     /// @param v_args 期望值容器
-    ApduNode(std::shared_ptr<AstNode> apdu,
-             std::vector<std::shared_ptr<AstNode>> v_expects);
+    ApduNode(std::shared_ptr<AstNode> apdu, std::vector<std::shared_ptr<AstNode>> v_expects);
+    ~ApduNode();
 
     std::string str() const;
 
-    ~ApduNode();
+    std::shared_ptr<AstNode> apdu();
 
   private:
     std::shared_ptr<AstNode> apdu_;                   // apdu指令
@@ -53,11 +53,9 @@ class BinOpNode : public AstNode {
 
     std::string str() const;
 
-
     std::shared_ptr<AstNode> left();
     std::shared_ptr<Token> bin_op();
     std::shared_ptr<AstNode> right();
-
 
   private:
     std::shared_ptr<AstNode> left_;
@@ -79,9 +77,13 @@ class FuncCallNode : public AstNode {
 
     std::string str() const;
 
+    std::shared_ptr<Token> class_name();
+    std::shared_ptr<AstNode> func_name();
+    std::vector<std::shared_ptr<AstNode>> func_args();
+
   private:
-    std::shared_ptr<Token> class_name_;                 // 类名
-    std::shared_ptr<AstNode> func_name_;                // 函数名
+    std::shared_ptr<Token> class_name_;            // 类名
+    std::shared_ptr<AstNode> func_name_;           // 函数名
     std::vector<std::shared_ptr<AstNode>> v_args_; // 调用函数时传入的参数
 };
 
@@ -109,6 +111,8 @@ class VarAccessNode : public AstNode {
 
     std::string str() const;
 
+    std::shared_ptr<Token> var_name();
+
   private:
     std::shared_ptr<Token> var_name_;
 };
@@ -121,6 +125,9 @@ class VarAssignNode : public AstNode {
     ~VarAssignNode();
 
     std::string str() const;
+
+    std::shared_ptr<Token> var_name();
+    std::shared_ptr<AstNode> value();
 
   private:
     std::shared_ptr<Token> var_name_;

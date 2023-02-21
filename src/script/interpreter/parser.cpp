@@ -7,7 +7,7 @@
 #include <string.h>
 #include <vector>
 
-namespace zel {
+namespace script {
 
 namespace interpreter {
 
@@ -66,7 +66,7 @@ std::shared_ptr<AstNode> Parser::parseExpr() {
     }
 
     case Token::KEYWORDS: {
-        return parseCall();
+        return parseFuncCall();
     }
 
     // apdu
@@ -76,7 +76,7 @@ std::shared_ptr<AstNode> Parser::parseExpr() {
     }
 }
 
-std::shared_ptr<AstNode> Parser::parseCall() {
+std::shared_ptr<AstNode> Parser::parseFuncCall() {
 
     /*
      * call -> (KEYWORDS:crypto | KEYWORDS:string) factor (LPAREN (expr (COMMA expr)*)? RPAREN)
@@ -166,7 +166,6 @@ std::shared_ptr<AstNode> Parser::parseFactor() {
     std::shared_ptr<Token> token = current_token_;
     switch (token->type()) {
 
-    // STRING | IDENTIFIER
     case Token::IDENTIFIER: {
         advance();
         return std::make_shared<VarAccessNode>(token);

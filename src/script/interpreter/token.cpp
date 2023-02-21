@@ -1,6 +1,6 @@
 #include "token.h"
 
-namespace zel {
+namespace script {
 
 namespace interpreter {
 
