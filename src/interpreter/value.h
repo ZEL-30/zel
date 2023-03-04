@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../function/string.h"
 
 #include <memory>
 #include <string>
@@ -18,11 +17,6 @@ class Value {
         std::string commend;
         std::string responce;
         std::string expected;
-    };
-
-    struct Function {
-      std::string func_name;
-      // std::shared_ptr<Value>(function::*func_body)(std::vector<std::shared_ptr<Value>>);
     };
 
     union UValue {

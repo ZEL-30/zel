@@ -1,6 +1,5 @@
-#include <interpreter/interpreter.h>
-#include <interpreter/parser.h>
-#include <interpreter/value.h>
+#include <parser.h>
+#include <value.h>
 using namespace script::interpreter;
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
@@ -28,10 +27,9 @@ TEST_CASE("文件 测试 Interpreter 类") {
     Parser parser(source);
     auto v_ast_nodes = parser.parse();
 
-    Interpreter interpreter;
+   
     for (int i = 0; i < v_ast_nodes.size(); i++) {
-        auto value = interpreter.visit(v_ast_nodes[i]);
 
-        cout << value->str() << endl;
+        cout << v_ast_nodes[i]->str() << endl;
     }
 }

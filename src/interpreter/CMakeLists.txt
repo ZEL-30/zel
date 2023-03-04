@@ -1,6 +1,3 @@
-# 让cmake自动去寻找OpenSSL
-FIND_PACKAGE(OpenSSL REQUIRED)
-
 # 查找源文件
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
 
@@ -8,9 +5,9 @@ file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_LIST_DIR}/*.h)
 
 #  编译静态库
-add_library(Script "")
+add_library(Interpreter "")
 
-target_sources(Script
+target_sources(Interpreter
 PRIVATE
     ${SOURCES}
 PUBLIC
@@ -18,14 +15,13 @@ PUBLIC
 )
 
 # 添加头文件
-target_include_directories(Script
+target_include_directories(Interpreter
 PUBLIC
     ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # 为target添加需要链接的共享库
-TARGET_LINK_LIBRARIES(Script
+TARGET_LINK_LIBRARIES(Interpreter
 PUBLIC
-    OpenSSL::SSL
-    OpenSSL::Crypto 
+
 )

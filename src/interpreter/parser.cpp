@@ -108,7 +108,7 @@ std::shared_ptr<AstNode> Parser::parseFuncCall() {
         if (current_token_->type() != Token::RPAREN) {
         }
         advance();
-
+        
         return std::make_shared<FuncCallNode>(class_name, factor, v_arg_nodes);
     }
 

@@ -47,7 +47,7 @@ add_executable(interpreter_test interpreter_test.cpp models/test_data.h)
 target_include_directories(interpreter_test PUBLIC ${CMAKE_SOURCE_DIR}/vendor)
 target_link_libraries(interpreter_test
 PUBLIC
-    Script
+    Interpreter
 )
 
 

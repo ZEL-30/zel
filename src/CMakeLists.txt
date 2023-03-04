@@ -1,5 +1,5 @@
 add_subdirectory(json)
-add_subdirectory(script)
+add_subdirectory(interpreter)
 
 # 查找源文件
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
