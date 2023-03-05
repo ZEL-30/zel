@@ -5,7 +5,7 @@
 #define NOMINMAX
 #endif
 
-#include "batch.h"
+#include "batch.hpp"
 #include "utility/logger.h"
 #include "utility/value.h"
 using namespace zel::utility;

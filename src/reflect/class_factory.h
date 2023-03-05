@@ -1,6 +1,6 @@
 #pragma once
 
-#include "singleton.h"
+#include "singleton.hpp"
 
 #include <map>
 #include <string>
@@ -9,7 +9,16 @@ namespace zel {
 
 namespace reflect {
 
-typedef void* (*create_object)(void);
+class Object {
+
+  public:
+    Object(); 
+    virtual ~Object();
+
+    virtual void show() = 0;
+};
+
+typedef Object* (*create_object)(void);
 
 class ClassFactory {
 
@@ -17,7 +26,7 @@ class ClassFactory {
 
   public:
     void register_class(const std::string& class_name, create_object mothod);
-    void* create_class(const std::string& class_name);
+    Object* create_class(const std::string& class_name);
 
   private:
     ClassFactory();

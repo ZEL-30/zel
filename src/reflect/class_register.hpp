@@ -21,8 +21,8 @@ class ClassRegister {
 };
 
 #define REGISTER_CLASS(class_name)                                                                 \
-    void* createObject##class_name() {                                                             \
-        void* obj = new class_name();                                                              \
+    zel::reflect::Object* createObject##class_name() {                                                           \
+        zel::reflect::Object* obj = new class_name();                                                            \
         return obj;                                                                                \
     }                                                                                              \
     zel::reflect::ClassRegister classRegister##class_name(#class_name, createObject##class_name)

@@ -1,16 +1,16 @@
 #pragma once
 
-#include "class_register.h"
+#include "class_register.hpp"
 
 #include <iostream>
 
-class Teacher {
+class Teacher : public zel::reflect::Object {
 
   public:
     Teacher() {}
     ~Teacher() {}
 
-    void show() { std::cout << "Teacher" << std::endl; }
+    void show() { std::cout << "This is a teacher class!" << std::endl; }
 
   private:
     std::string name_;

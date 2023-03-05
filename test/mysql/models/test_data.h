@@ -1,6 +1,6 @@
 #include <mysql/connection.h>
 #include <mysql/database.h>
-#include <mysql/model.h>
+#include <mysql/model.hpp>
 
 
 class TestData : public zel::mysql::Model<TestData> {
