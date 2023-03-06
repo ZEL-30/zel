@@ -2,7 +2,7 @@
 #include <mutex>
 #include <thread>
 #include <unistd.h>
-#include <utility/singleton.h>
+#include <utility/singleton.hpp>
 
 
 using namespace zel::utility;

@@ -10,10 +10,19 @@ class Teacher : public zel::reflect::Object {
     Teacher() {}
     ~Teacher() {}
 
-    void show() { std::cout << "This is a teacher class!" << std::endl; }
+    // void f1() { std::cout << "f1" << std::endl; }
 
-  private:
+    int add(int a, int b) { 
+      int c = a + b;
+      return c; 
+    }
+
+  public:
     std::string name_;
+    int age_;
 };
 
 REGISTER_CLASS(Teacher);
+REGISTER_CLASS_FIELD(Teacher, name_, std::string);
+REGISTER_CLASS_FIELD(Teacher, age_, int);
+REGISTER_CLASS_METHOD(Teacher, add);

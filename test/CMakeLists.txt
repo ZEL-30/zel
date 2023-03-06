@@ -51,3 +51,4 @@ PUBLIC
 
 add_subdirectory(reflect)
 add_subdirectory(mysql)
+add_subdirectory(tinycalc)

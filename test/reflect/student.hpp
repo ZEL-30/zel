@@ -10,8 +10,6 @@ class Student : public zel::reflect::Object {
     Student() {}
     ~Student() {}
 
-    void show() { std::cout << "Tiis is a student class!" << std::endl; }
-
   private:
     std::string name_;
 };
