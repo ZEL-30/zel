@@ -8,6 +8,10 @@
 
 using namespace zel::utility;
 
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include <doctest/doctest.h>
+
+
 std::mutex g_mutex; // 全局互斥锁
 
 void Run(Test* test) {
@@ -18,7 +22,7 @@ void Run(Test* test) {
     g_mutex.unlock();
 }
 
-int main() {
+TEST_CASE("测试 单列类") {
 
     auto test = zel::utility::Singleton<Test>::instance();
 
@@ -34,5 +38,4 @@ int main() {
 
     sleep(1);
 
-    return 0;
 }

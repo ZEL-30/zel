@@ -1,3 +1,10 @@
+add_subdirectory(reflect)
+add_subdirectory(mysql)
+add_subdirectory(tinycalc)
+add_subdirectory(singleton)
+add_subdirectory(serialize)
+
+
 
 add_executable(test_utility test_utility.cpp)
 target_include_directories(test_utility PUBLIC ${CMAKE_SOURCE_DIR}/vendor)
@@ -38,7 +45,3 @@ PUBLIC
 
 
 
-add_subdirectory(reflect)
-add_subdirectory(mysql)
-add_subdirectory(tinycalc)
-add_subdirectory(singleton)

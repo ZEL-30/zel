@@ -18,7 +18,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 # 添加子工程
 add_subdirectory(vendor)
 add_subdirectory(src)
-add_subdirectory(test)
+add_subdirectory(tests)
 
 # 打印
 # MESSAGE( STATUS "目录 = ${CMAKE_CURRENT_SOURCE_DIR}/public_lib/lib/public.lib")
