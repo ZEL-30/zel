@@ -1,5 +1,5 @@
 #include "student.hpp"
-#include "teacher.hpp"
+#include "string.hpp"
 
 #include <iostream>
 using namespace std;
@@ -22,23 +22,28 @@ TEST_CASE("类对象反射") {
 
 TEST_CASE("类成员数据反射") {
 
-    ClassFactory* factory = zel::utility::Singleton<ClassFactory>::instance();
+    // ClassFactory* factory = zel::utility::Singleton<ClassFactory>::instance();
 
-    auto teacher = factory->createClass("Teacher");
+    // auto teacher = factory->createClass("Teacher");
 
-    teacher->set("age", 32);
+    // teacher->set("age_", 32);
 
-    int age = 0;
-    teacher->get("age", age);
-    cout << "age: " << age << endl;
+    // int age = 0;
+    // teacher->get("age_", age);
+    // cout << "age: " << age << endl;
 }
 
 TEST_CASE("类成员函数反射") {
 
     auto factory = zel::utility::Singleton<ClassFactory>::instance();
-    auto teacher = factory->createClass("Teacher");
+    auto class_object = factory->createClass("String");
 
-    auto c = teacher->call("add", 1, 4);
+    int a = 9, b = 30;
 
-    cout << c << endl;
+
+    string str_return = {0};
+    vector<string> v_params = {"404142434445464748494A4B4C4D4E4F", "3", "12"};
+    class_object->call("mid", str_return, v_params);
+
+    cout << str_return << endl;
 }

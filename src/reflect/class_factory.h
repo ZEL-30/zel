@@ -1,12 +1,13 @@
 #pragma once
 
+#include "../utility/singleton.hpp"
 #include "class_field.hpp"
 #include "class_method.hpp"
-#include "../utility/singleton.hpp"
 
 #include <functional>
 #include <map>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -33,8 +34,8 @@ class Object {
     template <typename T>
     void set(const std::string& field_name, const T& value);
 
-    void call(const std::string& method_name);
-    int call(const std::string& method_name, int a, int b);
+    template <typename R = void, typename... Args>
+    R call(const std::string& methodName, Args&... args);
 
   private:
     std::string class_name_;
@@ -86,10 +87,9 @@ void Object::get(const std::string& field_name, T& value) {
     ClassFactory* factory = utility::Singleton<ClassFactory>::instance();
     std::shared_ptr<ClassField> field = factory->getField(class_name_, field_name);
     if (field == nullptr) {
-        printf("Class objects '%s' don't have '%s' member attribute\n",
-               class_name_.c_str(),
-               field_name.c_str());
-        return;
+        std::ostringstream os;
+        os << "reflect field " << field_name << " not exists";
+        throw std::logic_error(os.str());
     }
 
     size_t offset = field->offset();
@@ -100,15 +100,29 @@ template <typename T>
 void Object::set(const std::string& field_name, const T& value) {
     ClassFactory* factory = utility::Singleton<ClassFactory>::instance();
     std::shared_ptr<ClassField> field = factory->getField(class_name_, field_name);
+
     if (field == nullptr) {
-        printf("Class objects '%s' don't have '%s' member attribute\n",
-               class_name_.c_str(),
-               field_name.c_str());
-        return;
+        std::ostringstream os;
+        os << "reflect field " << field_name << " not exists";
+        throw std::logic_error(os.str());
     }
 
     size_t offset = field->offset();
     *(T*)((unsigned char*)(this) + offset) = value;
+}
+
+template <typename R, typename... Args>
+R Object::call(const std::string& method_name, Args&... args) {
+    ClassFactory* factory = zel::utility::Singleton<ClassFactory>::instance();
+    std::shared_ptr<ClassMethod> method = factory->getMethod(class_name_, method_name);
+    if (method == nullptr) {
+        std::ostringstream os;
+        os << "reflect method " << method_name << " not exists";
+        throw std::logic_error(os.str());
+    }
+    auto func = method->method();
+    typedef std::function<R(decltype(this), Args & ...)> class_method;
+    return (*((class_method*)func))(this, args...);
 }
 
 } // namespace reflect

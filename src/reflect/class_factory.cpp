@@ -30,28 +30,6 @@ std::shared_ptr<ClassField> Object::getField(const std::string& field_name) {
     return factory->getField(class_name_, field_name);
 }
 
-void Object::call(const std::string& method_name) {
-    ClassFactory* factory = utility::Singleton<ClassFactory>::instance();
-    std::shared_ptr<ClassMethod> method = factory->getMethod(class_name_, method_name);
-
-    auto func = method->method();
-    typedef std::function<void(decltype(this))> class_method;
-
-    (*((class_method*)func))(this);
-}
-
-int Object::call(const std::string& method_name, int a, int b) {
-    ClassFactory* factory = utility::Singleton<ClassFactory>::instance();
-    std::shared_ptr<ClassMethod> method = factory->getMethod(class_name_, method_name);
-
-    auto func = method->method();
-    typedef std::function<int(decltype(this), int, int)> class_method;
-
-    (*((class_method*)func))(this, a, b);
-}
-
-
-
 ClassFactory::ClassFactory() {}
 
 ClassFactory::~ClassFactory() {}

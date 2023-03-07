@@ -51,10 +51,12 @@ class ClassRegister {
         #field_type,                                                                               \
         (size_t)(&(class_name##field_name.field_name)) - (size_t)(&(class_name##field_name)))
 
-#define REGISTER_CLASS_METHOD(class_name, method_name)                                             \
-    std::function<int(class_name*, int, int)> class_name##method_name##method = &class_name::method_name;   \
+#define REGISTER_CLASS_METHOD(class_name, method_name, return_type, ...)                           \
+    std::function<return_type(class_name*, ##__VA_ARGS__)> class_name##method_name##method =       \
+        &class_name::method_name;                                                                  \
     zel::reflect::ClassRegister classRegister##class_name##method_name(                            \
         #class_name, #method_name, (uintptr_t) & (class_name##method_name##method))
+
 
 } // namespace reflect
 
