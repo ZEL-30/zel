@@ -10,8 +10,11 @@ class Student : public zel::reflect::Object {
     Student() {}
     ~Student() {}
 
+    void add(int a, int b, int& c) { c = a + b; }
+
   private:
     std::string name_;
 };
 
 REGISTER_CLASS(Student);
+REGISTER_CLASS_METHOD(Student, add, void, int, int, int&);

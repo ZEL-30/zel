@@ -1,4 +1,4 @@
-
+add_subdirectory(fmt)
 # # 引入 doc test
 # include(FetchContent)
 # FetchContent_Declare(

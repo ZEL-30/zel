@@ -27,6 +27,12 @@ PUBLIC
     Json
 )
 
+add_executable(test_fmt test_fmt.cpp)
+target_include_directories(test_fmt PUBLIC ${CMAKE_SOURCE_DIR}/vendor)
+target_link_libraries(test_fmt
+PUBLIC
+    fmt::fmt
+)
 
 
 
